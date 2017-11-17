@@ -176,4 +176,4 @@ finalrec = np.array(big_table_groups['group']
 #    if (big_table['group'][i] == 'Milk & Alts'):
 #        recperfood[i] = (milkandalt) * (percent_of_group[i])           
 #    if (big_table['group'][i] == 'Fats and Oils'):
-#        recperfood[i] = (fatsandoils) * (percent_of_group[i])
+#        recperfood[i] = (fatsandoils) * (percent_of_group[i]) 
