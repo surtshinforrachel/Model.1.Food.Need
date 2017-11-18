@@ -9,7 +9,7 @@ Created on Tue Aug 15 12:58:52 2017
 import os
 cwd = os.getcwd()
 print(cwd)
-
+a
 import pandas as pd
 import numpy as np
 
@@ -147,33 +147,46 @@ for i in range(len(pop_group)):
         pop.loc[[i], 'Meat&Alt'] = int(rec.loc['Males (51+)', 'Meat&Alt'])
         pop.loc[[i], 'Fats&Oils'] = int(rec.loc['Males (51+)', 'Fats&Oils'])
 
+#FIND RECOMMENDATION FOR AVERAGE PERSON IN SWBC IN SERVINGS - IS TAKING THE AVERAGE RECOMMENDATION QUANTITATIVELY SOUND IN THIS CASE?
+allrecs = np.zeros(shape=(5,1))
+allrecs[0] = sum((np.array(pop['value'])) * (np.array(pop['Fats&Oils'])))/(total_pop)
+allrecs[1] = sum((np.array(pop['value'])) * (np.array(pop['Fruit&Veg'])))/(total_pop)
+allrecs[2] = sum((np.array(pop['value'])) * (np.array(pop['Grains'])))/(total_pop)
+allrecs[3] = sum((np.array(pop['value'])) * (np.array(pop['Meat&Alt'])))/(total_pop)
+allrecs[4] = sum((np.array(pop['value'])) * (np.array(pop['Milk&Alt'])))/(total_pop)
+
+#SUM servings/person BY GROUP, GIVING A TOTAL NUMBER OF AVAILABLE SERVINGS OF FOOD PER PERSON PER FOOD GROUP
 big_table_groups = big_table.groupby('group', as_index=False).sum() 
+avail_by_group = np.array(big_table_groups['servings/person']) 
 
+percent_food_group_rec_met = np.array(big_table_groups['servings/person'])
+for i in range(len(big_table_groups['servings/person'])):
+    percent_food_group_rec_met[i] = ((avail_by_group[i]/allrecs[i]) *100)
+    
+    
+    
 
-finalrec = np.array(big_table_groups['group']
+percent_rec_met = pd.merge(big_table_groups['group'], percent_food_group_rec_met)
+big_table_groups.append(np.array.(percent_food_group_rec_met))
+    
+    
+    
+    
+    
+    
+    
+    
 
-
-#FIND RECOMMENDATION FOR AVERAGE PERSON IN SWBC IN SERVINGS - IS THIS QUANTITATIVELY SOUND?
-#vegandfruit = sum((np.array(pop['value'])) * (np.array(pop['Fruit&Veg'])))/(total_pop)
-#grains = sum((np.array(pop['value'])) * (np.array(pop['Grains'])))/(total_pop)
-#milkandalt = sum((np.array(pop['value'])) * (np.array(pop['Milk&Alt'])))/(total_pop)
-#meatandalt = sum((np.array(pop['value'])) * (np.array(pop['Meat&Alt'])))/(total_pop)
-#fatsandoils = sum((np.array(pop['value'])) * (np.array(pop['Fats&Oils'])))/(total_pop)
-
-#blurbie = np.array[vegandfruit, grains, milkandalt, meatandalt, fatsandoils]
-
-#ADJUSTED DIET
-#recperfood IS THE AMOUNT OF SERVINGS OF THE FOOD NEEDED FOR AVERAGE INDIVIDUAL IN THE RECOMMENDED DIEt
-#recperfood = np.array(avail['commodity'])
-#
-#for i in range(len(avail['commodity'])):
-#    if (big_table['group'][i] == 'Fruit & Vegetables'):
-#        recperfood[i] = (vegandfruit) * (percent_of_group[i])      
-#    if (big_table['group'][i] == 'Grains'):
-#        recperfood[i] = (grains) * (percent_of_group[i])
-#    if (big_table['group'][i] == 'Meat & Alts'):
-#        recperfood[i] = (meatandalt) * (percent_of_group[i])        
-#    if (big_table['group'][i] == 'Milk & Alts'):
-#        recperfood[i] = (milkandalt) * (percent_of_group[i])           
-#    if (big_table['group'][i] == 'Fats and Oils'):
-#        recperfood[i] = (fatsandoils) * (percent_of_group[i]) 
+#recperfood IS THE AMOUNT OF SERVINGS OF THE FOOD NEEDED FOR AVERAGE INDIVIDUAL IN THE RECOMMENDED DIET
+recperfood = np.array(avail['commodity'])
+for i in range(len(avail['commodity'])):
+    if (big_table['group'][i] == 'Fruit & Vegetables'):
+        recperfood[i] = (vegandfruit) * (percent_of_group[i])      
+    if (big_table['group'][i] == 'Grains'):
+        recperfood[i] = (grains) * (percent_of_group[i])
+    if (big_table['group'][i] == 'Meat & Alts'):
+        recperfood[i] = (meatandalt) * (percent_of_group[i])        
+    if (big_table['group'][i] == 'Milk & Alts'):
+        recperfood[i] = (milkandalt) * (percent_of_group[i])           
+    if (big_table['group'][i] == 'Fats and Oils'):
+        recperfood[i] = (fatsandoils) * (percent_of_group[i]) 
