@@ -161,7 +161,7 @@ avail_by_group = np.array(big_table_groups['servings/person'])
 percent_food_group_rec_met = np.array(big_table_groups['servings/person'])
 for i in range(len(big_table_groups['servings/person'])):
     percent_food_group_rec_met[i] = ((avail_by_group[i]/allrecs[i]) *100)
-percent_food_group_rec_met = pd.DataFrame({'group': big_table_groups['group'],'percentofrecmet':percent_food_group_rec_met}) #ADD THE FOOD GROUP LABEL TO THE percent_food_group_rec_met 
+percent_food_group_rec_met = pd.DataFrame({'group': big_table_groups['group'],'percentofrecmet':percent_food_group_rec_met}) #ADD THE FOOD GROUP LABEL TO THE percent_food_group_rec_met
 
 
 
