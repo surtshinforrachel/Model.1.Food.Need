@@ -9,7 +9,6 @@ Created on Tue Aug 15 12:58:52 2017
 import os
 cwd = os.getcwd()
 print(cwd)
-a
 import pandas as pd
 import numpy as np
 
@@ -162,31 +161,24 @@ avail_by_group = np.array(big_table_groups['servings/person'])
 percent_food_group_rec_met = np.array(big_table_groups['servings/person'])
 for i in range(len(big_table_groups['servings/person'])):
     percent_food_group_rec_met[i] = ((avail_by_group[i]/allrecs[i]) *100)
-    
-    
-    
+percent_food_group_rec_met = pd.DataFrame({'group': big_table_groups['group'],'percentofrecmet':percent_food_group_rec_met}) #ADD THE FOOD GROUP LABEL TO THE percent_food_group_rec_met 
 
-percent_rec_met = pd.merge(big_table_groups['group'], percent_food_group_rec_met)
-big_table_groups.append(np.array.(percent_food_group_rec_met))
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
 
 #recperfood IS THE AMOUNT OF SERVINGS OF THE FOOD NEEDED FOR AVERAGE INDIVIDUAL IN THE RECOMMENDED DIET
-recperfood = np.array(avail['commodity'])
+recperfood = np.array(avail['kg/person'])
 for i in range(len(avail['commodity'])):
-    if (big_table['group'][i] == 'Fruit & Vegetables'):
-        recperfood[i] = (vegandfruit) * (percent_of_group[i])      
-    if (big_table['group'][i] == 'Grains'):
-        recperfood[i] = (grains) * (percent_of_group[i])
-    if (big_table['group'][i] == 'Meat & Alts'):
-        recperfood[i] = (meatandalt) * (percent_of_group[i])        
-    if (big_table['group'][i] == 'Milk & Alts'):
-        recperfood[i] = (milkandalt) * (percent_of_group[i])           
     if (big_table['group'][i] == 'Fats and Oils'):
-        recperfood[i] = (fatsandoils) * (percent_of_group[i]) 
+        recperfood[i] = ('allrecs[0]') * (percent_of_group[i])     
+    if (big_table['group'][i] == 'Fruit & Vegetables'):
+        recperfood[i] = ('allrecs[1]') * (percent_of_group[i])      
+    if (big_table['group'][i] == 'Grains'):
+        recperfood[i] = ('allrecs[2]') * (percent_of_group[i])
+    if (big_table['group'][i] == 'Meat & Alts'):
+        recperfood[i] = ('allrecs[3]') * (percent_of_group[i])        
+    if (big_table['group'][i] == 'Milk & Alts'):
+        recperfood[i] = ('allrecs[4]') * (percent_of_group[i])           
+
+print(recperfood)
