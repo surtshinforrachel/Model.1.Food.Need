@@ -31,8 +31,7 @@ pop = pop.drop(['Ref_Date'], axis = 1) #delete date column
 #pop = pop.pivot(columns = 'GEO', values = 'value') #pivot table so that it is indexed by age group and columns correspond to region      index = 'AGE'
 #age_order = ['0 to 4 years', '5 to 9 years', '10 to 14 years', '15 to 19 years', '20 to 24 years', '25 to 29 years', '30 to 34 years', '35 to 39 years', '40 to 44 years', '45 to 49 years', '50 to 54 years', '55 to 59 years', '60 to 64 years', '65 to 69 years', '70 to 74 years', '75 to 79 years', '80 to 84 years', '85 to 89 years', '90 years and over']
 #pop = pop.reindex(age_order) #indexing by age messes with the order of the age brackets so we have to farmer style them back into order.
-pop['SWBC'] = pop.sum(axis=1) #sum across regions to get values for SWBC
-pop.columns = ['geo', 'sex', 'age', 'value', 'SWBC']
+pop.columns = ['geo', 'sex', 'age', 'value']
 
 # extract int from every cell in 'age' column
 pop_group = np.array(pop['age'])
@@ -65,7 +64,7 @@ big_table['servings/person'] = (big_table['kg/person']*1000) / (big_table['refer
 big_table = big_table[['commodity', 'kg/person', 'servings/person', 'name', 'group', 'serving', 'reference', 'waste', 'conversion', 'season']]
 
 #RESULTS TABLE
-total_pop = sum(pop['SWBC'])
+total_pop = sum(pop['value'])
 quantity_foods = (np.array(avail['kg/person'])) * (total_pop)
 
 #PERCENT OF GROUP THAT EACH COMMODITY IS
