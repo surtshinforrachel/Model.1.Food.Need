@@ -44,21 +44,21 @@ fruit_table.ix[:, 1:2] = fruit_table.ix[:, 1:2].apply(pd.to_numeric, errors = 'c
 fruit_table = fruit_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
 fruit_table.columns = ['crop', 'hectares', 'tons']
 fruit_table = fruit_table['tons'].mul(tons_to_tonnes,axis=0) #CONVERT TONS TO TONNES
-fruit_table['yield'] = (fruit_table['tons']/field_table['hectares']) #NOT WORKING 
+fruit_table['yield'] = fruit_table['tons']/field_table['hectares'] #NOT WORKING 
 #NOT IN METRIC TONNES
 
 #VEG CROPS DATA CLEANING
 vegcrops = pd.read_csv('cansim0010013.2014.csv', header = 0)
 vegcrops = vegcrops.drop(['Ref_Date', 'GEO'], axis = 1) #delete reference date column
 vegcrops.columns = ['unit', 'type', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
-acres = vegcrops.loc[vegcrops['unit']== 'Area beds, total (square feet x 1,000)']
-tonnes = vegcrops.loc[vegcrops['unit']== 'Production (fresh and processed), total (tons)']
+acres = vegcrops.loc[vegcrops['unit']== 'Area planted (hectares)']
+tonnes = vegcrops.loc[vegcrops['unit']== 'Marketed production (metric tonnes)']
 veg_table = pd.merge(left=acres, right = tonnes, left_on = 'type', right_on = 'type')
 veg_table = veg_table.drop(['unit_x', 'unit_y'], axis = 1).reset_index(drop=True) #delete first three columns
 veg_table.ix[:, 1:3] = veg_table.ix[:, 1:3].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 veg_table = veg_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
 veg_table.columns = ['crop', 'hectares', 'tons']
-veg_table['yield'] = (fruit_table['tons']/field_table['hectares']) #NOT WORKING 
+veg_table['yield'] = fruit_table['tons']/field_table['hectares'] #NOT WORKING 
 #NOT IN METRIC TONNES
 
 #MUSHROOM DATA CLEANING
@@ -91,8 +91,12 @@ green_table = pd.merge(left=acres, right = tonnes, left_on = 'type', right_on = 
 green_table.ix[:, 1:3] = green_table.ix[:, 1:3].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 green_table = green_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
 green_table.columns = ['crop', 'square meters', 'kilograms']
+green_table['yield'] = green_table['kilograms']/green_table['square meters']
 #NOT IN METRIC TONNES!!!! IN HUNDRED WEIGHT X 1000 AND ACRES
 
+veg_land = pd.read_csv('cansim0040215.2011.csv', header = 0)
+veg_land = veg_land.drop(['Ref_Date', 'GEO', 'UOM'], axis = 1) #delete reference date column
+veg_table_2 = pd.merge(left=veg_table, right = veg_land, left_on = 'crop', right_on = 'VEG', how = 'outer')
 
 
 # 1 -- Convert units
