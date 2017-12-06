@@ -9,6 +9,7 @@ Created on Fri Nov 17 12:00:22 2017
 
 import pandas as pd
 import numpy as np
+import difflib
 
 #CONVERSTION FACTORS
 tons_to_tonnes = 1.10231
@@ -29,7 +30,7 @@ field_table = field_table.drop(['geo_y', 'geo_x', 'unit_x', 'unit_y'], axis = 1)
 field_table.ix[:, 1:2] = field_table.ix[:, 1:2].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 field_table = field_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
 field_table.columns = ['crop', 'acres', 'tonnes']
-field_table['yield'] = (field_table['tonnes']/field_table['acres']) #NOT WORKING
+#field_table['yield'] = (field_table['tonnes']/field_table['acres']) #NOT WORKING
 
 #FRUIT CROPS DATA CLEANING
 fruitcrops = pd.read_csv('cansim0010009.2014.csv', header = 0)
@@ -43,8 +44,8 @@ fruit_table = fruit_table.drop(['unit_x', 'unit_y'], axis = 1).reset_index(drop=
 fruit_table.ix[:, 1:2] = fruit_table.ix[:, 1:2].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 fruit_table = fruit_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
 fruit_table.columns = ['crop', 'hectares', 'tons']
-fruit_table = fruit_table['tons'].mul(tons_to_tonnes,axis=0) #CONVERT TONS TO TONNES
-fruit_table['yield'] = fruit_table['tons']/field_table['hectares'] #NOT WORKING 
+#fruit_table = fruit_table['tons'].mul(tons_to_tonnes,axis=0) #CONVERT TONS TO TONNES
+#fruit_table['yield'] = fruit_table['tons']/field_table['hectares'] #NOT WORKING 
 #NOT IN METRIC TONNES
 
 #VEG CROPS DATA CLEANING
@@ -58,7 +59,7 @@ veg_table = veg_table.drop(['unit_x', 'unit_y'], axis = 1).reset_index(drop=True
 veg_table.ix[:, 1:3] = veg_table.ix[:, 1:3].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 veg_table = veg_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
 veg_table.columns = ['crop', 'hectares', 'tons']
-veg_table['yield'] = fruit_table['tons']/field_table['hectares'] #NOT WORKING 
+#veg_table['yield'] = fruit_table['tons']/field_table['hectares'] #NOT WORKING 
 #NOT IN METRIC TONNES
 
 #MUSHROOM DATA CLEANING
@@ -90,15 +91,24 @@ tonnes = greencrops.loc[greencrops['unit']== 'Kilograms']
 green_table = pd.merge(left=acres, right = tonnes, left_on = 'type', right_on = 'type')
 green_table.ix[:, 1:3] = green_table.ix[:, 1:3].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 green_table = green_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
-green_table.columns = ['crop', 'square meters', 'kilograms']
-green_table['yield'] = green_table['kilograms']/green_table['square meters']
+#green_table.columns = ['crop', 'square meters', 'kilograms']
+#green_table['yield'] = green_table['kilograms']/green_table['square meters']
 #NOT IN METRIC TONNES!!!! IN HUNDRED WEIGHT X 1000 AND ACRES
 
 veg_land = pd.read_csv('cansim0040215.2011.csv', header = 0)
 veg_land = veg_land.drop(['Ref_Date', 'GEO', 'UOM'], axis = 1) #delete reference date column
 veg_table_2 = pd.merge(left=veg_table, right = veg_land, left_on = 'crop', right_on = 'VEG', how = 'outer')
 
+veg_land2 = veg_land['VEG']
+veg_crop2 = veg_table['crop']
+#veg_crop2 = veg_crop2.index.map(lambda x: difflib.get_close_matches(x, veg_land2)[0])
+#veg_table['crop'] = veg_table['crop'].apply(lambda x: difflib.get_close_matches(x, veg_land['VEG'])[0])
 
+
+match = veg_crop2
+for i in range(len(veg_crop2)):
+   match[i] =  difflib.get_close_matches(veg_crop2[i], veg_land2, n=1, cutoff = 0.3)
+   
 # 1 -- Convert units
 # 2 -- Calculate yield
 # 3 -- Multiply by SWBC area for commodity
