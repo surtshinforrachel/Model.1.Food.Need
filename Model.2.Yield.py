@@ -10,6 +10,9 @@ Created on Fri Nov 17 12:00:22 2017
 import pandas as pd
 import numpy as np
 import difflib
+import fuzzywuzzy
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
 
 #CONVERSTION FACTORS
 tons_to_tonnes = 1.10231
@@ -108,7 +111,20 @@ veg_crop2 = veg_table['crop']
 match = veg_crop2
 for i in range(len(veg_crop2)):
    match[i] =  difflib.get_close_matches(veg_crop2[i], veg_land2, n=1, cutoff = 0.3)
-   
+
+fuzzmatch = veg_crop2
+for i in range(len(veg_crop2)):
+    fuzzmatch[1] = fuzz.token_set_ratio(veg_crop2[i], veg_land2)
+
+#fuzzmatch2 = vegcrops['type']
+#for i in range(len(veg_crop2)):
+fuzzmatch2 =  fuzz.ratio(veg_crop2[1], veg_land2)
+   #if fuzz.token_set_ratio(veg_crop2[i], fuzzmatch2[i]) < 70:
+    #   fuzzmatch2[i] == 'NA'
+           
+#process.extract("new york jets", choices, limit=2)
+
+
 # 1 -- Convert units
 # 2 -- Calculate yield
 # 3 -- Multiply by SWBC area for commodity
