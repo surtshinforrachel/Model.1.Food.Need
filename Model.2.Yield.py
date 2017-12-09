@@ -17,10 +17,10 @@ from fuzzywuzzy import process
 #CONVERSTION FACTORS
 tons_to_tonnes = 1.10231
 acres_to_hectares = 2.47105
-thousand_sq_ft_to_hectare = 107639
-hundred_weight_to_tonne = 19.6841/1000
+thousand_sq_ft_to_hectare = (107639/1000)
+hundred_weight_to_tonne = (19.6841/1000)
 
-#FIELD CROPS DATA CLEANING
+#2.1 - FIELD CROPS DATA CLEANING
 fieldcrops = pd.read_csv('cansim0010010.2014.csv', header = 0)
 fieldcrops = fieldcrops.drop(['Ref_Date'], axis = 1) #delete reference date column
 fieldcrops.columns = ['geo', 'unit', 'type', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
@@ -53,13 +53,11 @@ for i in range(len(field_land2)):
 fuzzy_field_land = field_land
 fuzzy_field_land['crop'] = fuzzmatch
 field_table = pd.merge(left=field_table, right = fuzzy_field_land, left_on = 'crop', right_on = 'crop')
-field_table['hectares'] = field_table['hectares'].astype(float)
-field_table['tonnes'] = field_table['tonnes'].astype(float)
-field_table['value'] = field_table['value'].astype(float)
+field_table.ix[:, 1:3] = field_table.ix[:, 1:3].astype(float) #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 field_table['SWBC yield'] = ((field_table['tonnes']/field_table['hectares']) * field_table['value'])
 
 
-#FRUIT CROPS DATA CLEANING
+#2.2 - FRUIT CROPS DATA CLEANING
 fruitcrops = pd.read_csv('cansim0010009.2014.csv', header = 0)
 fruitcrops = fruitcrops.drop(['Ref_Date', 'GEO', 'EST'], axis = 1) #delete reference date column
 fruitcrops.columns = ['type', 'unit', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
@@ -91,41 +89,25 @@ for i in range(len(fruit_land2)):
 fuzzy_fruit_land = fruit_land
 fuzzy_fruit_land['crop'] = fuzzmatch
 fruit_table = pd.merge(left=fruit_table, right = fuzzy_fruit_land, left_on = 'crop', right_on = 'crop')
-fruit_table['hectares'] = fruit_table['hectares'].astype(float)
-fruit_table['tonnes'] = fruit_table['tonnes'].astype(float)
-fruit_table['value'] = fruit_table['value'].astype(float)
+fruit_table.ix[:, 1:3] = fruit_table.ix[:, 1:3].astype(float) #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 fruit_table['SWBC yield'] = ((fruit_table['tonnes']/fruit_table['hectares']) * fruit_table['value'])
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-#VEG CROPS DATA CLEANING
+#2.3 - VEG CROPS DATA CLEANING
 vegcrops = pd.read_csv('cansim0010013.2014.csv', header = 0)
 vegcrops = vegcrops.drop(['Ref_Date', 'GEO'], axis = 1) #delete reference date column
 vegcrops.columns = ['unit', 'type', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
-acres = vegcrops.loc[vegcrops['unit']== 'Area planted (hectares)']
+hectares = vegcrops.loc[vegcrops['unit']== 'Area planted (hectares)']
 tonnes = vegcrops.loc[vegcrops['unit']== 'Marketed production (metric tonnes)']
-veg_table = pd.merge(left=acres, right = tonnes, left_on = 'type', right_on = 'type')
+veg_table = pd.merge(left=hectares, right = tonnes, left_on = 'type', right_on = 'type')
 veg_table = veg_table.drop(['unit_x', 'unit_y'], axis = 1).reset_index(drop=True) #delete first three columns
-veg_table.columns = ['crop', 'acres', 'tons']
+veg_table.columns = ['crop', 'hectares', 'tonnes']
 veg_table.ix[:, 1:3] = veg_table.ix[:, 1:3].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 veg_table = veg_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
-#veg_table['yield'] = fruit_table['tons']/field_table['hectares'] #NOT WORKING 
-#NOT IN METRIC TONNES
 veg_table['crop'].loc[veg_table['crop']== 'Beans, green or wax'] = 'Beans, green and wax'
 veg_table['crop'].loc[(veg_table['crop']== 'Cabbage, Chinese (bok-choy, napa, etcetera)') | (veg_table['crop']== 'Cabbage, regular')] = 'Repeated crop'
 #ASPARAGAS!
-
+#FUZZY STRING MATCHING
 veg_land = pd.read_csv('cansim0040215.2011.csv', header = 0)
 veg_land = veg_land.drop(['Ref_Date', 'GEO', 'UOM'], axis = 1) #delete reference date column
 veg_table_2 = pd.merge(left=veg_table, right = veg_land, left_on = 'crop', right_on = 'VEG', how = 'outer')
@@ -139,39 +121,94 @@ for i in range(len(veg_crop2)):
     else:
         fuzzmatch[i] = match[0]
 veg_table['crop'] = fuzzmatch
-veg_table_2fuzz = pd.merge(left=veg_table, right = veg_land, left_on = 'crop', right_on = 'VEG', how = 'outer')
+veg_table_2fuzz = pd.merge(left=veg_table, right = veg_land, left_on = 'crop', right_on = 'VEG', how = 'inner')
+veg_table_2fuzz = veg_table_2fuzz.drop(['VEG'], axis = 1) #delete reference date column
+veg_table_2fuzz.ix[:, 1:3] = veg_table_2fuzz.ix[:, 1:3].astype(float) #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+veg_table_2fuzz['SWBC yield'] = ((veg_table_2fuzz['tonnes']/veg_table_2fuzz['hectares']) * veg_table_2fuzz['Value'])
 
 
-
-
-
-
-
-
-
-
-
-#MUSHROOM DATA CLEANING
+#2.4 - MUSHROOM DATA CLEANING
 mushcrops = pd.read_csv('cansim0010012.2014.csv', header = 0)
 mushcrops = mushcrops.drop(['Ref_Date', 'GEO'], axis = 1) #delete reference date column
 mushcrops.columns = ['unit', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
-mushcrops.ix[:, 1] = mushcrops.ix[:, 1].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-mushcrops = mushcrops.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
+mushcrops.ix[:, 1] = mushcrops.ix[:, 1].astype(float) #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+mushcrops['value'][1] = mushcrops['value'][1]*thousand_sq_ft_to_hectare
+mushcrops['value'][1] = mushcrops['value'][1]*tons_to_tonnes
+
 mushcrops['yield'] = mushcrops['value'][1]/mushcrops['value'][0]
 #NOT IN METRIC TONNES!!!! IN TONS AND 1000 SQ FT
+#NEED TO FIND SWBC AREA DATA
 
 
-#POTATO DATA CLEANING
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#2.5 - POTATO DATA CLEANING
 potcrops = pd.read_csv('cansim0010014.2014.csv', header = 0)
 potcrops = potcrops.drop(['Ref_Date', 'GEO'], axis = 1) #delete reference date column
 potcrops.columns = ['unit', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
-potcrops.ix[:, 1] = potcrops.ix[:, 1].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-potcrops = potcrops.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
+potcrops.ix[:, 1] = potcrops.ix[:, 1].astype(float) #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 potcrops['yield'] = potcrops['value'][1]/potcrops['value'][0]
-#NOT IN METRIC TONNES!!!! IN HUNDRED WEIGHT X 1000 AND ACRES
+#NOT IN METRIC TONNES!!!! IN TONS X 1000 AND ACRES
 
 
-#GREENHOUSE DATA CLEANING
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#2.6 - GREENHOUSE DATA CLEANING
 greencrops = pd.read_csv('cansim0010006.2014.csv', header = 0)
 greencrops = greencrops.drop(['Ref_Date', 'GEO', 'PRO'], axis = 1) #delete reference date column
 greencrops.columns = ['type', 'unit', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
