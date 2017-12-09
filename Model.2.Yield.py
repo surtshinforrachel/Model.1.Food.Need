@@ -19,6 +19,9 @@ tons_to_tonnes = 1.10231
 acres_to_hectares = 2.47105
 thousand_sq_ft_to_hectare = (107639/1000)
 hundred_weight_to_tonne = (19.6841/1000)
+kg_to_tonne = 1000
+sq_m_to_hectare = 1000
+
 
 #2.1 - FIELD CROPS DATA CLEANING
 fieldcrops = pd.read_csv('cansim0010010.2014.csv', header = 0)
@@ -129,84 +132,31 @@ veg_table_2fuzz['SWBC yield'] = ((veg_table_2fuzz['tonnes']/veg_table_2fuzz['hec
 
 #2.4 - MUSHROOM DATA CLEANING
 mushcrops = pd.read_csv('cansim0010012.2014.csv', header = 0)
-mushcrops = mushcrops.drop(['Ref_Date', 'GEO'], axis = 1) #delete reference date column
-mushcrops.columns = ['unit', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
-mushcrops.ix[:, 1] = mushcrops.ix[:, 1].astype(float) #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-mushcrops['value'][1] = mushcrops['value'][1]*thousand_sq_ft_to_hectare
-mushcrops['value'][1] = mushcrops['value'][1]*tons_to_tonnes
-
-mushcrops['yield'] = mushcrops['value'][1]/mushcrops['value'][0]
-#NOT IN METRIC TONNES!!!! IN TONS AND 1000 SQ FT
+mushcrops = mushcrops.drop(['Ref_Date'], axis = 1) #delete reference date column
+mushcrops.columns = ['GEO', 'unit', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
+area = mushcrops.loc[mushcrops['unit']== 'Area beds, total (square feet x 1,000)']
+tons = mushcrops.loc[mushcrops['unit']== 'Production (fresh and processed), total (tons)']
+mush_table = pd.merge(left=area, right = tons, left_on = 'GEO', right_on = 'GEO').drop(['GEO', 'unit_x', 'unit_y'], axis = 1)
+mush_table.columns = ['area', 'tons'] #name first column header 'commodity' and name second column header 'kg/person'
+mush_table.ix[:, 0] = mush_table.ix[:, 0].astype(float)*tons_to_tonnes #tons_to_tonnes = 1.10231
+mush_table.ix[:, 1] = mush_table.ix[:, 1].astype(float)*thousand_sq_ft_to_hectare #thousand_sq_ft_to_hectare = (107639/1000) = 107.639
+mush_table.columns = ['hectares', 'tonnes'] #name first column header 'commodity' and name second column header 'kg/person'
+mush_table['yield'] = mush_table['tonnes']/mush_table['hectares']
 #NEED TO FIND SWBC AREA DATA
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #2.5 - POTATO DATA CLEANING
 potcrops = pd.read_csv('cansim0010014.2014.csv', header = 0)
-potcrops = potcrops.drop(['Ref_Date', 'GEO'], axis = 1) #delete reference date column
-potcrops.columns = ['unit', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
-potcrops.ix[:, 1] = potcrops.ix[:, 1].astype(float) #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-potcrops['yield'] = potcrops['value'][1]/potcrops['value'][0]
-#NOT IN METRIC TONNES!!!! IN TONS X 1000 AND ACRES
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+potcrops = potcrops.drop(['Ref_Date'], axis = 1) #delete reference date column
+potcrops.columns = ['GEO', 'unit', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
+area = potcrops.loc[potcrops['unit']== 'Seeded area, potatoes (acres)']
+hundredweight = potcrops.loc[potcrops['unit']== 'Production, potatoes (hundredweight x 1,000)']
+pot_table = pd.merge(left=area, right = hundredweight, left_on = 'GEO', right_on = 'GEO').drop(['GEO', 'unit_x', 'unit_y'], axis = 1)
+pot_table.columns = ['acres', 'hundredweight'] #name first column header 'commodity' and name second column header 'kg/person'
+pot_table.ix[:, 0] = pot_table.ix[:, 0].astype(float)*acres_to_hectares #acres_to_hectares = 2.47105
+pot_table.ix[:, 1] = pot_table.ix[:, 1].astype(float)*hundred_weight_to_tonne #hundred_weight_to_tonne = (19.6841/1000) = 0.0196841
+pot_table.columns = ['hectares', 'tonnes'] #name first column header 'commodity' and name second column header 'kg/person'
+pot_table['yield'] = pot_table['tonnes']/pot_table['hectares']
+#NEED TO FIND SWBC AREA DATA
 
 #2.6 - GREENHOUSE DATA CLEANING
 greencrops = pd.read_csv('cansim0010006.2014.csv', header = 0)
@@ -214,12 +164,21 @@ greencrops = greencrops.drop(['Ref_Date', 'GEO', 'PRO'], axis = 1) #delete refer
 greencrops.columns = ['type', 'unit', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
 acres = greencrops.loc[greencrops['unit']== 'Square metres']
 tonnes = greencrops.loc[greencrops['unit']== 'Kilograms']
-green_table = pd.merge(left=acres, right = tonnes, left_on = 'type', right_on = 'type')
+green_table = pd.merge(left=acres, right = tonnes, left_on = 'type', right_on = 'type').drop(['unit_x', 'unit_y'], axis = 1)
+green_table.columns =['type', 'square meters', 'kg']
 green_table.ix[:, 1:3] = green_table.ix[:, 1:3].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 green_table = green_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
-#green_table.columns = ['crop', 'square meters', 'kilograms']
-#green_table['yield'] = green_table['kilograms']/green_table['square meters']
+green_table.ix[:, 1] = green_table.ix[:, 1].astype(float)*kg_to_tonne #*1000
+green_table.ix[:, 2] = green_table.ix[:, 2].astype(float)*sq_m_to_hectare #*1000
+green_table.columns = ['crop', 'hectares', 'tonnes'] #name first column header 'commodity' and name second column header 'kg/person'
+green_table['yield'] = green_table['tonnes']/green_table['hectares']
 #NOT IN METRIC TONNES!!!! IN HUNDRED WEIGHT X 1000 AND ACRES
+
+
+#CONVERSTION FACTORS
+tons_to_tonnes = 1.10231
+acres_to_hectares = 2.47105
+thousand_sq_ft_to_hectare = (107639/1000)
 
 
 # 1 -- Convert units
