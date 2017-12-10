@@ -20,7 +20,7 @@ acres_to_hectares = 2.47105
 thousand_sq_ft_to_hectare = (107639/1000)
 hundred_weight_to_tonne = (19.6841/1000)
 kg_to_tonne = 1000
-sq_m_to_hectare = 1000
+sq_m_to_hectare = 10000
 
 
 #2.1 - FIELD CROPS DATA CLEANING
@@ -93,7 +93,7 @@ fuzzy_fruit_land = fruit_land
 fuzzy_fruit_land['crop'] = fuzzmatch
 fruit_table = pd.merge(left=fruit_table, right = fuzzy_fruit_land, left_on = 'crop', right_on = 'crop')
 fruit_table.ix[:, 1:3] = fruit_table.ix[:, 1:3].astype(float) #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-fruit_table['SWBC yield'] = ((fruit_table['tonnes']/fruit_table['hectares']) * fruit_table['value'])
+fruit_table['SWBC yield'] = (((fruit_table['tonnes']/fruit_table['hectares'])*.25) * fruit_table['value']) #includes 25% reduction for the SWBC specific yield
 
 
 #2.3 - VEG CROPS DATA CLEANING
@@ -136,11 +136,11 @@ mushcrops = mushcrops.drop(['Ref_Date'], axis = 1) #delete reference date column
 mushcrops.columns = ['GEO', 'unit', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
 area = mushcrops.loc[mushcrops['unit']== 'Area beds, total (square feet x 1,000)']
 tons = mushcrops.loc[mushcrops['unit']== 'Production (fresh and processed), total (tons)']
-mush_table = pd.merge(left=area, right = tons, left_on = 'GEO', right_on = 'GEO').drop(['GEO', 'unit_x', 'unit_y'], axis = 1)
-mush_table.columns = ['area', 'tons'] #name first column header 'commodity' and name second column header 'kg/person'
-mush_table.ix[:, 0] = mush_table.ix[:, 0].astype(float)*tons_to_tonnes #tons_to_tonnes = 1.10231
-mush_table.ix[:, 1] = mush_table.ix[:, 1].astype(float)*thousand_sq_ft_to_hectare #thousand_sq_ft_to_hectare = (107639/1000) = 107.639
-mush_table.columns = ['hectares', 'tonnes'] #name first column header 'commodity' and name second column header 'kg/person'
+mush_table = pd.merge(left=area, right = tons, left_on = 'GEO', right_on = 'GEO').drop(['unit_x', 'unit_y'], axis = 1)
+mush_table['GEO'] = 'Mushrooms'
+mush_table.ix[:, 1] = mush_table.ix[:, 1].astype(float)*tons_to_tonnes #tons_to_tonnes = 1.10231
+mush_table.ix[:, 2] = mush_table.ix[:, 2].astype(float)*thousand_sq_ft_to_hectare #thousand_sq_ft_to_hectare = (107639/1000) = 107.639
+mush_table.columns = ['crop', 'hectares', 'tonnes'] #name first column header 'commodity' and name second column header 'kg/person'
 mush_table['yield'] = mush_table['tonnes']/mush_table['hectares']
 #NEED TO FIND SWBC AREA DATA
 
@@ -172,15 +172,40 @@ green_table.ix[:, 1] = green_table.ix[:, 1].astype(float)*kg_to_tonne #*1000
 green_table.ix[:, 2] = green_table.ix[:, 2].astype(float)*sq_m_to_hectare #*1000
 green_table.columns = ['crop', 'hectares', 'tonnes'] #name first column header 'commodity' and name second column header 'kg/person'
 green_table['yield'] = green_table['tonnes']/green_table['hectares']
-#NOT IN METRIC TONNES!!!! IN HUNDRED WEIGHT X 1000 AND ACRES
+#NEED TO FIND SWBC AREA DATA
+
+frames = [green_table, mush_table]
+greenmush_table = pd.concat(frames)
+greenmush = pd.read_csv('cansim0040217.2011.csv', header = 0)
+greenmush.ix[:,4] = greenmush.ix[:,4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+greenmush = greenmush.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0).groupby('GREEN', as_index=False).sum()  #delete reference date column
+greenmush.columns = ['crop','hectares'] 
+greenmush['hectares'] = greenmush['hectares']*sq_m_to_hectare
 
 
-#CONVERSTION FACTORS
-tons_to_tonnes = 1.10231
-acres_to_hectares = 2.47105
-thousand_sq_ft_to_hectare = (107639/1000)
-
-
+gm_land = greenmush_table['yield']
+for i in range(len(gm_land)):
+    if 'greenhouse' in green_table['crop'][i]:
+        gm_land[i] = greenmush['hectares'][0]/3
+    if 'mushroom' in green_table['crop'][i]:
+        gm_land[i] = greenmush['hectares'][1]
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 # 1 -- Convert units
 # 2 -- Calculate yield
 # 3 -- Merge tables using fuzzy string matching
