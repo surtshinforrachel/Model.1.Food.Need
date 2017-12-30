@@ -189,31 +189,13 @@ for i in range(len(gm_land)):
         gm_land[i] = greenmush['hectares'][0]/3
     if 'mushroom' in green_table['crop'][i]:
         gm_land[i] = greenmush['hectares'][1]
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
         
         
         
 # 1 -- Convert units
 # 2 -- Calculate yield
 # 3 -- Merge tables using fuzzy string matching
-fuzzmatch2 =  fuzz.token_set_ratio('Green peaz', veg_land2)
-fuzzmatch3 =  process.extract('Green peaz', veg_land2)
-fuzzmatch4 =  fuzz.token_set_ratio('Cucumbers and gherkins', veg_land2)
-fuzzmatch6 =  process.extractOne('Cucumbers and gherkins', veg_land2, score_cutoff = 95)
-mostfuzzy = fuzzmatch6
 #mostfuzzy = fuzzmatch6[0]
 
 # 4 -- Multiply by SWBC area for commodity
