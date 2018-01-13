@@ -24,12 +24,12 @@ sq_m_to_hectare = 10000
 
 
 #2.1 - FIELD CROPS DATA CLEANING
-fieldcrops = pd.read_csv('cansim0010010.2014.csv', header = 0)
+fieldcrops = pd.read_csv('cansim0010017.2014.csv', header = 0)
 fieldcrops = fieldcrops.drop(['Ref_Date'], axis = 1) #delete reference date column
 fieldcrops.columns = ['geo', 'unit', 'type', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
 #cropunits = np.unique(fieldcrops[['unit']].values)
 fieldcrops = pd.DataFrame(data=fieldcrops)
-hectares =fieldcrops.loc[fieldcrops['unit']== 'Harvested area (hectares)']
+hectares =fieldcrops.loc[fieldcrops['unit']== 'Seeded area (hectares)']
 tonnes =fieldcrops.loc[fieldcrops['unit']== 'Production (metric tonnes)']
 field_table = pd.merge(left=hectares, right = tonnes, left_on = 'type', right_on = 'type')
 field_table = field_table.drop(['geo_y', 'geo_x', 'unit_x', 'unit_y'], axis = 1).reset_index(drop=True) #delete first three columns
@@ -43,6 +43,8 @@ field_land = field_land.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0) #del
 field_land = field_land.groupby('CROPS', as_index=False).sum() 
 field_land.columns = ['crop','value'] #name first column header 'commodity' and name second column header 'kg/person'
 field_land['crop'].loc[field_land['crop']== 'Total corn'] = 'Corn'
+field_land['crop'].loc[field_land['crop']== 'Total wheat'] = 'Wheat, all'
+
 #FUZZY STRING MATCHING
 field_land2 = field_land['crop']
 field_crops2 = field_table['crop']
@@ -109,10 +111,11 @@ veg_table.ix[:, 1:3] = veg_table.ix[:, 1:3].apply(pd.to_numeric, errors = 'coerc
 veg_table = veg_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
 veg_table['crop'].loc[veg_table['crop']== 'Beans, green or wax'] = 'Beans, green and wax'
 veg_table['crop'].loc[(veg_table['crop']== 'Cabbage, Chinese (bok-choy, napa, etcetera)') | (veg_table['crop']== 'Cabbage, regular')] = 'Repeated crop'
-#ASPARAGAS!
 #FUZZY STRING MATCHING
 veg_land = pd.read_csv('cansim0040215.2011.csv', header = 0)
 veg_land = veg_land.drop(['Ref_Date', 'GEO', 'UOM'], axis = 1) #delete reference date column
+veg_land['VEG'].loc[(veg_land['VEG']== 'Asparagus, producing') | (veg_land['VEG']== 'Asparagus, non-producing')] = 'Asparagus'
+veg_land = veg_land.groupby(veg_land['VEG'], as_index=False).sum() #COMBINE ASPARAGAS
 veg_table_2 = pd.merge(left=veg_table, right = veg_land, left_on = 'crop', right_on = 'VEG', how = 'outer')
 veg_land2 = veg_land['VEG']
 veg_crop2 = veg_table['crop']
@@ -137,12 +140,20 @@ mushcrops.columns = ['GEO', 'unit', 'value'] #name first column header 'commodit
 area = mushcrops.loc[mushcrops['unit']== 'Area beds, total (square feet x 1,000)']
 tons = mushcrops.loc[mushcrops['unit']== 'Production (fresh and processed), total (tons)']
 mush_table = pd.merge(left=area, right = tons, left_on = 'GEO', right_on = 'GEO').drop(['unit_x', 'unit_y'], axis = 1)
-mush_table['GEO'] = 'Mushrooms'
+mush_table['GEO'] = 'mushrooms'
 mush_table.ix[:, 1] = mush_table.ix[:, 1].astype(float)*tons_to_tonnes #tons_to_tonnes = 1.10231
 mush_table.ix[:, 2] = mush_table.ix[:, 2].astype(float)*thousand_sq_ft_to_hectare #thousand_sq_ft_to_hectare = (107639/1000) = 107.639
 mush_table.columns = ['crop', 'hectares', 'tonnes'] #name first column header 'commodity' and name second column header 'kg/person'
-mush_table['yield'] = mush_table['tonnes']/mush_table['hectares']
-#NEED TO FIND SWBC AREA DATA
+
+#SWBC AREA DATA
+greenmush_land = pd.read_csv('cansim0040217.2011.csv', header = 0)
+greenmush_land.ix[:,4] = greenmush_land.ix[:,4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+greenmush_land = greenmush_land.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0).groupby('GREEN', as_index=False).sum()  #delete reference date column
+greenmush_land.columns = ['crop','hectares'] 
+greenmush_land['hectares'] = greenmush_land['hectares']*sq_m_to_hectare
+mush_table['value'] = int(greenmush_land['hectares'].loc[greenmush_land['crop']== 'Total growing area for mushrooms'])
+mush_table['SWBC yield'] = (mush_table['tonnes']/mush_table['hectares'])*mush_table['value']
+
 
 #2.5 - POTATO DATA CLEANING
 potcrops = pd.read_csv('cansim0010014.2014.csv', header = 0)
@@ -176,11 +187,7 @@ green_table['yield'] = green_table['tonnes']/green_table['hectares']
 
 frames = [green_table, mush_table]
 greenmush_table = pd.concat(frames)
-greenmush = pd.read_csv('cansim0040217.2011.csv', header = 0)
-greenmush.ix[:,4] = greenmush.ix[:,4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-greenmush = greenmush.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0).groupby('GREEN', as_index=False).sum()  #delete reference date column
-greenmush.columns = ['crop','hectares'] 
-greenmush['hectares'] = greenmush['hectares']*sq_m_to_hectare
+
 
 
 gm_land = greenmush_table['yield']
