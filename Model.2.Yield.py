@@ -36,28 +36,30 @@ field_table = field_table.drop(['geo_y', 'geo_x', 'unit_x', 'unit_y'], axis = 1)
 field_table.ix[:, 1:2] = field_table.ix[:, 1:2].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 field_table = field_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
 field_table.columns = ['crop', 'hectares', 'tonnes']
+field_table['crop'].loc[field_table['crop']== 'Tame hay'] = 'Tame hay only'
+field_table['crop'].loc[field_table['crop']== 'Wheat, all'] = 'Total wheat'
 
+#SWBC LAND AREA
 field_land = pd.read_csv('cansim0040213.2011.2.csv', header = 0)
 field_land.ix[:, 4] = field_land.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 field_land = field_land.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0) #delete reference date column
 field_land = field_land.groupby('CROPS', as_index=False).sum() 
 field_land.columns = ['crop','value'] #name first column header 'commodity' and name second column header 'kg/person'
-field_land['crop'].loc[field_land['crop']== 'Total corn'] = 'Corn'
-field_land['crop'].loc[field_land['crop']== 'Total wheat'] = 'Wheat, all'
+#field_land['crop'].loc[field_land['crop']== 'Total corn'] = 'Corn'
 
 #FUZZY STRING MATCHING
 field_land2 = field_land['crop']
 field_crops2 = field_table['crop']
-fuzzmatch = field_land2
-for i in range(len(field_land2)):
-    match = process.extractOne(field_land2[i], field_crops2, score_cutoff = 85)
+fuzzmatch = field_crops2
+for i in range(len(field_crops2)):
+    match = process.extractOne(field_crops2[i], field_land2, score_cutoff = 90)
     if match is None:
         fuzzmatch[i] = match
     else:
         fuzzmatch[i] = match[0]
-fuzzy_field_land = field_land
-fuzzy_field_land['crop'] = fuzzmatch
-field_table = pd.merge(left=field_table, right = fuzzy_field_land, left_on = 'crop', right_on = 'crop')
+print(fuzzmatch)
+field_table['crop'] = fuzzmatch
+field_table = pd.merge(left=field_table, right = field_land, left_on = 'crop', right_on = 'crop')
 field_table.ix[:, 1:3] = field_table.ix[:, 1:3].astype(float) #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 field_table['SWBC yield'] = ((field_table['tonnes']/field_table['hectares']) * field_table['value'])
 
@@ -166,8 +168,15 @@ pot_table.columns = ['acres', 'hundredweight'] #name first column header 'commod
 pot_table.ix[:, 0] = pot_table.ix[:, 0].astype(float)*acres_to_hectares #acres_to_hectares = 2.47105
 pot_table.ix[:, 1] = pot_table.ix[:, 1].astype(float)*hundred_weight_to_tonne #hundred_weight_to_tonne = (19.6841/1000) = 0.0196841
 pot_table.columns = ['hectares', 'tonnes'] #name first column header 'commodity' and name second column header 'kg/person'
-pot_table['yield'] = pot_table['tonnes']/pot_table['hectares']
-#NEED TO FIND SWBC AREA DATA
+#SWBC AREA DATA
+pot_land = pd.read_csv('cansim0040213.2011.2.csv', header = 0)
+pot_land.ix[:, 4] = pot_land.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+pot_land = pot_land.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0) #delete reference date column
+pot_land = pot_land.groupby('CROPS', as_index=False).sum() 
+pot_land.columns = ['crop','value'] 
+pot_table['value'] = int(pot_land['value'].loc[pot_land['crop']== 'Potatoes'])
+pot_table['SWBC yield'] = (pot_table['tonnes']/pot_table['hectares'])*pot_table['value']
+
 
 #2.6 - GREENHOUSE DATA CLEANING
 greencrops = pd.read_csv('cansim0010006.2014.csv', header = 0)
@@ -182,29 +191,16 @@ green_table = green_table.dropna(axis=0, how='any').reset_index(drop=True)  #if 
 green_table.ix[:, 1] = green_table.ix[:, 1].astype(float)*kg_to_tonne #*1000
 green_table.ix[:, 2] = green_table.ix[:, 2].astype(float)*sq_m_to_hectare #*1000
 green_table.columns = ['crop', 'hectares', 'tonnes'] #name first column header 'commodity' and name second column header 'kg/person'
-green_table['yield'] = green_table['tonnes']/green_table['hectares']
-#NEED TO FIND SWBC AREA DATA
-
-frames = [green_table, mush_table]
-greenmush_table = pd.concat(frames)
-
-
-
-gm_land = greenmush_table['yield']
-for i in range(len(gm_land)):
-    if 'greenhouse' in green_table['crop'][i]:
-        gm_land[i] = greenmush['hectares'][0]/3
-    if 'mushroom' in green_table['crop'][i]:
-        gm_land[i] = greenmush['hectares'][1]
-
-        
-        
-        
+#SWBC AREA DATA
+for i in range(len(green_table['value'])):
+    green_table['value'][i] = int(greenmush_land['hectares'].loc[greenmush_land['crop']== 'Greenhouse vegetables'] / 3)
+green_table['SWBC yield'] = (green_table['tonnes']/green_table['hectares'])*green_table['value'] 
+     
 # 1 -- Convert units
 # 2 -- Calculate yield
 # 3 -- Merge tables using fuzzy string matching
 #mostfuzzy = fuzzmatch6[0]
-
 # 4 -- Multiply by SWBC area for commodity
+# 5 -- Combine all tables
 
 
