@@ -8,10 +8,6 @@ Created on Fri Nov 17 12:00:22 2017
 #YIELD DATA
 
 import pandas as pd
-import numpy as np
-import difflib
-import fuzzywuzzy
-from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
 #CONVERSTION FACTORS
@@ -57,7 +53,6 @@ for i in range(len(field_crops2)):
         fuzzmatch[i] = match
     else:
         fuzzmatch[i] = match[0]
-print(fuzzmatch)
 field_table['crop'] = fuzzmatch
 field_table = pd.merge(left=field_table, right = field_land, left_on = 'crop', right_on = 'crop')
 field_table.ix[:, 1:3] = field_table.ix[:, 1:3].astype(float) #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
@@ -118,6 +113,7 @@ veg_land = pd.read_csv('cansim0040215.2011.csv', header = 0)
 veg_land = veg_land.drop(['Ref_Date', 'GEO', 'UOM'], axis = 1) #delete reference date column
 veg_land['VEG'].loc[(veg_land['VEG']== 'Asparagus, producing') | (veg_land['VEG']== 'Asparagus, non-producing')] = 'Asparagus'
 veg_land = veg_land.groupby(veg_land['VEG'], as_index=False).sum() #COMBINE ASPARAGAS
+veg_land.columns = ['VEG', 'value']
 veg_table_2 = pd.merge(left=veg_table, right = veg_land, left_on = 'crop', right_on = 'VEG', how = 'outer')
 veg_land2 = veg_land['VEG']
 veg_crop2 = veg_table['crop']
@@ -132,7 +128,7 @@ veg_table['crop'] = fuzzmatch
 veg_table_2fuzz = pd.merge(left=veg_table, right = veg_land, left_on = 'crop', right_on = 'VEG', how = 'inner')
 veg_table_2fuzz = veg_table_2fuzz.drop(['VEG'], axis = 1) #delete reference date column
 veg_table_2fuzz.ix[:, 1:3] = veg_table_2fuzz.ix[:, 1:3].astype(float) #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-veg_table_2fuzz['SWBC yield'] = ((veg_table_2fuzz['tonnes']/veg_table_2fuzz['hectares']) * veg_table_2fuzz['Value'])
+veg_table_2fuzz['SWBC yield'] = ((veg_table_2fuzz['tonnes']/veg_table_2fuzz['hectares']) * veg_table_2fuzz['value'])
 
 
 #2.4 - MUSHROOM DATA CLEANING
@@ -142,7 +138,7 @@ mushcrops.columns = ['GEO', 'unit', 'value'] #name first column header 'commodit
 area = mushcrops.loc[mushcrops['unit']== 'Area beds, total (square feet x 1,000)']
 tons = mushcrops.loc[mushcrops['unit']== 'Production (fresh and processed), total (tons)']
 mush_table = pd.merge(left=area, right = tons, left_on = 'GEO', right_on = 'GEO').drop(['unit_x', 'unit_y'], axis = 1)
-mush_table['GEO'] = 'mushrooms'
+mush_table['GEO'] = 'Mushrooms'
 mush_table.ix[:, 1] = mush_table.ix[:, 1].astype(float)*tons_to_tonnes #tons_to_tonnes = 1.10231
 mush_table.ix[:, 2] = mush_table.ix[:, 2].astype(float)*thousand_sq_ft_to_hectare #thousand_sq_ft_to_hectare = (107639/1000) = 107.639
 mush_table.columns = ['crop', 'hectares', 'tonnes'] #name first column header 'commodity' and name second column header 'kg/person'
@@ -164,10 +160,14 @@ potcrops.columns = ['GEO', 'unit', 'value'] #name first column header 'commodity
 area = potcrops.loc[potcrops['unit']== 'Seeded area, potatoes (acres)']
 hundredweight = potcrops.loc[potcrops['unit']== 'Production, potatoes (hundredweight x 1,000)']
 pot_table = pd.merge(left=area, right = hundredweight, left_on = 'GEO', right_on = 'GEO').drop(['GEO', 'unit_x', 'unit_y'], axis = 1)
-pot_table.columns = ['acres', 'hundredweight'] #name first column header 'commodity' and name second column header 'kg/person'
+#pot_table.columns = ['acres', 'hundredweight'] #name first column header 'commodity' and name second column header 'kg/person'
 pot_table.ix[:, 0] = pot_table.ix[:, 0].astype(float)*acres_to_hectares #acres_to_hectares = 2.47105
 pot_table.ix[:, 1] = pot_table.ix[:, 1].astype(float)*hundred_weight_to_tonne #hundred_weight_to_tonne = (19.6841/1000) = 0.0196841
 pot_table.columns = ['hectares', 'tonnes'] #name first column header 'commodity' and name second column header 'kg/person'
+pot_table['crop'] = 'Potatoes'
+cols = ['crop' , 'hectares', 'tonnes']
+pot_table = pot_table[cols]
+
 #SWBC AREA DATA
 pot_land = pd.read_csv('cansim0040213.2011.2.csv', header = 0)
 pot_land.ix[:, 4] = pot_land.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
@@ -191,6 +191,7 @@ green_table = green_table.dropna(axis=0, how='any').reset_index(drop=True)  #if 
 green_table.ix[:, 1] = green_table.ix[:, 1].astype(float)*kg_to_tonne #*1000
 green_table.ix[:, 2] = green_table.ix[:, 2].astype(float)*sq_m_to_hectare #*1000
 green_table.columns = ['crop', 'hectares', 'tonnes'] #name first column header 'commodity' and name second column header 'kg/person'
+green_table['value'] = green_table['tonnes']
 #SWBC AREA DATA
 for i in range(len(green_table['value'])):
     green_table['value'][i] = int(greenmush_land['hectares'].loc[greenmush_land['crop']== 'Greenhouse vegetables'] / 3)
@@ -203,4 +204,7 @@ green_table['SWBC yield'] = (green_table['tonnes']/green_table['hectares'])*gree
 # 4 -- Multiply by SWBC area for commodity
 # 5 -- Combine all tables
 
+
+frames = [field_table, fruit_table, veg_table_2fuzz, mush_table, pot_table, green_table]
+yield_table = pd.concat(frames, ignore_index = True)
 
