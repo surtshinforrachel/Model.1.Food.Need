@@ -22,7 +22,45 @@ head_livestock = head_livestock.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value
 head_livestock = head_livestock.groupby('LIVE', as_index=False).sum() 
 head_livestock.columns = ['livestock', 'head']
 
+feedreqs = pd.read_csv('feedrequirements.csv', header = 0)
 
 
+#2.1 - FIELD CROPS DATA CLEANING
+fieldcrops = pd.read_csv('cansim0010017.dbloading.csv', header = 0)
+#fieldcrops2 = pd.read_csv('cansim0010017.tascol.csv', header = 0)
+
+fieldcrops.index = fieldcrops['Ref_Date']
+fieldcrops = fieldcrops.drop(['Ref_Date'], axis = 1) #delete reference date column
+
+fieldcrops.TYP[1990]
+
+#IF NO DATA FOR BC, USE DATA FOR CANADA
+
+
+
+
+
+#fieldcrops = fieldcrops.drop(['Ref_Date'], axis = 1) #delete reference date column
+#fieldcrops.columns = ['geo', 'unit', 'type', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
+##cropunits = np.unique(fieldcrops[['unit']].values)
+#fieldcrops = pd.DataFrame(data=fieldcrops)
+#hectares =fieldcrops.loc[fieldcrops['unit']== 'Seeded area (hectares)']
+#tonnes =fieldcrops.loc[fieldcrops['unit']== 'Production (metric tonnes)']
+#field_table = pd.merge(left=hectares, right = tonnes, left_on = 'type', right_on = 'type')
+#field_table = field_table.drop(['geo_y', 'geo_x', 'unit_x', 'unit_y'], axis = 1).reset_index(drop=True) #delete first three columns
+#field_table.ix[:, 1:2] = field_table.ix[:, 1:2].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+#field_table = field_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
+#field_table.columns = ['crop', 'hectares', 'tonnes']
+#field_table['crop'].loc[field_table['crop']== 'Tame hay'] = 'Tame hay only'
+#field_table['crop'].loc[field_table['crop']== 'Wheat, all'] = 'Total wheat'
+#
+##SWBC LAND AREA
+#field_land = pd.read_csv('cansim0040213.2011.2.csv', header = 0)
+#field_land.ix[:, 4] = field_land.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+#field_land = field_land.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0) #delete reference date column
+#field_land = field_land.groupby('CROPS', as_index=False).sum() 
+#field_land.columns = ['crop','value'] #name first column header 'commodity' and name second column header 'kg/person'
+##field_land['crop'].loc[field_land['crop']== 'Total corn'] = 'Corn'
+#
 
 
