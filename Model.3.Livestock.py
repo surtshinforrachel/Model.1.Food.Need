@@ -28,18 +28,38 @@ feedreqs = pd.read_csv('feedrequirements.csv', header = 0)
 #2.1 - FIELD CROPS DATA CLEANING
 fieldcrops = pd.read_csv('cansim0010017.dbloading.csv', header = 0)
 #fieldcrops2 = pd.read_csv('cansim0010017.tascol.csv', header = 0)
+#fieldcrops.index = fieldcrops['Ref_Date']
+#fieldcrops = fieldcrops.drop(['Ref_Date'], axis = 1) #delete reference date column
+fieldcrops.ix[:, 4] = fieldcrops.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+fieldcrops = fieldcrops.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
+fieldcrops.columns = ['year', 'geo', 'unit', 'crop', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
 
-fieldcrops.index = fieldcrops['Ref_Date']
-fieldcrops = fieldcrops.drop(['Ref_Date'], axis = 1) #delete reference date column
+fieldcrops_pivot = fieldcrops.pivot_table(index = 'year', columns = 'unit', values = 'value')
 
-fieldcrops.TYP[1990]
+#
+#stacked = fieldcrops.stack()
+#unstacked = stacked.unstack('unit')
+#unstacked = fieldcrops.stack().unstack('unit')
 
+g = fieldcrops.groupby(['geo', 'unit', 'crop'])
+for geo, geo_fieldcrops in g:
+    print(geo)
+    print(geo_fieldcrops)
+        
+g2 = g.pivot_table(index = 'year', columns = 'crop', values = 'value')    
+    
+r = fieldcrops.groupby('unit')['value'].mean()
+print(r)
+#fieldcrops.stack().unstack('GEO')
+#p = fieldcrops.pivot(columns='geo', values='value')
+bc_yield = fieldcrops.loc[fieldcrops['geo']== 'British Columbia']
+#bc_yield = bc_yield.groupby(['year', 'crop'])
+canada_yield = fieldcrops.loc[fieldcrops['geo']== 'Canada']
+bc_yield = bc_yield.pivot(columns='geo', values='value')
+#mean_yield = fieldcrops.groupby([ 'year' ,'crop'], as_index=False)
+#print(fieldcrops.TYP[1990])
+#means = df.groubby(industries).mean()
 #IF NO DATA FOR BC, USE DATA FOR CANADA
-
-
-
-
-
 #fieldcrops = fieldcrops.drop(['Ref_Date'], axis = 1) #delete reference date column
 #fieldcrops.columns = ['geo', 'unit', 'type', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
 ##cropunits = np.unique(fieldcrops[['unit']].values)
