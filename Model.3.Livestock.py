@@ -69,26 +69,21 @@ for i in range(len(final_yields)):
         final_yields['yields used'][i] = final_yields['Canada yield'][i]
 
 
-
-
-#- SOYBEAN MEAL     
-#- CANOLA MEAL
- 
 oilandmeal = pd.read_csv('cansim0010010.csv', header = 0)
 oilandmeal.index = pd.to_datetime(oilandmeal['Ref_Date'])
 oilandmeal = oilandmeal.drop(['Ref_Date', 'GEO'], axis = 1)
-
-
-#CAN GROUP BY INDEX YEAR BUT CANT SEEM TO HAVE THE VALUES....
-oilandmealg = oilandmeal.groupby([(oilandmeal.index.year)]).sum()
+oilandmealg = oilandmeal.groupby([(oilandmeal.index.year), 'PRO', 'COM']).sum()
 oilandmeal = pd.DataFrame(oilandmealg)
-#r = fieldcrops.groupby('unit')['value'].mean()
-#oilandmeal['1971-01-01':'1981-01-01'] #INDEXING
+oilandmeal.columns = ['Value']
 
-soybeans = oilandmeal.loc[oilandmeal['COM']== 'Soybeans']
-canola = oilandmeal.loc[oilandmeal['COM']== 'Canola (rapeseed)']
+c_seed = oilandmeal.Value.ix[2011, 'Seed crushed', 'Canola (rapeseed)', 'Value']
+#c_oil = oilandmeal.Value.ix[2011, 'Oil produced', 'Canola (rapeseed)', 'Value']
+c_meal = oilandmeal.Value.ix[2011, 'Meal produced', 'Canola (rapeseed)', 'Value']
+canolamealyield = ((c_meal/c_seed)*final_yields['yields used'].ix['Canola'])
 
-
+s_seed = [oilandmeal.Value.ix[1981, 'Seed crushed', 'Soybeans', 'Value'], oilandmeal.Value.ix[1982, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1983, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1984, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1985, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1986, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1987, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1988, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1989, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1990, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1991, 'Seed crushed', 'Soybeans', 'Value']]
+s_meal = [oilandmeal.Value.ix[1981, 'Meal produced', 'Soybeans', 'Value'], oilandmeal.Value.ix[1982, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1983, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1984, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1985, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1986, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1987, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1988, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1989, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1990, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1991, 'Meal produced', 'Soybeans', 'Value']]
+soybeanmealyield = ((np.average(s_meal)/np.average(s_seed))*final_yields['yields used'].ix['Soybeans'])
 
 
 
