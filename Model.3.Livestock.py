@@ -12,11 +12,11 @@ import numpy as np
 import math
 
 feedreqs = pd.read_csv('feedrequirements.csv', header = 0)
-feedreqs = feedreqs.index = feedreqs['Livestock Type']
-feedreqs = feedreqs.drop(['Livestock Type'])
-#feedreqs = feedreqs.transpose()
-#feedreqs.columns = feedreqs.iloc[0]
-#feedreqs = feedreqs.reindex(feedreqs.index.drop('Livestock Type'))
+#feedreqs.index = feedreqs['Livestock Type']
+#feedreqs = feedreqs.drop(['Livestock Type'], axis =1)
+feedreqs = feedreqs.transpose()
+feedreqs.columns = feedreqs.iloc[0]
+feedreqs = feedreqs.reindex(feedreqs.index.drop('Livestock Type'))
 
 #2.1 - FIELD CROPS DATA CLEANING
 fieldcrops = pd.read_csv('cansim0010017.dbloading.csv', header = 0)
@@ -71,28 +71,38 @@ canolamealyield = ((c_meal/c_seed)*final_yields['yields used'].ix['Canola'])    
     
 soybeanmealyield = 2.005 #2002-2011 average meal/hectare seeded [(from 'Yields - Historic, Crops_2015.07.20.xlsx' 'Soybeans' workbook
 pastureyield = 4 #Average SC, SL, PR - 4 tonnes DM/Ha (Wallapak says just use this one)
-yieldadditions = pd.DataFrame({'BC yield': ['0', '0', '0'], 'Canada yield': ['0', '0', '0'], 'yields used': [canolamealyield, soybeanmealyield, pastureyield]}, index=['Canola meal', 'Soybean meal', 'Pasture'])
+yieldadditions = pd.DataFrame({'BC yield': ['0', '0', '0'], 'Canada yield': ['0', '0', '0'], 'yields used': [canolamealyield, soybeanmealyield, pastureyield]}, index=['Canola Meal', 'Soybean Meal', 'Pasture'])
 final_yields = final_yields.append(yieldadditions)
-#SILAGE = 'Corn, fodder'
 
 as_list = final_yields.index.tolist()
 idx1 = as_list.index('Wheat, all')
 idx2 = as_list.index('Corn for grain')
 idx3 = as_list.index('Peas, dry')
-idx4 = as_list.index('Corn, fodder')
+idx4 = as_list.index('Tame hay')
+idx5 = as_list.index('Corn, fodder') #SILAGE = 'Corn, fodder'
 as_list[idx1] = 'Wheat'
 as_list[idx2] = 'Grain Corn'
 as_list[idx3] = 'Dry Peas'
-as_list[idx4] = 'Silage'
+as_list[idx4] = 'Hay'
+as_list[idx5] = 'Silage'
 final_yields.index = as_list
 
-
-landreqperanimal = pd.DataFrame(feedreqs)
-commodity = (landreqperanimal.columns.values)
-for i in range(len(commodity)):
-    crop = 
+feedreqs = feedreqs.join(final_yields['yields used'])    
+feedreqs = feedreqs.transpose()
+trytry = feedreqs.ix[0]
 
 #2 - Feed Reqs * Feed Crop Yield = Land Req Per Animal
+landreqperanimal = pd.DataFrame(feedreqs)
+practice = landreqperanimal.ix[1]
+
+
+commodity = (landreqperanimal.columns.values)
+print(commodity)
+for i in range(len(commodity)):
+    = (np.array(landreqperanimal[crop])*final_yields['yields used'].loc[final_yields.index == crop])
+    landreqperanimal[][i] = 
+print(crop)
+    
 
 #3 - Create Commodity/Animal table
 
