@@ -11,27 +11,15 @@ import pandas as pd
 import numpy as np
 import math
 
-#HEAD OF LIVESTOCK IN SWBC 
-#cows = pd.read_csv('cansim0040221.2011.csv', header = 0)
-#sheep_lambs = pd.read_csv('cansim0040222.2011.csv', header = 0)
-#poultry = pd.read_csv('cansim0040225.2011.csv', header = 0)
-#pigs = pd.read_csv('cansim0040223.2011.csv', header = 0)
-#pigs.columns = ['Ref_Date', 'GEO', 'LIVE', 'UOM', 'Value']
-#frames = [cows, sheep_lambs, poultry, pigs]
-#head_livestock = pd.concat(frames, ignore_index = True)
-#head_livestock.ix[:, 4] = head_livestock.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-#head_livestock = head_livestock.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0) #delete reference date column
-#head_livestock = head_livestock.groupby('LIVE', as_index=False).sum() 
-#head_livestock.columns = ['livestock', 'head']
-
 feedreqs = pd.read_csv('feedrequirements.csv', header = 0)
-
+feedreqs = feedreqs.index = feedreqs['Livestock Type']
+feedreqs = feedreqs.drop(['Livestock Type'])
+#feedreqs = feedreqs.transpose()
+#feedreqs.columns = feedreqs.iloc[0]
+#feedreqs = feedreqs.reindex(feedreqs.index.drop('Livestock Type'))
 
 #2.1 - FIELD CROPS DATA CLEANING
 fieldcrops = pd.read_csv('cansim0010017.dbloading.csv', header = 0)
-#fieldcrops2 = pd.read_csv('cansim0010017.tascol.csv', header = 0)
-#fieldcrops.index = fieldcrops['Ref_Date']
-#fieldcrops = fieldcrops.drop(['Ref_Date'], axis = 1) #delete reference date column
 fieldcrops.ix[:, 4] = fieldcrops.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 fieldcrops.columns = ['year', 'geo', 'unit', 'crop', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
 
@@ -79,11 +67,36 @@ oilandmeal.columns = ['Value']
 c_seed = oilandmeal.Value.ix[2011, 'Seed crushed', 'Canola (rapeseed)', 'Value']
 #c_oil = oilandmeal.Value.ix[2011, 'Oil produced', 'Canola (rapeseed)', 'Value']
 c_meal = oilandmeal.Value.ix[2011, 'Meal produced', 'Canola (rapeseed)', 'Value']
-canolamealyield = ((c_meal/c_seed)*final_yields['yields used'].ix['Canola'])
+canolamealyield = ((c_meal/c_seed)*final_yields['yields used'].ix['Canola'])    #CHECK THIS SHIT!!!
+    
+soybeanmealyield = 2.005 #2002-2011 average meal/hectare seeded [(from 'Yields - Historic, Crops_2015.07.20.xlsx' 'Soybeans' workbook
+pastureyield = 4 #Average SC, SL, PR - 4 tonnes DM/Ha (Wallapak says just use this one)
+yieldadditions = pd.DataFrame({'BC yield': ['0', '0', '0'], 'Canada yield': ['0', '0', '0'], 'yields used': [canolamealyield, soybeanmealyield, pastureyield]}, index=['Canola meal', 'Soybean meal', 'Pasture'])
+final_yields = final_yields.append(yieldadditions)
+#SILAGE = 'Corn, fodder'
 
-s_seed = [oilandmeal.Value.ix[1981, 'Seed crushed', 'Soybeans', 'Value'], oilandmeal.Value.ix[1982, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1983, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1984, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1985, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1986, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1987, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1988, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1989, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1990, 'Seed crushed', 'Soybeans', 'Value'],oilandmeal.Value.ix[1991, 'Seed crushed', 'Soybeans', 'Value']]
-s_meal = [oilandmeal.Value.ix[1981, 'Meal produced', 'Soybeans', 'Value'], oilandmeal.Value.ix[1982, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1983, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1984, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1985, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1986, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1987, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1988, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1989, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1990, 'Meal produced', 'Soybeans', 'Value'],oilandmeal.Value.ix[1991, 'Meal produced', 'Soybeans', 'Value']]
-soybeanmealyield = ((np.average(s_meal)/np.average(s_seed))*final_yields['yields used'].ix['Soybeans'])
+as_list = final_yields.index.tolist()
+idx1 = as_list.index('Wheat, all')
+idx2 = as_list.index('Corn for grain')
+idx3 = as_list.index('Peas, dry')
+idx4 = as_list.index('Corn, fodder')
+as_list[idx1] = 'Wheat'
+as_list[idx2] = 'Grain Corn'
+as_list[idx3] = 'Dry Peas'
+as_list[idx4] = 'Silage'
+final_yields.index = as_list
+
+
+landreqperanimal = pd.DataFrame(feedreqs)
+commodity = (landreqperanimal.columns.values)
+for i in range(len(commodity)):
+    crop = 
+
+#2 - Feed Reqs * Feed Crop Yield = Land Req Per Animal
+
+#3 - Create Commodity/Animal table
+
+#4 - Land Req/Aninal * Commodity/Animal = Land Req/Commodity
 
 
 
@@ -91,9 +104,21 @@ soybeanmealyield = ((np.average(s_meal)/np.average(s_seed))*final_yields['yields
 
 
 
-       
-#- PASTURE, HAY, SILAGE
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=================== Junk, Treasures, Dead Ends ==================================================================================
 #oilandmeal.g = oilandmeal.groupby(oilandmeal.index.map(lambda x: x.year))
 #oilandmeal1 = oilandmeal.groupby(pd.TimeGrouper(freq='M'))
 
@@ -144,4 +169,15 @@ soybeanmealyield = ((np.average(s_meal)/np.average(s_seed))*final_yields['yields
 #means = df.groubby(industries).mean()
 #IF NO DATA FOR BC, USE DATA FOR CANADA
 
-
+#HEAD OF LIVESTOCK IN SWBC 
+#cows = pd.read_csv('cansim0040221.2011.csv', header = 0)
+#sheep_lambs = pd.read_csv('cansim0040222.2011.csv', header = 0)
+#poultry = pd.read_csv('cansim0040225.2011.csv', header = 0)
+#pigs = pd.read_csv('cansim0040223.2011.csv', header = 0)
+#pigs.columns = ['Ref_Date', 'GEO', 'LIVE', 'UOM', 'Value']
+#frames = [cows, sheep_lambs, poultry, pigs]
+#head_livestock = pd.concat(frames, ignore_index = True)
+#head_livestock.ix[:, 4] = head_livestock.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+#head_livestock = head_livestock.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0) #delete reference date column
+#head_livestock = head_livestock.groupby('LIVE', as_index=False).sum() 
+#head_livestock.columns = ['livestock', 'head']
