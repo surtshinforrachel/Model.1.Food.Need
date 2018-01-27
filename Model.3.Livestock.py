@@ -87,24 +87,17 @@ as_list[idx4] = 'Hay'
 as_list[idx5] = 'Silage'
 final_yields.index = as_list
 
+##2 - Feed Reqs * Feed Crop Yield = Land Req Per Animal
 feedreqs = feedreqs.join(final_yields['yields used'])    
 feedreqs = feedreqs.transpose()
-trytry = feedreqs.ix[0]
-
-#2 - Feed Reqs * Feed Crop Yield = Land Req Per Animal
-landreqperanimal = pd.DataFrame(feedreqs)
-practice = landreqperanimal.ix[1]
-
-
+landreqperanimal = pd.DataFrame.copy(feedreqs)
 commodity = (landreqperanimal.columns.values)
-print(commodity)
 for i in range(len(commodity)):
-    = (np.array(landreqperanimal[crop])*final_yields['yields used'].loc[final_yields.index == crop])
-    landreqperanimal[][i] = 
-print(crop)
-    
+    landreqperanimal[commodity[i]] = (landreqperanimal[commodity[i]].astype(float))*final_yields['yields used'].loc[commodity[i]]
+landreqperanimal = landreqperanimal.drop('yields used', axis =0)
 
 #3 - Create Commodity/Animal table
+
 
 #4 - Land Req/Aninal * Commodity/Animal = Land Req/Commodity
 
@@ -115,7 +108,9 @@ print(crop)
 
 
 
-
+#REVIEW
+    #MAKE UNTIS  CLEAR
+    #MAKE SURE that all the yields are actually what they are supposed to be
 
 
 
