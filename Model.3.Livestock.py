@@ -43,7 +43,7 @@ total_yield['Canada yield'] = (total_yield['Canada: Production (metric tonnes)']
 #total_yield = total_yield.set_index('year')
 
 ten_year_data = pd.DataFrame([])
-years = np.array([2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017])
+years = np.array([2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011])
 for i in range(10):
     frame = total_yield.loc[total_yield['year'] == years[i]]
     ten_year_data = ten_year_data.append(frame, ignore_index = True)
@@ -65,7 +65,6 @@ oilandmeal = pd.DataFrame(oilandmealg)
 oilandmeal.columns = ['Value']
 
 c_seed = oilandmeal.Value.ix[2011, 'Seed crushed', 'Canola (rapeseed)', 'Value']
-#c_oil = oilandmeal.Value.ix[2011, 'Oil produced', 'Canola (rapeseed)', 'Value']
 c_meal = oilandmeal.Value.ix[2011, 'Meal produced', 'Canola (rapeseed)', 'Value']
 canolamealyield = ((c_meal/c_seed)*final_yields['yields used'].ix['Canola'])    #CHECK THIS SHIT!!!
     
@@ -95,15 +94,103 @@ commodity = (landreqperanimal.columns.values)
 for i in range(len(commodity)):
     landreqperanimal[commodity[i]] = (landreqperanimal[commodity[i]].astype(float))*final_yields['yields used'].loc[commodity[i]]
 landreqperanimal = landreqperanimal.drop('yields used', axis =0)
+landreqperanimal['GrainHaySilage'] = landreqperanimal['Wheat'] + landreqperanimal['Oats'] + landreqperanimal['Barley'] + landreqperanimal['Grain Corn'] + landreqperanimal['Dry Peas'] + landreqperanimal['Soybean Meal'] + landreqperanimal['Canola Meal'] + landreqperanimal['Silage'] 
+
+
+
+
+
+
+
 
 #3 - Create Commodity/Animal table
 
 
 #4 - Land Req/Aninal * Commodity/Animal = Land Req/Commodity
+meatperanimal = pd.read_csv('meat_per_animal.csv', header = 0, index_col = 'Meat')
+milkeggsperanimal = pd.read_csv('milk&eggs_per_animal.csv', header = 0, index_col = 'Unit')
+barnarea = pd.read_csv('barnarea.csv', header = 0)
+barnarea.columns = ['livestock', 'barn area']
+beefpasturearea = ((((barnarea['barn area'].loc(barnarea['livestock'] == 'Beef - offspring')[1])*meatperanimal['Beef'].loc(meatperanimal['Meat'] == 'n (# offspring per breeding female/year)')[1]) + (barnarea['barn area'].loc(barnarea['livestock'] == 'Beef - breeder')[1]))/meatperanimal['Beef'].loc(meatperanimal['Meat'] == 'n (# offspring per breeding female/year)')[1])
+
+#(((barnarea['barn area'].loc(barnarea['livestock'] == 'Beef - offspring')[1])/12)*4)) 
+#print(beefbarnarea)
+
+hec_per_tonne = pd.read_csv('areapercommodity.csv', header = 0, index_col = 'Commodity')      
+     
+
+lamb_offspring_p = landreqperanimal.Pasture.ix['Slaughter lambs']
+lamb_breeder_p = landreqperanimal.Pasture.ix['Rams & Ewes']
+lamb_offspring_area_p = (((lamb_offspring_p*meatperanimal.Lamb.ix['noffspring']) + lamb_breeder_p)/meatperanimal.Lamb.ix['noffspring'])
+lamb_offitoff = meatperanimal.Lamb.ix['noffspring'] #1.5
+
+
+   
+             #MEAT   
+        
+feedlist = ['GrainHaySilage', 'Pasture', 'Hay']
+
+for feed in feedlist:        
+    beef_offspring_p = landreqperanimal.feed.ix['Slaughter calves']
+    beef_breeder_p = landreqperanimal.feed.ix['Beef cows']
+    beef_offspring_area_p = ((((beef_offspring_p*meatperanimal.noffspring.ix['Beef']) + beef_breeder_p)/meatperanimal.noffspring.ix['Beef']) + ((beef_offspring_p/12)*4))
+    beef_area = (beef_offspring_area_p)+(meatperanimal.Fr.ix['Beef']*beef_offspring_area_p) / (meatperanimal.Wo.ix['Beef'] + (meatperanimal.Fr.ix['Beef'] * meatperanimal.Wb.ix['Beef']))
+    hec_per_tonne.feed.ix['Beef'] = beef_area
+
+
+pork_offspring_p = landreqperanimal.Pasture.ix['Feeder pigs']
+pork_breeder_p = landreqperanimal.Pasture.ix['Sows & Bred Gilts']
+
+turkey_offspring_p = landreqperanimal.Pasture.ix['Turkeys']
+#turkey_breeder_p = landreqperanimal.Pasture.ix['NA']
+
+chicken_offspring_p = landreqperanimal.Pasture.ix['Broilers']
+#chicken_breeder_p = landreqperanimal.Pasture.ix['NA']
 
 
 
 
+
+
+
+
+
+
+#HAY
+beef_offspring_h = landreqperanimal.Hay.ix['Slaughter calves']
+beef_breeder_h = landreqperanimal.Hay.ix['Beef cows']      
+lamb_offspring_h = landreqperanimal.Hay.ix['Slaughter lambs']
+lamb_breeder_h = landreqperanimal.Hay.ix['Rams & Ewes']
+milk_offspring_h = (landreqperanimal.Hay.ix['Dairy calves < 1 yr'] +(1.2 * landreqperanimal.Hay.ix['Dairy Heifers > 1 yr']))
+milk_breeder_h = landreqperanimal.Hay.ix['Dairy cows']
+
+#GRAIN, HAY, SILAGE
+
+
+
+
+
+
+
+            #BARN AREA
+            
+            
+            
+            #MILK AND EGGS
+milk_offspring_p = (landreqperanimal.Pasture.ix['Dairy calves < 1 yr'] +(1.2 * landreqperanimal.Pasture.ix['Dairy Heifers > 1 yr']))
+milk_breeder_p = landreqperanimal.Pasture.ix['Dairy cows']
+
+
+
+
+
+
+
+
+
+commodities_list = ['beef', 'lamb', 'pork', 'turkey', 'chicken', 'milk', 'eggs']
+for i in range(len(commodities_list)):
+    barnarea
 
 
 
