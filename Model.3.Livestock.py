@@ -177,30 +177,45 @@ hec_per_tonne.Barn.ix['Chicken'] = (((chicken_rearingarea_barn + (meatperanimal.
 
 hec_per_tonne.Barn.ix['Milk'] = (((barnarea.ba.ix['Dairy cow']/milkeggsperanimal.Dairy.ix['N years of commodity production']) + barnarea.ba.ix['Dairy cow']) / milkeggsperanimal.Dairy.ix['Tonnes/commodity/animal/year'])
 
-hec_per_tonne.Barn.ix['Eggs'] = (((barnarea.ba.ix['Layer']/milkeggsperanimal.Eggs.ix['N years of commodity production']) + barnarea.ba.ix['Layer']) / milkeggsperanimal.Eggs.ix['Tonnes/commodity/animal/year'])
-print()
+hec_per_tonne.Barn.ix['Eggs'] = ((barnarea.ba.ix['Layer']+((barnarea.ba.ix['Layer']*milkeggsperanimal.Eggs.ix['Rearing period'])/milkeggsperanimal.Eggs.ix['N years of commodity production']))/milkeggsperanimal.Eggs.ix['Tonnes/commodity/animal/year'])
 
 
-             #MEAT   
-        
-feedlist = ['GrainHaySilage', 'Pasture', 'Hay']
-
-for feed in feedlist:        
-    beef_offspring_p = landreqperanimal.feed.ix['Slaughter calves']
-    beef_breeder_p = landreqperanimal.feed.ix['Beef cows']
-    beef_offspring_area_p = ((((beef_offspring_p*meatperanimal.noffspring.ix['Beef']) + beef_breeder_p)/meatperanimal.noffspring.ix['Beef']) + ((beef_offspring_p/12)*4))
-    beef_area = (beef_offspring_area_p)+(meatperanimal.Fr.ix['Beef']*beef_offspring_area_p) / (meatperanimal.Wo.ix['Beef'] + (meatperanimal.Fr.ix['Beef'] * meatperanimal.Wb.ix['Beef']))
-    hec_per_tonne.feed.ix['Beef'] = beef_area
+hec_per_tonne['Total'] = hec_per_tonne['Pasture'] + hec_per_tonne['Hay'] + hec_per_tonne['GSM'] + hec_per_tonne['Barn']
+hec_per_tonne['Hay, Barn, Pasture'] = hec_per_tonne['Pasture'] + hec_per_tonne['Hay'] + hec_per_tonne['Barn']
+hec_per_tonne['Class 1-4 Land Portion - No Imports'] = ((hec_per_tonne['GSM'] + hec_per_tonne['Hay'])/ hec_per_tonne['Total'])
+hec_per_tonne['Class 1-4 Land Portion - With Imports'] = (hec_per_tonne['Hay']/ (hec_per_tonne['Hay']+hec_per_tonne['Pasture']+hec_per_tonne['Barn']))
+hec_per_tonne['Yield(T/ha) - With Imports'] = (1/(hec_per_tonne['Pasture'] + hec_per_tonne['Hay'] + hec_per_tonne['Barn']))
+hec_per_tonne['Yield(T/ha) - Without Imports'] = (1/(hec_per_tonne['Total']))
 
 
-commodities_list = ['beef', 'lamb', 'pork', 'turkey', 'chicken', 'milk', 'eggs']
-for i in range(len(commodities_list)):
-    barnarea
 
-#REVIEW
-    #MAKE UNTIS  CLEAR
-    #MAKE SURE that all the yields are actually what they are supposed to be
 
+
+#
+#
+#
+#
+#
+#             #MEAT   
+#        
+#feedlist = ['GrainHaySilage', 'Pasture', 'Hay']
+#
+#for feed in feedlist:        
+#    beef_offspring_p = landreqperanimal.feed.ix['Slaughter calves']
+#    beef_breeder_p = landreqperanimal.feed.ix['Beef cows']
+#    beef_offspring_area_p = ((((beef_offspring_p*meatperanimal.noffspring.ix['Beef']) + beef_breeder_p)/meatperanimal.noffspring.ix['Beef']) + ((beef_offspring_p/12)*4))
+#    beef_area = (beef_offspring_area_p)+(meatperanimal.Fr.ix['Beef']*beef_offspring_area_p) / (meatperanimal.Wo.ix['Beef'] + (meatperanimal.Fr.ix['Beef'] * meatperanimal.Wb.ix['Beef']))
+#    hec_per_tonne.feed.ix['Beef'] = beef_area
+#
+#
+#commodities_list = ['beef', 'lamb', 'pork', 'turkey', 'chicken', 'milk', 'eggs']
+#for i in range(len(commodities_list)):
+#    barnarea
+#
+##REVIEW
+#    #MAKE UNTIS  CLEAR
+#    #MAKE SURE that all the yields are actually what they are supposed to be
+#
 
 
 #=================== Junk, Treasures, Dead Ends ==================================================================================
@@ -265,4 +280,3 @@ for i in range(len(commodities_list)):
 #head_livestock.ix[:, 4] = head_livestock.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 #head_livestock = head_livestock.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0) #delete reference date column
 #head_livestock = head_livestock.groupby('LIVE', as_index=False).sum() 
-#head_livestock.columns = ['livestock', 'head']
