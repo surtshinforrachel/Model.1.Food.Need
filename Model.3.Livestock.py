@@ -189,13 +189,23 @@ hec_per_tonne['Yield(T/ha) - Without Imports'] = (1/(hec_per_tonne['Total']))
 
 
 
+#HEAD OF LIVESTOCK IN SWBC 
+cows = pd.read_csv('cansim0040221.2011.csv', header = 0)
+sheep_lambs = pd.read_csv('cansim0040222.2011.csv', header = 0)
+poultry = pd.read_csv('cansim0040225.2011.csv', header = 0)
+pigs = pd.read_csv('cansim0040223.2011.csv', header = 0)
+pigs.columns = ['Ref_Date', 'GEO', 'LIVE', 'UOM', 'Value']
+frames = [cows, sheep_lambs, poultry, pigs]
+head_livestock = pd.concat(frames, ignore_index = True)
+head_livestock.ix[:, 4] = head_livestock.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+head_livestock = head_livestock.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0) #delete reference date column
+head_livestock = head_livestock.groupby('LIVE', as_index=False).sum() 
 
 
-#
-#
-#
-#
-#
+
+
+
+
 #             #MEAT   
 #        
 #feedlist = ['GrainHaySilage', 'Pasture', 'Hay']
@@ -269,14 +279,3 @@ hec_per_tonne['Yield(T/ha) - Without Imports'] = (1/(hec_per_tonne['Total']))
 #means = df.groubby(industries).mean()
 #IF NO DATA FOR BC, USE DATA FOR CANADA
 
-#HEAD OF LIVESTOCK IN SWBC 
-#cows = pd.read_csv('cansim0040221.2011.csv', header = 0)
-#sheep_lambs = pd.read_csv('cansim0040222.2011.csv', header = 0)
-#poultry = pd.read_csv('cansim0040225.2011.csv', header = 0)
-#pigs = pd.read_csv('cansim0040223.2011.csv', header = 0)
-#pigs.columns = ['Ref_Date', 'GEO', 'LIVE', 'UOM', 'Value']
-#frames = [cows, sheep_lambs, poultry, pigs]
-#head_livestock = pd.concat(frames, ignore_index = True)
-#head_livestock.ix[:, 4] = head_livestock.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-#head_livestock = head_livestock.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0) #delete reference date column
-#head_livestock = head_livestock.groupby('LIVE', as_index=False).sum() 

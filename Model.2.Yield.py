@@ -207,4 +207,4 @@ green_table['SWBC yield'] = (green_table['tonnes']/green_table['hectares'])*gree
 
 frames = [field_table, fruit_table, veg_table_2fuzz, mush_table, pot_table, green_table]
 yield_table = pd.concat(frames, ignore_index = True)
-
+yield_table.to_csv('cropyieldresults.csv')

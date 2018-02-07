@@ -187,3 +187,4 @@ foodneed_p2011 = pd.DataFrame(np.multiply(incwaste, np.array(big_table['conversi
 big_table = big_table.drop(['season'], axis = 1) #delete date column
 big_table['tonnes'] = tonnesfood
 big_table['food need'] = foodneed_p2011
+big_table.to_csv('foodneedresults.csv')
