@@ -180,6 +180,7 @@ hec_per_tonne.Barn.ix['Milk'] = (((barnarea.ba.ix['Dairy cow']/milkeggsperanimal
 hec_per_tonne.Barn.ix['Eggs'] = ((barnarea.ba.ix['Layer']+((barnarea.ba.ix['Layer']*milkeggsperanimal.Eggs.ix['Rearing period'])/milkeggsperanimal.Eggs.ix['N years of commodity production']))/milkeggsperanimal.Eggs.ix['Tonnes/commodity/animal/year'])
 
 
+
 hec_per_tonne['Total'] = hec_per_tonne['Pasture'] + hec_per_tonne['Hay'] + hec_per_tonne['GSM'] + hec_per_tonne['Barn']
 hec_per_tonne['Hay, Barn, Pasture'] = hec_per_tonne['Pasture'] + hec_per_tonne['Hay'] + hec_per_tonne['Barn']
 hec_per_tonne['Class 1-4 Land Portion - No Imports'] = ((hec_per_tonne['GSM'] + hec_per_tonne['Hay'])/ hec_per_tonne['Total'])
@@ -187,19 +188,52 @@ hec_per_tonne['Class 1-4 Land Portion - With Imports'] = (hec_per_tonne['Hay']/ 
 hec_per_tonne['Yield(T/ha) - With Imports'] = (1/(hec_per_tonne['Pasture'] + hec_per_tonne['Hay'] + hec_per_tonne['Barn']))
 hec_per_tonne['Yield(T/ha) - Without Imports'] = (1/(hec_per_tonne['Total']))
 
+meatperanimal.ix['Yt'] = (meatperanimal.ix['Wo']+(meatperanimal.ix['Fr']*meatperanimal.ix['Wb']))
 
 
-#HEAD OF LIVESTOCK IN SWBC 
-cows = pd.read_csv('cansim0040221.2011.csv', header = 0)
-sheep_lambs = pd.read_csv('cansim0040222.2011.csv', header = 0)
-poultry = pd.read_csv('cansim0040225.2011.csv', header = 0)
-pigs = pd.read_csv('cansim0040223.2011.csv', header = 0)
-pigs.columns = ['Ref_Date', 'GEO', 'LIVE', 'UOM', 'Value']
-frames = [cows, sheep_lambs, poultry, pigs]
-head_livestock = pd.concat(frames, ignore_index = True)
-head_livestock.ix[:, 4] = head_livestock.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-head_livestock = head_livestock.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0) #delete reference date column
-head_livestock = head_livestock.groupby('LIVE', as_index=False).sum() 
+#print(meatperanimal['Beef'])
+hec_per_tonne['headperheci'] = (hec_per_tonne['Yield(T/ha) - With Imports'])
+hec_per_tonne.headperheci.ix['Beef'] = (1/((hec_per_tonne.headperheci.ix['Beef'])*(meatperanimal.Beef.ix['Yt'])))
+hec_per_tonne.headperheci.ix['Lamb'] = (1/((hec_per_tonne.headperheci.ix['Lamb'])*(meatperanimal.Lamb.ix['Yt'])))
+hec_per_tonne.headperheci.ix['Pork'] = (1/((hec_per_tonne.headperheci.ix['Pork'])*(meatperanimal.Pork.ix['Yt'])))
+hec_per_tonne.headperheci.ix['Turkey'] = (1/((hec_per_tonne.headperheci.ix['Turkey'])*(meatperanimal.Turkey.ix['Yt'])))
+hec_per_tonne.headperheci.ix['Chicken'] = (1/((hec_per_tonne.headperheci.ix['Chicken'])*(meatperanimal.Chicken.ix['Yt'])))
+hec_per_tonne.headperheci.ix['Milk'] = (1/((hec_per_tonne.headperheci.ix['Milk'])*(milkeggsperanimal.Dairy.ix['Tonnes/commodity/animal/year'])))
+hec_per_tonne.headperheci.ix['Eggs'] = (1/((hec_per_tonne.headperheci.ix['Eggs'])*(milkeggsperanimal.Eggs.ix['Tonnes/commodity/animal/year'])))
+
+
+hec_per_tonne['headperhecni'] = (hec_per_tonne['Yield(T/ha) - Without Imports'])
+hec_per_tonne.headperhecni.ix['Beef'] = (1/((hec_per_tonne.headperhecni.ix['Beef'])*(meatperanimal.Beef.ix['Yt'])))
+hec_per_tonne.headperhecni.ix['Lamb'] = (1/((hec_per_tonne.headperhecni.ix['Lamb'])*(meatperanimal.Lamb.ix['Yt'])))
+hec_per_tonne.headperhecni.ix['Pork'] = (1/((hec_per_tonne.headperhecni.ix['Pork'])*(meatperanimal.Pork.ix['Yt'])))
+hec_per_tonne.headperhecni.ix['Turkey'] = (1/((hec_per_tonne.headperhecni.ix['Turkey'])*(meatperanimal.Turkey.ix['Yt'])))
+hec_per_tonne.headperhecni.ix['Chicken'] = (1/((hec_per_tonne.headperhecni.ix['Chicken'])*(meatperanimal.Chicken.ix['Yt'])))
+hec_per_tonne.headperhecni.ix['Milk'] = (1/((hec_per_tonne.headperhecni.ix['Milk'])*(milkeggsperanimal.Dairy.ix['Tonnes/commodity/animal/year'])))
+hec_per_tonne.headperhecni.ix['Eggs'] = (1/((hec_per_tonne.headperhecni.ix['Eggs'])*(milkeggsperanimal.Eggs.ix['Tonnes/commodity/animal/year'])))
+
+hec_per_tonne['headpercommodity - imports'] = (hec_per_tonne['Yield(T/ha) - With Imports']*hec_per_tonne['headperheci'])
+hec_per_tonne['headpercommodity - no imports'] = (hec_per_tonne['Yield(T/ha) - Without Imports']*hec_per_tonne['headperhecni'])
+#ERROR - NO DIFFERENCE BETWEEN IMPORTS AND NO IMPORTS RESULTS
+hec_per_tonne.to_csv('livestockhecpertonne.csv')
+
+
+
+#hec_per_tonne.headperhec.ix['Beef'] = (1/((hec_per_tonne.headperhec.ix['Beef'])*(meatperanimal.Beef.ix['Yt'])))
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#hec_per_tonne['head/hec - Without Imports'] = (1/(hec_per_tonne['Pasture'] + hec_per_tonne['Hay'] + hec_per_tonne['Barn']))
+#hec_per_tonne.to_csv('livestockhecpertonne.csv')
 
 
 
