@@ -14,7 +14,7 @@ from fuzzywuzzy import process
 tons_to_tonnes = 1.10231
 acres_to_hectares = 2.47105
 thousand_sq_ft_to_hectare = (107639/1000)
-hundred_weight_to_tonne = (19.6841/1000)
+hundred_weight_to_tonne = 19.6841
 kg_to_tonne = 1000
 sq_m_to_hectare = 10000
 
@@ -160,7 +160,7 @@ potcrops.columns = ['GEO', 'unit', 'value'] #name first column header 'commodity
 area = potcrops.loc[potcrops['unit']== 'Seeded area, potatoes (acres)']
 hundredweight = potcrops.loc[potcrops['unit']== 'Production, potatoes (hundredweight x 1,000)']
 pot_table = pd.merge(left=area, right = hundredweight, left_on = 'GEO', right_on = 'GEO').drop(['GEO', 'unit_x', 'unit_y'], axis = 1)
-#pot_table.columns = ['acres', 'hundredweight'] #name first column header 'commodity' and name second column header 'kg/person'
+pot_table.columns = ['acres', 'hundredweight'] #name first column header 'commodity' and name second column header 'kg/person'
 pot_table.ix[:, 0] = pot_table.ix[:, 0].astype(float)*acres_to_hectares #acres_to_hectares = 2.47105
 pot_table.ix[:, 1] = pot_table.ix[:, 1].astype(float)*hundred_weight_to_tonne #hundred_weight_to_tonne = (19.6841/1000) = 0.0196841
 pot_table.columns = ['hectares', 'tonnes'] #name first column header 'commodity' and name second column header 'kg/person'
