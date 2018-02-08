@@ -184,7 +184,8 @@ for i in range(len(recperfood)):
     
 incwaste = np.multiply(tonnesfood, np.array(big_table['waste']))
 foodneed_p2011 = pd.DataFrame(np.multiply(incwaste, np.array(big_table['conversion'])))
-big_table = big_table.drop(['season'], axis = 1) #delete date column
 big_table['tonnes'] = tonnesfood
 big_table['food need'] = foodneed_p2011
+big_table['diet and seasonality constraint'] = ((big_table['food need']/12)*big_table['season'])
+
 big_table.to_csv('foodneedresults.csv')

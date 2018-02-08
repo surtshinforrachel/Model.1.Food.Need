@@ -22,6 +22,7 @@ cy['crop'].loc[cy['crop']== 'Peaches (fresh and clingstone)'] = 'Peaches'
 cy['crop'].loc[cy['crop']== 'Green peas'] = 'Peas'
 cy['crop'].loc[cy['crop']== 'Plums and prunes'] = 'Plums'
 cy['crop'].loc[cy['crop']== 'Total wheat'] = 'Wheat'
+fn['commodity'].loc[fn['commodity']== 'Apple sauce'] = 'Apples sauce'
 fn['commodity'].loc[fn['commodity']== 'Pineapples canned'] = 'Pineapple canned'
 fn['commodity'].loc[fn['commodity']== 'Pineapples fresh'] = 'Pineapple fresh'
 fn['commodity'].loc[fn['commodity']== 'Corn flour and meal'] = 'C0rnflour and meal'
@@ -77,15 +78,20 @@ for i in range(len(fn_copy)):
 print(fuzzmatch)
 
 fn['commodity'] = fuzzmatch
+
 fn = fn.groupby('commodity', as_index=False).sum() 
 cropsr = pd.merge(left=fn, right = newnew, left_on=['commodity'], right_on =['Commodity'], how = 'inner')
 cropsr = cropsr.drop([ 'Unnamed: 0', 'kg/person', 'servings/person', 'reference', 'waste', 'conversion', 'tonnes', 'Commodity'], axis = 1) #delete reference date column
-cropsr['self reliance'] = (cropsr['SWBC yield']/cropsr['food need'])
 
+cropsr['self reliance'] = cropsr['food need']
+for i in range(len(cropsr['food need'])):
+    mymin = min(cropsr['diet and seasonality constraint'][i], cropsr['SWBC yield'][i])
+    cropsr['self reliance'][i] = (mymin /cropsr['food need'][i])*100
+    #print(mymin)
 
-
-
-
+mymet = (cropsr['food need']*(cropsr['self reliance']/100))
+totalsr = sum(mymet/cropsr['food need'])
+print(totalsr)
 
 
 
