@@ -211,8 +211,8 @@ hec_per_tonne.headperhecni.ix['Chicken'] = (1/((hec_per_tonne.headperhecni.ix['C
 hec_per_tonne.headperhecni.ix['Milk'] = (1/((hec_per_tonne.headperhecni.ix['Milk'])*(milkeggsperanimal.Dairy.ix['Tonnes/commodity/animal/year'])))
 hec_per_tonne.headperhecni.ix['Eggs'] = (1/((hec_per_tonne.headperhecni.ix['Eggs'])*(milkeggsperanimal.Eggs.ix['Tonnes/commodity/animal/year'])))
 
-hec_per_tonne['headpercommodity - imports'] = (hec_per_tonne['Yield(T/ha) - With Imports']*hec_per_tonne['headperheci'])
-hec_per_tonne['headpercommodity - no imports'] = (hec_per_tonne['Yield(T/ha) - Without Imports']*hec_per_tonne['headperhecni'])
+hec_per_tonne['headpercommodity - imports'] = ((1/hec_per_tonne['Yield(T/ha) - With Imports'])*hec_per_tonne['headperheci'])
+hec_per_tonne['headpercommodity - no imports'] = ((1/hec_per_tonne['Yield(T/ha) - Without Imports'])*hec_per_tonne['headperhecni'])
 #ERROR - NO DIFFERENCE BETWEEN IMPORTS AND NO IMPORTS RESULTS
 hec_per_tonne.to_csv('livestockhecpertonne.csv')
 
