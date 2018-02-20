@@ -32,25 +32,74 @@ pop = pop.drop(['Ref_Date'], axis = 1) #delete date column
 #age_order = ['0 to 4 years', '5 to 9 years', '10 to 14 years', '15 to 19 years', '20 to 24 years', '25 to 29 years', '30 to 34 years', '35 to 39 years', '40 to 44 years', '45 to 49 years', '50 to 54 years', '55 to 59 years', '60 to 64 years', '65 to 69 years', '70 to 74 years', '75 to 79 years', '80 to 84 years', '85 to 89 years', '90 years and over']
 #pop = pop.reindex(age_order) #indexing by age messes with the order of the age brackets so we have to farmer style them back into order.
 pop.columns = ['geo', 'sex', 'age', 'value']
-popg = pop.groupby(['sex','age']).sum()
-popg = pd.DataFrame(popg)
-
-
 # extract int from every cell in 'age' column
+
 pop_group = np.array(pop['age'])
 for i in range(len(pop['age'])):
     pop_group[i] = int((pop['age'][i]).split()[0])
-    #pop['age'][i] = pop_group[i]     
-#print(pop_group)                   #SETTING WITH COPY WARNING -MUST RESOLVE!
-#print(pop.groupby(['geo', 'sex', 'age_group']).sum())
+pop['age'] = pop_group
+pop = pop[pop.age != 0] #DROP ZERO AND ONE YEAR OLDS!!!! THEY ARE NOT INCLUDED IN THE DIETARY REC
+pop = pop[pop.age != 1]
 
+total_pop = sum(pop['value'])
+popg = pop.groupby(['sex','age']).sum().reset_index()
+
+agegroup1 = popg.loc[(popg['age'] == 2) | (popg['age'] == 3)]
+agegroup1 = agegroup1['value'].sum()
+agegroup2 = popg.loc[(popg['age'] == 4) | (popg['age'] == 5)| (popg['age'] == 6) | (popg['age'] == 7) | (popg['age'] == 8)]
+agegroup2 = agegroup2['value'].sum()
+agegroup3 = popg.loc[(popg['age'] == 9) | (popg['age'] == 10)| (popg['age'] == 11) | (popg['age'] == 12) | (popg['age'] == 13)]
+agegroup3 = agegroup3['value'].sum()
+agegroup4 = popg.loc[((popg['sex'] == 'Females') & ((popg['age'] == 14) | (popg['age'] == 15)| (popg['age'] == 16) | (popg['age'] == 17) | (popg['age'] == 18)))]
+agegroup4 = agegroup4['value'].sum()
+agegroup5 = popg.loc[((popg['sex'] == 'Females') & ((popg['age'] == 19) | (popg['age'] == 20)| (popg['age'] == 21) | (popg['age'] == 22) | (popg['age'] == 23) | (popg['age'] == 24) | (popg['age'] == 25)| (popg['age'] == 26) | (popg['age'] == 27) | (popg['age'] == 28) | (popg['age'] == 29) | (popg['age'] == 30)| (popg['age'] == 31) | (popg['age'] == 32) | (popg['age'] == 33) | (popg['age'] == 34) | (popg['age'] == 35) | (popg['age'] == 36) | (popg['age'] == 37) | (popg['age'] == 38)| (popg['age'] == 39) | (popg['age'] == 40) | (popg['age'] == 41) | (popg['age'] == 42) | (popg['age'] == 43)| (popg['age'] == 44) | (popg['age'] == 45) | (popg['age'] == 46)| (popg['age'] == 47)| (popg['age'] == 48) | (popg['age'] == 49) | (popg['age'] == 50)))]
+agegroup5 = agegroup5['value'].sum()
+agegroup6 = popg.loc[((popg['sex'] == 'Females') & ((popg['age'] == 51) | (popg['age'] == 52)| (popg['age'] == 53) | (popg['age'] == 54) | (popg['age'] == 55) | (popg['age'] == 56) | (popg['age'] == 57)| (popg['age'] == 58) | (popg['age'] == 59) | (popg['age'] == 60) | (popg['age'] == 61) | (popg['age'] == 62)| (popg['age'] == 63) | (popg['age'] == 64) | (popg['age'] == 65) | (popg['age'] == 66) | (popg['age'] == 67) | (popg['age'] == 68) | (popg['age'] == 69) | (popg['age'] == 70)| (popg['age'] == 71) | (popg['age'] == 72) | (popg['age'] == 73) | (popg['age'] == 74) | (popg['age'] == 75)| (popg['age'] == 76) | (popg['age'] == 77) | (popg['age'] == 78)| (popg['age'] == 79)| (popg['age'] == 80) | (popg['age'] == 81) | (popg['age'] == 82)| (popg['age'] == 83)| (popg['age'] == 84) | (popg['age'] == 85) | (popg['age'] == 86)| (popg['age'] == 87)| (popg['age'] == 88) | (popg['age'] == 89)))]
+agegroup6 = agegroup6['value'].sum()
+agegroup7 = popg.loc[((popg['sex'] == 'Males') & ((popg['age'] == 14) | (popg['age'] == 15)| (popg['age'] == 16) | (popg['age'] == 17) | (popg['age'] == 18)))]
+agegroup7 = agegroup7['value'].sum()
+agegroup8 = popg.loc[((popg['sex'] == 'Males') & ((popg['age'] == 19) | (popg['age'] == 20)| (popg['age'] == 21) | (popg['age'] == 22) | (popg['age'] == 23) | (popg['age'] == 24) | (popg['age'] == 25)| (popg['age'] == 26) | (popg['age'] == 27) | (popg['age'] == 28) | (popg['age'] == 29) | (popg['age'] == 30)| (popg['age'] == 31) | (popg['age'] == 32) | (popg['age'] == 33) | (popg['age'] == 34) | (popg['age'] == 35) | (popg['age'] == 36) | (popg['age'] == 37) | (popg['age'] == 38)| (popg['age'] == 39) | (popg['age'] == 40) | (popg['age'] == 41) | (popg['age'] == 42) | (popg['age'] == 43)| (popg['age'] == 44) | (popg['age'] == 45) | (popg['age'] == 46)| (popg['age'] == 47)| (popg['age'] == 48) | (popg['age'] == 49) | (popg['age'] == 50)))]
+agegroup8 = agegroup8['value'].sum()
+agegroup9 = popg.loc[((popg['sex'] == 'Males') & ((popg['age'] == 51) | (popg['age'] == 52)| (popg['age'] == 53) | (popg['age'] == 54) | (popg['age'] == 55) | (popg['age'] == 56) | (popg['age'] == 57)| (popg['age'] == 58) | (popg['age'] == 59) | (popg['age'] == 60) | (popg['age'] == 61) | (popg['age'] == 62)| (popg['age'] == 63) | (popg['age'] == 64) | (popg['age'] == 65) | (popg['age'] == 66) | (popg['age'] == 67) | (popg['age'] == 68) | (popg['age'] == 69) | (popg['age'] == 70)| (popg['age'] == 71) | (popg['age'] == 72) | (popg['age'] == 73) | (popg['age'] == 74) | (popg['age'] == 75)| (popg['age'] == 76) | (popg['age'] == 77) | (popg['age'] == 78)| (popg['age'] == 79)| (popg['age'] == 80) | (popg['age'] == 81) | (popg['age'] == 82)| (popg['age'] == 83)| (popg['age'] == 84) | (popg['age'] == 85) | (popg['age'] == 86)| (popg['age'] == 87)| (popg['age'] == 88) | (popg['age'] == 89)))]
+agegroup9 = agegroup9['value'].sum()
+
+allgroups = [agegroup1, agegroup2, agegroup3, agegroup4, agegroup5, agegroup6, agegroup7, agegroup8, agegroup9]
+percentagegroup = np.copy(allgroups)
+for i in range(len(allgroups)):
+    percentagegroup[i] = ((allgroups[i])/(total_pop))
+#NOT FINISHED, NOT WORKING    
+    
 #DIETARY RECOMMENDATION CLEANING
 rec = pd.read_csv('diet.csv', header = 0)
 rec = rec.pivot(index = 'Age', columns = 'Food Group', values = 'Servings/Year')
 rec.columns = ['Fats&Oils','Fruit&Veg', 'Grains', 'Meat&Alt', 'Milk&Alt']
+rec['number of people'] = np.copy(allgroups)
+rec['group percent'] = rec['number of people']/total_pop
+print(sum(rec['group percent']))
+
+averagerec = pd.DataFrame.copy(rec)
+averagerec = averagerec.drop(['number of people', 'group percent'], axis = 1)
+averagerec['Fats&Oils'] = rec['Fats&Oils']*rec['group percent']
+averagerec['Fruit&Veg'] = rec['Fruit&Veg']*rec['group percent']
+averagerec['Grains'] = rec['Grains']*rec['group percent']
+averagerec['Meat&Alt'] = rec['Meat&Alt']*rec['group percent']
+averagerec['Milk&Alt'] = rec['Milk&Alt']*rec['group percent']
+
+averagerecs = np.zeros(shape=(5,1))
+averagerecs[1]
+
+
+
+
+
+
+
+
+
+
+
 #UNITS TABLE
 units = pd.read_csv('units.csv', header = 0)
-
 #RENAME ROWS THAT WILL BE COMBINED
 avail.loc[avail['commodity']== 'Breakfast food','commodity'] = 'Oatmeal and rolled oats'
 avail.loc[(avail['commodity']== 'Beef, boneless weight') | (avail['commodity']== 'Veal, boneless weight') ,'commodity'] = 'Beef and veal, boneless weight'
@@ -78,6 +127,7 @@ for i in range(len(groups)):
     percent_of_group = np.array(big_table['kg/person'])/ (group_sum)
     #print(percent_of_group)
 sum(percent_of_group)
+
 
 # CREATE DIETARY REC FOR EVERY AGE GIVEN IN THE POPULATION DATA
 pop['Fruit&Veg'] = np.array(pop['sex'])
@@ -190,5 +240,4 @@ foodneed_p2011 = pd.DataFrame(np.multiply(incwaste, np.array(big_table['conversi
 big_table['tonnes'] = tonnesfood
 big_table['food need'] = foodneed_p2011
 big_table['diet and seasonality constraint'] = ((big_table['food need']/12)*big_table['season'])
-
 big_table.to_csv('foodneedresults.csv')
