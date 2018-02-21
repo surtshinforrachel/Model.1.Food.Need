@@ -20,7 +20,13 @@ sq_m_to_hectare = 10000
 
 
 #2.1 - FIELD CROPS DATA CLEANING
-fieldcrops = pd.read_csv('cansim0010017.2014.csv', header = 0)
+fieldcrops = pd.read_csv('cansim0010017.csv', header = 0)
+
+fieldcrops.ix[:, 4] = fieldcrops.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+fieldcrops = fieldcrops.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
+fieldcrops_10yr_ave = fieldcrops.groupby('TYP', 'HAR')['Value'].mean()
+#foodneed_bygroup = pd.DataFrame(big_table.groupby('group')['SWBC Food Need (tonnes)'].sum())
+
 fieldcrops = fieldcrops.drop(['Ref_Date'], axis = 1) #delete reference date column
 fieldcrops.columns = ['geo', 'unit', 'type', 'value'] #name first column header 'commodity' and name second column header 'kg/person'
 #cropunits = np.unique(fieldcrops[['unit']].values)

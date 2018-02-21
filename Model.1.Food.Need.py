@@ -24,7 +24,6 @@ pop.columns = ['geo', 'sex', 'age', 'value']
 
 pop_group = np.array(pop['age'])
 for i in range(len(pop['age'])):
-    pop_group[i] = int((pop['age'][i]).split()[0])
 pop['age'] = pop_group
 pop = pop[pop.age != 0] #DROP ZERO AND ONE YEAR OLDS!!!! THEY ARE NOT INCLUDED IN THE DIETARY REC
 pop = pop[pop.age != 1]
