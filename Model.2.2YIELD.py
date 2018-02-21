@@ -49,30 +49,29 @@ for i in range(len(greencrops['value'])):
         greencrops.ix[i, 3] = 'Tonnes'
         
 frames = [fieldcrops, fruitcrops, vegcrops, greencrops]        
-allcrops = pd.concat(frames) 
-
+allcrops = pd.concat(frames, ignore_index =True) 
 for i in range(len(allcrops['value'])):
-    if allcrops['unit'][i] == 'Area planted (hectares)':
+    if (allcrops['unit'][i] == 'Area planted (hectares)') | (allcrops['unit'][i] == 'Seeded area (hectares)'):
         allcrops.ix[i, 3] = 'Hectares'
-        
-    if allcrops['unit'][i] == 'Seeded area (hectares)':
-        allcrops.ix[i, 2]= 'Hectares'
-        
-    if (allcrops['unit'][i] == 'Marketed production (metric tonnes)') | (allcrops['unit'][i] == 'Production (metric tonnes)'):
-        allcrops.ix[i, 2] = 'Tonnes'
+    if (allcrops['unit'][i] == 'Marketed production (metric tonnes)') | (allcrops['unit'][i] == 'Production (metric tonnes)') | (allcrops['unit'][i] == 'Metric tonnes'):
+        allcrops.ix[i, 3] = 'Tonnes'
     
-
-
 allcrops.ix[:, 4] = allcrops.ix[:, 4].apply(pd.to_numeric, errors = 'coerce')
 allcrops = allcrops.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
-
-
 #allcropsg = allcrops.groupby(['crop', 'date'])['value'].sum().reset_index()
+hectares = allcrops.loc[allcrops['unit']== 'Hectares']
+tonnes = allcrops.loc[allcrops['unit']== 'Tonnes'] 
+allcrops2 = pd.merge(hectares, tonnes, left_on=['date','crop'], right_on=['date','crop']).drop(['geo_x', 'unit_x', 'geo_y', 'unit_y'], axis = 1, )
+allcrops2.columns = ['crop', 'date', 'hectares', 'tonnes']
+allcrops2['tonnes/hec'] = allcrops2['tonnes']/allcrops2['hectares']
+
+baseline_yr = 2011
+baseline = allcrops2.loc[allcrops2['date']== baseline_yr]
+ten_yr_ave = allcrops2.groupby('crop')['hectares', 'tonnes', 'tonnes/hec'].mean().reset_index()
 
 
 
-   
-        
+
 mushcrops = pd.read_csv('cansim0010012.2014.csv', header = 0)
 potcrops = pd.read_csv('cansim0010014.2014.csv', header = 0)
 
