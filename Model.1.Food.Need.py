@@ -109,8 +109,7 @@ average_foodgp_avail = pd.DataFrame(big_table.groupby('group')['servings/person'
 balancing_rec_servperyear = pd.DataFrame({'available': average_foodgp_avail['servings/person'], 'recommended': average_foodgp_recs.recommendation})
 balancing_rec_servperyear['rec met'] = balancing_rec_servperyear['available']/balancing_rec_servperyear['recommended']
 balancing_rec_servperyear['avail met'] = balancing_rec_servperyear['recommended']/balancing_rec_servperyear['available']
-
-
+#FINAL DATA FOR BALANCING NEED TO RECOMMENDATION
 
 
 
@@ -123,55 +122,34 @@ for i in range(len(groups)):
     grp = (groups[i])
     group_sum = sum(big_table[big_table['group']== grp ]['kg/person'])
     percent_of_group = np.array(big_table['kg/person'])/ (group_sum)
-    #print(percent_of_group)
-sum(percent_of_group)
+big_table['percent of group'] = percent_of_group
 
 
-
-#SUM servings/person BY GROUP, GIVING A TOTAL NUMBER OF AVAILABLE SERVINGS OF FOOD PER PERSON PER FOOD GROUP
-big_table_groups = big_table.groupby('group', as_index=False).sum() 
-avail_by_group = np.array(big_table_groups['servings/person']) 
-
-percent_food_group_rec_met = np.array(big_table_groups['servings/person'])
-for i in range(len(big_table_groups['servings/person'])):
-    percent_food_group_rec_met[i] = ((allrecs[i]/avail_by_group[i]))
-percent_food_group_rec_met = pd.DataFrame({'group': big_table_groups['group'],'percent':percent_food_group_rec_met}) #ADD THE FOOD GROUP LABEL TO THE percent_food_group_rec_met
 
 #TO BALANCE AVAILABILITY WITH FOOD NEED WE MUST ONLY USE THE PERCENT_FOOD_GROUP_REC_MET >1. DOING IT MANUALLY HERE... WOULD BE BEST TO AUTOMATE
 #recperfood IS THE AMOUNT OF SERVINGS OF THE FOOD NEEDED FOR AVERAGE INDIVIDUAL IN THE RECOMMENDED DIET
 recperfood = np.array(big_table['kg/person'])
 for i in range(len(big_table['kg/person'])):
     if (big_table['group'][i] == 'Fats and Oils'):
-        recperfood[i] = 1 * (big_table['kg/person'][i])   
+        recperfood[i] = 1 * (big_table['kg/person'][i])  
     if (big_table['group'][i] == 'Fruit & Vegetables'):
-        recperfood[i] = (percent_food_group_rec_met['percent'][1]) * (big_table['kg/person'][i])      
+        recperfood[i] = (balancing_rec_servperyear['avail met'][1]) * (big_table['kg/person'][i]) 
     if (big_table['group'][i] == 'Grains'):
         recperfood[i] = 1 * (big_table['kg/person'][i])
     if (big_table['group'][i] == 'Meat & Alts'):
-        recperfood[i] = (percent_food_group_rec_met['percent'][3]) * (big_table['kg/person'][i])        
+        recperfood[i] = (balancing_rec_servperyear['avail met'][3]) * (big_table['kg/person'][i])  
     if (big_table['group'][i] == 'Milk & Alts'):
-        recperfood[i] = (percent_food_group_rec_met['percent'][4]) * (big_table['kg/person'][i])           
-print(recperfood)
-
-tonnesfood = np.array(recperfood)
-for i in range(len(recperfood)):
-    tonnesfood[i] = (recperfood[i]) * 1000
+        recperfood[i] = (balancing_rec_servperyear['avail met'][4]) * (big_table['kg/person'][i]) 
+big_table['balanced rec(kg)'] = recperfood
+big_table['balanced rec(t)'] = recperfood/1000
     
-incwaste = np.multiply(tonnesfood, np.array(big_table['waste']))
-foodneed_p2011 = pd.DataFrame(np.multiply(incwaste, np.array(big_table['conversion'])))
-big_table['tonnes'] = tonnesfood
-big_table['food need'] = foodneed_p2011
-big_table['diet and seasonality constraint'] = ((big_table['food need']/12)*big_table['season'])
+big_table['incwaste'] = big_table['balanced rec(t)']*big_table['waste']
+big_table['Food Need (tonnes)/person'] = big_table['incwaste']*big_table['conversion']
+big_table['SWBC Food Need (tonnes)'] = big_table['Food Need (tonnes)/person']* total_pop
+big_table['diet and seasonality constraint'] = ((big_table['SWBC Food Need (tonnes)']/12)*big_table['season'])
 big_table.to_csv('foodneedresults.csv')
 
-
-
-
-
-
-
-
-
+foodneed_bygroup = pd.DataFrame(big_table.groupby('group')['SWBC Food Need (tonnes)'].sum())
 
 
 
@@ -253,3 +231,16 @@ big_table.to_csv('foodneedresults.csv')
 #allrecs[2] = sum((np.array(pop['value'])) * (np.array(pop['Grains'])))/(total_pop)
 #allrecs[3] = sum((np.array(pop['value'])) * (np.array(pop['Meat&Alt'])))/(total_pop)
 #allrecs[4] = sum((np.array(pop['value'])) * (np.array(pop['Milk&Alt'])))/(total_pop)
+
+
+
+
+
+#
+##SUM servings/person BY GROUP, GIVING A TOTAL NUMBER OF AVAILABLE SERVINGS OF FOOD PER PERSON PER FOOD GROUP
+#big_table_groups = big_table.groupby('group', as_index=False).sum() 
+#avail_by_group = np.array(big_table_groups['servings/person']) 
+#percent_food_group_rec_met = np.array(big_table_groups['servings/person'])
+#for i in range(len(big_table_groups['servings/person'])):
+#    percent_food_group_rec_met[i] = ((allrecs[i]/avail_by_group[i]))
+#percent_food_group_rec_met = pd.DataFrame({'group': big_table_groups['group'],'percent':percent_food_group_rec_met}) #ADD THE FOOD GROUP LABEL TO THE percent_food_group_rec_met
