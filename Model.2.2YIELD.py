@@ -22,8 +22,8 @@ tons_to_tonnes = 0.907185
 acres_to_hectares = 0.404686
 thousand_sq_ft_to_hectare = 0.0092903
 hundred_weight_x1k_to_tonne = 50.8
-kg_to_tonne = 1000
-sq_m_to_hectare = 10000
+kg_to_tonne = .001
+sq_m_to_hectare = .0001
 
                                 #BC YIELD DATA
 fieldcrops = pd.read_csv('cansim0010017.csv', header = 0)
@@ -92,28 +92,49 @@ tonnes = allcrops.loc[allcrops['unit']== 'Tonnes']
 allcrops = pd.merge(hectares, tonnes, left_on=['date','crop'], right_on=['date','crop']).drop(['geo_x', 'unit_x', 'geo_y', 'unit_y'], axis = 1, )
 allcrops.columns = ['crop', 'date', 'hectares', 'tonnes']
 allcrops['tonnes_per_hec'] = allcrops['tonnes']/allcrops['hectares']
-
 ten_yr_ave = allcrops.groupby('crop')['hectares', 'tonnes', 'tonnes_per_hec'].mean().reset_index()
-
 baseline_yr = 2011
 baseline_yield = allcrops.loc[allcrops['date']== baseline_yr]
 
 mushroom_exception = pd.DataFrame(ten_yr_ave.loc[ten_yr_ave['crop']== 'Mushrooms'])
 drypeas_exception = pd.DataFrame(ten_yr_ave.loc[ten_yr_ave['crop']== 'Peas, dry'])
 mixedgrains_exception = pd.DataFrame(ten_yr_ave.loc[ten_yr_ave['crop']== 'Mixed grains'])
-frames = [mushroom_exception, drypeas_exception, mixedgrains_exception]
+sourcherry_exception = pd.DataFrame(ten_yr_ave.loc[ten_yr_ave['crop']== 'Cherries, sour'])
+frames = [mushroom_exception, drypeas_exception, mixedgrains_exception, sourcherry_exception]
 baseline_yield = baseline_yield.append(frames).reset_index(drop = True)
+
+#CANOLA MEAL, SOYBEAN MEAL, PASTURE
+oilandmeal = pd.read_csv('cansim0010010.csv', header = 0)
+oilandmeal.index = pd.to_datetime(oilandmeal['Ref_Date'])
+oilandmeal = oilandmeal.drop(['Ref_Date', 'GEO'], axis = 1)
+oilandmealg = oilandmeal.groupby([(oilandmeal.index.year), 'PRO', 'COM']).sum()
+oilandmeal = pd.DataFrame(oilandmealg)
+oilandmeal.columns = ['Value']
+c_seed = oilandmeal.Value.ix[2011, 'Seed crushed', 'Canola (rapeseed)', 'Value']
+c_meal = oilandmeal.Value.ix[2011, 'Meal produced', 'Canola (rapeseed)', 'Value']
+canolamealyield = ((c_meal/c_seed)*(baseline_yield.loc[(baseline_yield['crop']== 'Canola', 'tonnes_per_hec')])) #CHECK THIS SHIT!!!
+canolamealyield = canolamealyield.ix[1,1]
+canolamealyield = 0.97
+canolaoilyield = 0.75
+soybeanmealyield = 2.005 #2002-2011 average meal/hectare seeded [(from 'Yields - Historic, Crops_2015.07.20.xlsx' 'Soybeans' workbook
+pastureyield = 4.2 #Average SC, SL, PR - 4 tonnes DM/Ha (Wallapak says just use this one)
+yieldadditions = pd.DataFrame({'date': [0, 0, 0, 0], 'tonnes': [0, 0, 0, 0], 'hectares': [0, 0, 0, 0], 'tonnes_per_hec': [canolamealyield, canolaoilyield, soybeanmealyield, pastureyield]}, index=['Canola Meal', 'Canola Oil', 'Soybean Meal', 'Pasture']).reset_index()
+yieldadditions.columns = ['crop', 'date', 'tonnes', 'hectares', 'tonnes_per_hec']
+baseline_yield = baseline_yield.append(yieldadditions).reset_index(drop = True)
 
 
                                 #SWBC LAND USE DATA
-field_land = pd.read_csv('cansim0040213.2011.2.csv', header = 0)
+field_land = pd.read_csv('cansim0040213.2011.3.csv', header = 0)
 field_land.columns = ['date', 'geo', 'crop', 'unit', 'SWBC hectares planted']
 fruit_land = pd.read_csv('cansim0040214.2011.csv', header = 0)
 fruit_land.columns = ['date', 'geo', 'crop', 'unit', 'SWBC hectares planted']
 veg_land = pd.read_csv('cansim0040215.2011.csv', header = 0)
 veg_land.columns = ['date', 'geo', 'crop', 'unit', 'SWBC hectares planted']
 greenmush_land = pd.read_csv('cansim0040217.2011.csv', header = 0)
+greenmush_land.ix[:, 4] = greenmush_land.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+greenmush_land.loc['Value'] = (greenmush_land['Value']*sq_m_to_hectare)
 greenmush_land.columns = ['date', 'geo', 'crop', 'unit', 'SWBC hectares planted']
+
 
 frames = [field_land, fruit_land, veg_land, greenmush_land]
 allcropland = pd.concat(frames, ignore_index =True) 
@@ -124,7 +145,7 @@ allcropland = allcropland.groupby('crop')['SWBC hectares planted'].sum().reset_i
                                 #MANUAL MATCHING
 baseline_yield.loc[baseline_yield['crop']== 'Tame hay','crop'] = 'Tame hay'
 baseline_yield.loc[baseline_yield['crop']== 'Wheat, all', 'crop'] = 'Total wheat'
-baseline_yield.loc[baseline_yield['crop']== 'Cherries (sour) total area', 'crop'] = 'Repeat'
+#baseline_yield.loc[baseline_yield['crop']== 'Cherries (sour) total area', 'crop'] = 'Repeat'
 baseline_yield.loc[baseline_yield['crop']== 'Beans, green or wax', 'crop'] = 'Beans, green and wax'
 baseline_yield.loc[(baseline_yield['crop']== 'Cabbage, Chinese (bok-choy, napa, etcetera)', 'crop')] = 'Repeated crop'
 baseline_yield.loc[(allcrops['crop']== 'Cabbage, regular', 'crop')] = 'Repeated crop'
@@ -165,7 +186,8 @@ for i in range(len(allland2)):
         fuzzmatch[i] = match[0]
 fuzzmatch = pd.DataFrame(fuzzmatch)
 allcropland['crop'] = fuzzmatch
-allcrops = pd.merge(left=baseline_yield, right = allcropland, left_on = 'crop', right_on = 'crop')
+allcrops = pd.merge(left=baseline_yield, right = allcropland, left_on = 'crop', right_on = 'crop', how = 'inner')
 allcrops['SWBC tonnes'] = allcrops['tonnes_per_hec']*allcrops['SWBC hectares planted']
 
-
+allcrops.to_csv('cropyieldresults.csv')
+ 

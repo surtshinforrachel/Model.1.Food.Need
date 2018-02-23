@@ -15,22 +15,22 @@ from fuzzywuzzy import process
 fn = pd.read_csv('foodneedresults.csv', header = 0)
 cy = pd.read_csv('cropyieldresults.csv', header = 0)
 
-cy['crop'].loc[cy['crop']== 'Cherries, sweet'] = 'Cherries'
-cy['crop'].loc[cy['crop']== 'Sweet corn'] = 'Corn'
-cy['crop'].loc[cy['crop']== 'Shallots and green onions'] = 'Shallots and onions'
-cy['crop'].loc[cy['crop']== 'Peaches (fresh and clingstone)'] = 'Peaches'
-cy['crop'].loc[cy['crop']== 'Green peas'] = 'Peas'
-cy['crop'].loc[cy['crop']== 'Plums and prunes'] = 'Plums'
-cy['crop'].loc[cy['crop']== 'Total wheat'] = 'Wheat'
-fn['commodity'].loc[fn['commodity']== 'Apple sauce'] = 'Apples sauce'
-fn['commodity'].loc[fn['commodity']== 'Pineapples canned'] = 'Pineapple canned'
-fn['commodity'].loc[fn['commodity']== 'Pineapples fresh'] = 'Pineapple fresh'
-fn['commodity'].loc[fn['commodity']== 'Corn flour and meal'] = 'C0rnflour and meal'
-fn['commodity'].loc[fn['commodity']== 'Beef and veal, boneless weight'] = 'Beef'
-fn['commodity'].loc[fn['commodity']== 'Eggs (15)'] = 'Eggs'
-fn['commodity'].loc[fn['commodity']== 'Mutton and lamb, boneless weight'] = 'Lamb'
-fn['commodity'].loc[fn['commodity']== 'Pork, boneless weight'] = 'Pork'
-fn['commodity'].loc[fn['commodity']== 'Turkey, boneless weight'] = 'Turkey'
+cy.loc[cy['crop']== 'Cherries, sweet', 'crop'] = 'Cherries'
+cy.loc[cy['crop']== 'Sweet corn', 'crop'] = 'Corn'
+cy.loc[cy['crop']== 'Shallots and green onions', 'crop'] = 'Shallots and onions'
+cy.loc[cy['crop']== 'Peaches (fresh and clingstone)', 'crop'] = 'Peaches'
+cy.loc[cy['crop']== 'Green peas', 'crop'] = 'Peas'
+cy.loc[cy['crop']== 'Plums and prunes', 'crop'] = 'Plums'
+cy.loc[cy['crop']== 'Total wheat', 'crop'] = 'Wheat'
+fn.loc[fn['commodity']== 'Apple sauce', 'commodity'] = 'Apples sauce'
+fn.loc[fn['commodity']== 'Pineapples canned', 'commodity'] = 'Pineapple canned'
+fn.loc[fn['commodity']== 'Pineapples fresh', 'commodity'] = 'Pineapple fresh'
+fn.loc[fn['commodity']== 'Corn flour and meal', 'commodity'] = 'C0rnflour and meal'
+fn.loc[fn['commodity']== 'Beef and veal, boneless weight', 'commodity'] = 'Beef'
+fn.loc[fn['commodity']== 'Eggs (15)', 'commodity'] = 'Eggs'
+fn.loc[fn['commodity']== 'Mutton and lamb, boneless weight', 'commodity'] = 'Lamb'
+fn.loc[fn['commodity']== 'Pork, boneless weight', 'commodity'] = 'Pork'
+fn.loc[fn['commodity']== 'Turkey, boneless weight', 'commodity'] = 'Turkey'
 
 
 #LIVESTOCK YIELD TO SWBC YIELD
@@ -48,20 +48,20 @@ head_livestock = pd.concat(frames, ignore_index = True)
 head_livestock.ix[:, 4] = head_livestock.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 head_livestock = head_livestock.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0) #delete reference date column
 head_livestock = head_livestock.groupby('LIVE', as_index=False).sum() 
-head_livestock['LIVE'].loc[head_livestock['LIVE']== 'Beef cows'] = 'Beef'
-head_livestock['LIVE'].loc[head_livestock['LIVE']== 'Lambs'] = 'Lamb'
-head_livestock['LIVE'].loc[head_livestock['LIVE']== 'Grower and finishing pigs'] = 'Pork'
-head_livestock['LIVE'].loc[head_livestock['LIVE']== 'Turkeys'] = 'Turkey'
-head_livestock['LIVE'].loc[head_livestock['LIVE']== 'Broilers, roasters and Cornish'] = 'Chicken'
-head_livestock['LIVE'].loc[head_livestock['LIVE']== 'Dairy cows'] = 'Milk'
-head_livestock['LIVE'].loc[head_livestock['LIVE']== 'Laying hens, 19 weeks and over, that produce table eggs'] = 'Eggs'
+head_livestock.loc[head_livestock['LIVE']== 'Beef cows', 'LIVE'] = 'Beef'
+head_livestock.loc[head_livestock['LIVE']== 'Lambs', 'LIVE'] = 'Lamb'
+head_livestock.loc[head_livestock['LIVE']== 'Grower and finishing pigs', 'LIVE'] = 'Pork'
+head_livestock.loc[head_livestock['LIVE']== 'Turkeys', 'LIVE'] = 'Turkey'
+head_livestock.loc[head_livestock['LIVE']== 'Broilers, roasters and Cornish', 'LIVE'] = 'Chicken'
+head_livestock.loc[head_livestock['LIVE']== 'Dairy cows', 'LIVE'] = 'Milk'
+head_livestock.loc[head_livestock['LIVE']== 'Laying hens, 19 weeks and over, that produce table eggs', 'LIVE'] = 'Eggs'
 
 livestock = pd.merge(left=hec_per_tonne, right = head_livestock, left_on=['Commodity'], right_on =['LIVE'], how = 'inner')
 livestock = livestock.drop(['LIVE'], axis =1)
 livestock['SWBC yield'] = livestock['headpercommodity - imports']*livestock['Value']
 livestock = livestock.drop(['headpercommodity - imports', 'headpercommodity - no imports', 'Value'], axis = 1)
-mycy = cy.drop(['Unnamed: 0', 'hectares', 'tonnes', 'value'], axis = 1)
-mycy.columns = ['Commodity', 'SWBC yield']
+mycy = cy.drop(['Unnamed: 0', 'date', 'hectares', 'tonnes', 'tonnes_per_hec', 'SWBC hectares planted'], axis = 1)
+mycy.columns = ['Commodity','SWBC yield']
 myframes = [livestock, mycy]
 newnew = pd.concat(myframes)
 
@@ -81,16 +81,16 @@ fn['commodity'] = fuzzmatch
 
 fn = fn.groupby('commodity', as_index=False).sum() 
 cropsr = pd.merge(left=fn, right = newnew, left_on=['commodity'], right_on =['Commodity'], how = 'inner')
-cropsr = cropsr.drop([ 'Unnamed: 0', 'kg/person', 'servings/person', 'reference', 'waste', 'conversion', 'tonnes', 'Commodity'], axis = 1) #delete reference date column
-
-cropsr['self reliance'] = cropsr['food need']
-for i in range(len(cropsr['food need'])):
-    mymin = min(cropsr['diet and seasonality constraint'][i], cropsr['SWBC yield'][i])
-    cropsr['self reliance'][i] = (mymin /cropsr['food need'][i])*100
+cropsr = cropsr.drop([ 'Unnamed: 0', 'kg/person', 'servings/person', 'reference', 'waste', 'conversion', 'Commodity'], axis = 1) #delete reference date column
+cropsr.columns = ['commodity', 'season', 'percent of group', 'balanced rec(kg)', 'balanced rec (t)', 'incwaste', 'Food Need (t/per)', 'Food Need (t)', 'diet and seasonality constraint', 'SWBC yield (t)']
+cropsr['self reliance'] = cropsr['Food Need (t)']
+for i in range(len(cropsr['Food Need (t)'])):
+    mymin = min(cropsr['diet and seasonality constraint'][i], cropsr['SWBC yield (t)'][i])
+    cropsr['self reliance'][i] = (mymin /cropsr['Food Need (t)'][i])*100
     #print(mymin)
 
-mymet = (cropsr['food need']*(cropsr['self reliance']/100))
-totalsr = sum(mymet/cropsr['food need'])
+mymet = (cropsr['Food Need (t)']*(cropsr['self reliance']/100))
+totalsr = sum(mymet/cropsr['Food Need (t)'])
 print(totalsr)
 
 

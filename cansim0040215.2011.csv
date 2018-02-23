@@ -1,26 +1,51 @@
 Ref_Date,GEO,VEG,UOM,Value
-2011,British Columbia [PR590000000],Sweet corn,Hectares,1301
-2011,British Columbia [PR590000000],Tomatoes,Hectares,135
-2011,British Columbia [PR590000000],Cucumbers,Hectares,104
-2011,British Columbia [PR590000000],Green peas,Hectares,312
-2011,British Columbia [PR590000000],Green and wax beans,Hectares,749
-2011,British Columbia [PR590000000],Cabbage,Hectares,272
-2011,British Columbia [PR590000000],Chinese cabbage,Hectares,159
-2011,British Columbia [PR590000000],Cauliflower,Hectares,72
-2011,British Columbia [PR590000000],Broccoli,Hectares,334
-2011,British Columbia [PR590000000],Brussels sprouts,Hectares,310
-2011,British Columbia [PR590000000],Carrots,Hectares,297
-2011,British Columbia [PR590000000],Rutabagas and turnips,Hectares,117
-2011,British Columbia [PR590000000],Beets,Hectares,159
-2011,British Columbia [PR590000000],Radishes,Hectares,43
-2011,British Columbia [PR590000000],Shallots and green onions,Hectares,55
-2011,British Columbia [PR590000000],"Dry onions, yellow, Spanish, cooking, etc.",Hectares,123
-2011,British Columbia [PR590000000],Celery,Hectares,8
-2011,British Columbia [PR590000000],Lettuce,Hectares,238
-2011,British Columbia [PR590000000],Spinach,Hectares,69
-2011,British Columbia [PR590000000],Peppers,Hectares,149
-2011,British Columbia [PR590000000],Pumpkins,Hectares,370
-2011,British Columbia [PR590000000],Squash and zucchini,Hectares,412
-2011,British Columbia [PR590000000],"Asparagus, producing",Hectares,101
-2011,British Columbia [PR590000000],"Asparagus, non-producing",Hectares,17
-2011,British Columbia [PR590000000],Other vegetables,Hectares,686
+2011,"Powell River, British Columbia [CD590127000]",Sweet corn,Hectares,2
+2011,"Powell River, British Columbia [CD590127000]",Tomatoes,Hectares,1
+2011,"Powell River, British Columbia [CD590127000]",Cucumbers,Hectares,1
+2011,"Powell River, British Columbia [CD590127000]",Green peas,Hectares,1
+2011,"Powell River, British Columbia [CD590127000]",Green and wax beans,Hectares,1
+2011,"Powell River, British Columbia [CD590127000]",Cabbage,Hectares,1
+2011,"Powell River, British Columbia [CD590127000]",Chinese cabbage,Hectares,x
+2011,"Powell River, British Columbia [CD590127000]",Cauliflower,Hectares,0
+2011,"Powell River, British Columbia [CD590127000]",Broccoli,Hectares,1
+2011,"Powell River, British Columbia [CD590127000]",Brussels sprouts,Hectares,x
+2011,"Powell River, British Columbia [CD590127000]",Carrots,Hectares,1
+2011,"Powell River, British Columbia [CD590127000]",Rutabagas and turnips,Hectares,0
+2011,"Powell River, British Columbia [CD590127000]",Beets,Hectares,1
+2011,"Powell River, British Columbia [CD590127000]",Radishes,Hectares,x
+2011,"Powell River, British Columbia [CD590127000]",Shallots and green onions,Hectares,x
+2011,"Powell River, British Columbia [CD590127000]","Dry onions, yellow, Spanish, cooking, etc.",Hectares,1
+2011,"Powell River, British Columbia [CD590127000]",Celery,Hectares,0
+2011,"Powell River, British Columbia [CD590127000]",Lettuce,Hectares,2
+2011,"Powell River, British Columbia [CD590127000]",Spinach,Hectares,1
+2011,"Powell River, British Columbia [CD590127000]",Peppers,Hectares,1
+2011,"Powell River, British Columbia [CD590127000]",Pumpkins,Hectares,1
+2011,"Powell River, British Columbia [CD590127000]",Squash and zucchini,Hectares,2
+2011,"Powell River, British Columbia [CD590127000]","Asparagus, producing",Hectares,1
+2011,"Powell River, British Columbia [CD590127000]","Asparagus, non-producing",Hectares,0
+2011,"Powell River, British Columbia [CD590127000]",Other vegetables,Hectares,5
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Sweet corn,Hectares,947
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Tomatoes,Hectares,16
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Cucumbers,Hectares,61
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Green peas,Hectares,272
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Green and wax beans,Hectares,704
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Cabbage,Hectares,212
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Chinese cabbage,Hectares,154
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Cauliflower,Hectares,53
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Broccoli,Hectares,305
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Brussels sprouts,Hectares,299
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Carrots,Hectares,189
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Rutabagas and turnips,Hectares,102
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Beets,Hectares,106
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Radishes,Hectares,33
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Shallots and green onions,Hectares,32
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]","Dry onions, yellow, Spanish, cooking, etc.",Hectares,8
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Celery,Hectares,3
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Lettuce,Hectares,184
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Spinach,Hectares,51
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Peppers,Hectares,59
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Pumpkins,Hectares,263
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Squash and zucchini,Hectares,288
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]","Asparagus, producing",Hectares,4
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]","Asparagus, non-producing",Hectares,1
+2011,"Lower Mainland-Southwest, British Columbia [CAR590200000]",Other vegetables,Hectares,366
