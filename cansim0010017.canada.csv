@@ -9,6 +9,16 @@ Ref_Date,GEO,HAR,TYP,Value
 2009,Canada,Seeded area (hectares),"Beans, all dry (white and coloured)",121800
 2010,Canada,Seeded area (hectares),"Beans, all dry (white and coloured)",134000
 2011,Canada,Seeded area (hectares),"Beans, all dry (white and coloured)",80100
+2002,Canada,Seeded area (hectares),Chick peas,192200
+2003,Canada,Seeded area (hectares),Chick peas,62700
+2004,Canada,Seeded area (hectares),Chick peas,46600
+2005,Canada,Seeded area (hectares),Chick peas,78800
+2006,Canada,Seeded area (hectares),Chick peas,129100
+2007,Canada,Seeded area (hectares),Chick peas,174000
+2008,Canada,Seeded area (hectares),Chick peas,44400
+2009,Canada,Seeded area (hectares),Chick peas,42400
+2010,Canada,Seeded area (hectares),Chick peas,82900
+2011,Canada,Seeded area (hectares),Chick peas,47500
 2002,Canada,Seeded area (hectares),Corn for grain,1299300
 2003,Canada,Seeded area (hectares),Corn for grain,1264600
 2004,Canada,Seeded area (hectares),Corn for grain,1184800
@@ -19,6 +29,36 @@ Ref_Date,GEO,HAR,TYP,Value
 2009,Canada,Seeded area (hectares),Corn for grain,1230600
 2010,Canada,Seeded area (hectares),Corn for grain,1246500
 2011,Canada,Seeded area (hectares),Corn for grain,1291600
+2002,Canada,Seeded area (hectares),Flaxseed,692000
+2003,Canada,Seeded area (hectares),Flaxseed,744600
+2004,Canada,Seeded area (hectares),Flaxseed,700000
+2005,Canada,Seeded area (hectares),Flaxseed,760800
+2006,Canada,Seeded area (hectares),Flaxseed,804800
+2007,Canada,Seeded area (hectares),Flaxseed,528000
+2008,Canada,Seeded area (hectares),Flaxseed,631300
+2009,Canada,Seeded area (hectares),Flaxseed,681900
+2010,Canada,Seeded area (hectares),Flaxseed,370300
+2011,Canada,Seeded area (hectares),Flaxseed,299300
+2002,Canada,Seeded area (hectares),Lentils,540200
+2003,Canada,Seeded area (hectares),Lentils,513400
+2004,Canada,Seeded area (hectares),Lentils,738400
+2005,Canada,Seeded area (hectares),Lentils,802800
+2006,Canada,Seeded area (hectares),Lentils,566500
+2007,Canada,Seeded area (hectares),Lentils,580800
+2008,Canada,Seeded area (hectares),Lentils,706200
+2009,Canada,Seeded area (hectares),Lentils,973300
+2010,Canada,Seeded area (hectares),Lentils,1394200
+2011,Canada,Seeded area (hectares),Lentils,1035000
+2002,Canada,Seeded area (hectares),"Rye, all",159900
+2003,Canada,Seeded area (hectares),"Rye, all",246400
+2004,Canada,Seeded area (hectares),"Rye, all",258200
+2005,Canada,Seeded area (hectares),"Rye, all",207600
+2006,Canada,Seeded area (hectares),"Rye, all",276200
+2007,Canada,Seeded area (hectares),"Rye, all",167900
+2008,Canada,Seeded area (hectares),"Rye, all",168000
+2009,Canada,Seeded area (hectares),"Rye, all",167900
+2010,Canada,Seeded area (hectares),"Rye, all",131500
+2011,Canada,Seeded area (hectares),"Rye, all",123500
 2002,Canada,Seeded area (hectares),Soybeans,1030300
 2003,Canada,Seeded area (hectares),Soybeans,1052800
 2004,Canada,Seeded area (hectares),Soybeans,1223000
@@ -39,6 +79,16 @@ Ref_Date,GEO,HAR,TYP,Value
 2009,Canada,Production (metric tonnes),"Beans, all dry (white and coloured)",225000
 2010,Canada,Production (metric tonnes),"Beans, all dry (white and coloured)",253500
 2011,Canada,Production (metric tonnes),"Beans, all dry (white and coloured)",162500
+2002,Canada,Production (metric tonnes),Chick peas,144500
+2003,Canada,Production (metric tonnes),Chick peas,67600
+2004,Canada,Production (metric tonnes),Chick peas,51200
+2005,Canada,Production (metric tonnes),Chick peas,103900
+2006,Canada,Production (metric tonnes),Chick peas,163200
+2007,Canada,Production (metric tonnes),Chick peas,224800
+2008,Canada,Production (metric tonnes),Chick peas,67000
+2009,Canada,Production (metric tonnes),Chick peas,75500
+2010,Canada,Production (metric tonnes),Chick peas,128300
+2011,Canada,Production (metric tonnes),Chick peas,85600
 2002,Canada,Production (metric tonnes),Corn for grain,8998800
 2003,Canada,Production (metric tonnes),Corn for grain,9587300
 2004,Canada,Production (metric tonnes),Corn for grain,8836800
@@ -49,6 +99,36 @@ Ref_Date,GEO,HAR,TYP,Value
 2009,Canada,Production (metric tonnes),Corn for grain,9796200
 2010,Canada,Production (metric tonnes),Corn for grain,12043300
 2011,Canada,Production (metric tonnes),Corn for grain,11358700
+2002,Canada,Production (metric tonnes),Flaxseed,679400
+2003,Canada,Production (metric tonnes),Flaxseed,754400
+2004,Canada,Production (metric tonnes),Flaxseed,516900
+2005,Canada,Production (metric tonnes),Flaxseed,990600
+2006,Canada,Production (metric tonnes),Flaxseed,988800
+2007,Canada,Production (metric tonnes),Flaxseed,633500
+2008,Canada,Production (metric tonnes),Flaxseed,861100
+2009,Canada,Production (metric tonnes),Flaxseed,914900
+2010,Canada,Production (metric tonnes),Flaxseed,418500
+2011,Canada,Production (metric tonnes),Flaxseed,398900
+2002,Canada,Production (metric tonnes),Lentils,328000
+2003,Canada,Production (metric tonnes),Lentils,484600
+2004,Canada,Production (metric tonnes),Lentils,915800
+2005,Canada,Production (metric tonnes),Lentils,1164300
+2006,Canada,Production (metric tonnes),Lentils,692800
+2007,Canada,Production (metric tonnes),Lentils,733900
+2008,Canada,Production (metric tonnes),Lentils,1043200
+2009,Canada,Production (metric tonnes),Lentils,1530200
+2010,Canada,Production (metric tonnes),Lentils,2004800
+2011,Canada,Production (metric tonnes),Lentils,1573500
+2002,Canada,Production (metric tonnes),"Rye, all",133800
+2003,Canada,Production (metric tonnes),"Rye, all",327100
+2004,Canada,Production (metric tonnes),"Rye, all",397500
+2005,Canada,Production (metric tonnes),"Rye, all",330400
+2006,Canada,Production (metric tonnes),"Rye, all",382900
+2007,Canada,Production (metric tonnes),"Rye, all",252000
+2008,Canada,Production (metric tonnes),"Rye, all",297200
+2009,Canada,Production (metric tonnes),"Rye, all",280500
+2010,Canada,Production (metric tonnes),"Rye, all",237400
+2011,Canada,Production (metric tonnes),"Rye, all",241400
 2002,Canada,Production (metric tonnes),Soybeans,2335700
 2003,Canada,Production (metric tonnes),Soybeans,2273300
 2004,Canada,Production (metric tonnes),Soybeans,3043900

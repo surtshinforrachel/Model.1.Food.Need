@@ -15,20 +15,19 @@ Created on Fri Nov 17 12:00:22 2017
 #YIELD DATA
 
 import pandas as pd
-import numpy as np
 from fuzzywuzzy import process
 
 #CONVERSTION FACTORS
-tons_to_tonnes = 1.10231
-acres_to_hectares = 2.47105
-thousand_sq_ft_to_hectare = (107639/1000)
-hundred_weight_to_tonne = 19.6841
+tons_to_tonnes = 0.907185
+acres_to_hectares = 0.404686
+thousand_sq_ft_to_hectare = 0.0092903
+hundred_weight_x1k_to_tonne = 50.8
 kg_to_tonne = 1000
 sq_m_to_hectare = 10000
 
                                 #BC YIELD DATA
 fieldcrops = pd.read_csv('cansim0010017.csv', header = 0)
-canadafieldcrops = pd.read_csv('cansim0010017.canada.csv', header = 0)#For corn for grain, soybeans, and beans, all dry
+canadafieldcrops = pd.read_csv('cansim0010017.canada.csv', header = 0)#For beans, all dry, chickpeas, corn for grain, flaxseed, lentils, rye all, soybeans
 fieldcrops = fieldcrops.append(canadafieldcrops)
 fieldcrops.columns = ['date', 'geo', 'unit', 'crop', 'value']
 
@@ -59,9 +58,10 @@ for i in range(len(potcrops['value'])):
         potcrops.ix[i, 3] = (potcrops.ix[i, 3].astype(float))*acres_to_hectares
         potcrops.ix[i, 2] = 'Hectares'
     if potcrops['unit'][i] == 'Production, potatoes (hundredweight x 1,000)':
-        potcrops.ix[i, 3] = (potcrops.ix[i, 3].astype(float))*hundred_weight_to_tonne
+        potcrops.ix[i, 3] = ((potcrops.ix[i, 3].astype(float))*hundred_weight_x1k_to_tonne)
         potcrops.ix[i, 2] = 'Tonnes'
 potcrops['crop'] = 'Potatoes'
+
 #Have to get data from 1996
 mushcrops = pd.read_csv('cansim0010012.csv', header = 0)
 mushcrops.columns = ['date', 'geo', 'unit', 'value']
@@ -96,10 +96,13 @@ allcrops['tonnes_per_hec'] = allcrops['tonnes']/allcrops['hectares']
 ten_yr_ave = allcrops.groupby('crop')['hectares', 'tonnes', 'tonnes_per_hec'].mean().reset_index()
 
 baseline_yr = 2011
-baseline = allcrops.loc[allcrops['date']== baseline_yr]
+baseline_yield = allcrops.loc[allcrops['date']== baseline_yr]
 
 mushroom_exception = pd.DataFrame(ten_yr_ave.loc[ten_yr_ave['crop']== 'Mushrooms'])
-baseline = baseline.append(mushroom_exception).reset_index(drop = True)
+drypeas_exception = pd.DataFrame(ten_yr_ave.loc[ten_yr_ave['crop']== 'Peas, dry'])
+mixedgrains_exception = pd.DataFrame(ten_yr_ave.loc[ten_yr_ave['crop']== 'Mixed grains'])
+frames = [mushroom_exception, drypeas_exception, mixedgrains_exception]
+baseline_yield = baseline_yield.append(frames).reset_index(drop = True)
 
 
                                 #SWBC LAND USE DATA
@@ -111,34 +114,58 @@ veg_land = pd.read_csv('cansim0040215.2011.csv', header = 0)
 veg_land.columns = ['date', 'geo', 'crop', 'unit', 'SWBC hectares planted']
 greenmush_land = pd.read_csv('cansim0040217.2011.csv', header = 0)
 greenmush_land.columns = ['date', 'geo', 'crop', 'unit', 'SWBC hectares planted']
-pot_land = pd.read_csv('cansim0040213.2011.2.csv', header = 0)
-pot_land.columns = ['date', 'geo', 'crop', 'unit', 'SWBC hectares planted']
 
-frames = [field_land, fruit_land, veg_land, greenmush_land, pot_land]
+frames = [field_land, fruit_land, veg_land, greenmush_land]
 allcropland = pd.concat(frames, ignore_index =True) 
 allcropland.ix[:, 4] = allcropland.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 allcropland = allcropland.groupby('crop')['SWBC hectares planted'].sum().reset_index()
 
 
-                                #FUZZY STRING MATCHING
-                                
+                                #MANUAL MATCHING
+baseline_yield.loc[baseline_yield['crop']== 'Tame hay','crop'] = 'Tame hay'
+baseline_yield.loc[baseline_yield['crop']== 'Wheat, all', 'crop'] = 'Total wheat'
+baseline_yield.loc[baseline_yield['crop']== 'Cherries (sour) total area', 'crop'] = 'Repeat'
+baseline_yield.loc[baseline_yield['crop']== 'Beans, green or wax', 'crop'] = 'Beans, green and wax'
+baseline_yield.loc[(baseline_yield['crop']== 'Cabbage, Chinese (bok-choy, napa, etcetera)', 'crop')] = 'Repeated crop'
+baseline_yield.loc[(allcrops['crop']== 'Cabbage, regular', 'crop')] = 'Repeated crop'
+
+allcropland.loc[(allcropland['crop']== 'Asparagus, producing', 'crop')] = 'Asparagus'
+allcropland.loc[(allcropland['crop']== 'Asparagus, non-producing', 'crop')] = 'Asparagus'
+allcropland.loc[(allcropland['crop']== 'Chinese cabbage', 'crop')] = 'Cabbage'
+allcropland.loc[(allcropland['crop']== 'All other tame hay and fodder crops', 'crop')] = 'Tame hay and fodder'
+allcropland.loc[(allcropland['crop']== 'Canola (rapeseed)', 'crop')] = 'Canola'
+allcropland.loc[(allcropland['crop']== 'Total growing area for mushrooms', 'crop')] = 'Mushrooms'
+allcropland.loc[(allcropland['crop']== 'Dry white beans', 'crop')] = 'Beans, all dry'
+allcropland.loc[(allcropland['crop']== 'Other dry beans', 'crop')] = 'Beans, all dry'
+allcropland.loc[(allcropland['crop']== 'Peaches total area', 'crop')] = 'Peaches'
+allcropland.loc[(allcropland['crop']== 'Dry field peas', 'crop')] = 'Peas, dry'
+allcropland.loc[(allcropland['crop']== 'Total rye', 'crop')] = 'Rye, all'
+
+frame1 = pd.DataFrame(allcropland.loc[allcropland['crop']== 'Greenhouse vegetables'])
+frame2 = pd.DataFrame(allcropland.loc[allcropland['crop']== 'Greenhouse vegetables'])
+frame3 = pd.DataFrame(allcropland.loc[allcropland['crop']== 'Greenhouse vegetables'])
+frame1['SWBC hectares planted'] = (allcropland.loc[allcropland['crop']== 'Greenhouse vegetables', 'SWBC hectares planted']/3)
+frame1['crop'] = 'Fresh tomatoes, greenhouse'
+frame2['SWBC hectares planted'] = (allcropland.loc[allcropland['crop']== 'Greenhouse vegetables', 'SWBC hectares planted']/3)
+frame2['crop'] = 'Fresh cucumbers, greenhouse'
+frame3['SWBC hectares planted'] = (allcropland.loc[allcropland['crop']== 'Greenhouse vegetables', 'SWBC hectares planted']/3)
+frame3['crop'] = 'Fresh peppers, greenhouse'
+frames = [frame1, frame2, frame3]
+allcropland = allcropland.append(frames)
+allcropland = allcropland.groupby('crop')['SWBC hectares planted'].sum().reset_index()
+                           #FUZZY STRING MATCHING                         
 allland2 = allcropland['crop'].copy()
-allcrops2 = allcrops['crop'].copy()
+allyields2 = baseline_yield['crop'].copy()
 fuzzmatch = allland2.copy()
-for i in range(len(allcrops2)):
-    match = process.extractOne(allcrops2[i], allland2, score_cutoff = 90)
+for i in range(len(allland2)):
+    match = process.extractOne(allland2[i], allyields2, score_cutoff = 90)
     if match is None:
         fuzzmatch[i] = match
     else:
         fuzzmatch[i] = match[0]
 fuzzmatch = pd.DataFrame(fuzzmatch)
-
-allcrops['crop'] = fuzzmatch
-allcrops = pd.merge(left=allcrops, right = allcropland, left_on = 'crop', right_on = 'crop')
-
-#allcrops.ix[:, 1:3] = allcrops.ix[:, 1:3].astype(float) #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-#field_table['SWBC yield'] = ((field_table['tonnes']/field_table['hectares']) * field_table['value'])
-
-
+allcropland['crop'] = fuzzmatch
+allcrops = pd.merge(left=baseline_yield, right = allcropland, left_on = 'crop', right_on = 'crop')
+allcrops['SWBC tonnes'] = allcrops['tonnes_per_hec']*allcrops['SWBC hectares planted']
 
 
