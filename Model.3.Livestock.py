@@ -215,11 +215,7 @@ hec_per_tonne['headpercommodity - no imports'] = ((1/hec_per_tonne['Yield(T/ha) 
 #ERROR - NO DIFFERENCE BETWEEN IMPORTS AND NO IMPORTS RESULTS
 hec_per_tonne.to_csv('livestockhecpertonne.csv')
 
-
-
-
-
-                                        #REDO
+                                 #REDO
 # Land Req/Aninal * Commodity/Animal = Land Req/Commodity
 
 newmethod = pd.read_csv('livestock.newmethod.csv', header = 0)
@@ -237,8 +233,8 @@ head_livestock.loc[head_livestock['LIVE']== 'Total cattle and calves', 'LIVE'] =
 head_livestock.loc[head_livestock['LIVE']== 'Total sheep and lambs', 'LIVE'] = 'Lamb'
 head_livestock.loc[head_livestock['LIVE']== 'Total pigs', 'LIVE'] = 'Pork'
 head_livestock.loc[head_livestock['LIVE']== 'Turkeys', 'LIVE'] = 'Turkey'
-head_livestock.loc[head_livestock['LIVE']== 'Broilers, roasters and Cornish', 'LIVE'] = 'Chicken'
-head_livestock.loc[head_livestock['LIVE']== 'Total cows', 'LIVE'] = 'Milk'
+head_livestock.loc[head_livestock['LIVE']== 'Total hens and chickens', 'LIVE'] = 'Chicken'
+head_livestock.loc[head_livestock['LIVE']== 'Total cows', 'LIVE'] = 'Dairy'
 head_livestock.loc[head_livestock['LIVE']== 'Laying hens, 19 weeks and over, that produce table eggs', 'LIVE'] = 'Eggs'
 
 livestock = pd.merge(left=newmethod, right = head_livestock, left_on=['livestock'], right_on =['LIVE'], how = 'inner')

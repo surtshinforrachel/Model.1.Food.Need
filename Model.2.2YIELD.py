@@ -174,7 +174,8 @@ frame3['crop'] = 'Fresh peppers, greenhouse'
 frames = [frame1, frame2, frame3]
 allcropland = allcropland.append(frames)
 allcropland = allcropland.groupby('crop')['SWBC hectares planted'].sum().reset_index()
-                           #FUZZY STRING MATCHING                         
+                           
+#FUZZY STRING MATCHING                         
 allland2 = allcropland['crop'].copy()
 allyields2 = baseline_yield['crop'].copy()
 fuzzmatch = allland2.copy()
