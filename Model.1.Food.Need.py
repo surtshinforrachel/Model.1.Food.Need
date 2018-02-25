@@ -38,21 +38,27 @@ agegroup2 = popg.loc[(popg['age'] == 4) | (popg['age'] == 5)| (popg['age'] == 6)
 agegroup2 = agegroup2['value'].sum()
 agegroup3 = popg.loc[(popg['age'] == 9) | (popg['age'] == 10)| (popg['age'] == 11) | (popg['age'] == 12) | (popg['age'] == 13)]
 agegroup3 = agegroup3['value'].sum()
-agegroup4 = popg.loc[((popg['sex'] == 'Females') & (popg['age'] == 14) | (popg['age'] == 15)| (popg['age'] == 16) | (popg['age'] == 17) | (popg['age'] == 18))]
+agegroup4 = popg.loc[((popg['age'] == 14) | (popg['age'] == 15)| (popg['age'] == 16) | (popg['age'] == 17) | (popg['age'] == 18))]
+agegroup4 = agegroup4.loc[(popg['sex'] == 'Females')]
 agegroup4 = agegroup4['value'].sum()
 agegroup5 = popg.loc[((popg['sex'] == 'Females') & (popg['age'] == 19) | (popg['age'] == 20)| (popg['age'] == 21) | (popg['age'] == 22) | (popg['age'] == 23) | (popg['age'] == 24) | (popg['age'] == 25)| (popg['age'] == 26) | (popg['age'] == 27) | (popg['age'] == 28) | (popg['age'] == 29) | (popg['age'] == 30)| (popg['age'] == 31) | (popg['age'] == 32) | (popg['age'] == 33) | (popg['age'] == 34) | (popg['age'] == 35) | (popg['age'] == 36) | (popg['age'] == 37) | (popg['age'] == 38)| (popg['age'] == 39) | (popg['age'] == 40) | (popg['age'] == 41) | (popg['age'] == 42) | (popg['age'] == 43)| (popg['age'] == 44) | (popg['age'] == 45) | (popg['age'] == 46)| (popg['age'] == 47)| (popg['age'] == 48) | (popg['age'] == 49) | (popg['age'] == 50))]
+agegroup5 = agegroup5.loc[(popg['sex'] == 'Females')]
 agegroup5 = agegroup5['value'].sum()
 agegroup6 = popg.loc[((popg['sex'] == 'Females') & (popg['age'] == 51) | (popg['age'] == 52)| (popg['age'] == 53) | (popg['age'] == 54) | (popg['age'] == 55) | (popg['age'] == 56) | (popg['age'] == 57)| (popg['age'] == 58) | (popg['age'] == 59) | (popg['age'] == 60) | (popg['age'] == 61) | (popg['age'] == 62)| (popg['age'] == 63) | (popg['age'] == 64) | (popg['age'] == 65) | (popg['age'] == 66) | (popg['age'] == 67) | (popg['age'] == 68) | (popg['age'] == 69) | (popg['age'] == 70)| (popg['age'] == 71) | (popg['age'] == 72) | (popg['age'] == 73) | (popg['age'] == 74) | (popg['age'] == 75)| (popg['age'] == 76) | (popg['age'] == 77) | (popg['age'] == 78)| (popg['age'] == 79)| (popg['age'] == 80) | (popg['age'] == 81) | (popg['age'] == 82)| (popg['age'] == 83)| (popg['age'] == 84) | (popg['age'] == 85) | (popg['age'] == 86)| (popg['age'] == 87)| (popg['age'] == 88) | (popg['age'] == 89))]
+agegroup6 = agegroup6.loc[(popg['sex'] == 'Females')]
 agegroup6 = agegroup6['value'].sum()
 agegroup7 = popg.loc[((popg['sex'] == 'Males') & (popg['age'] == 14) | (popg['age'] == 15)| (popg['age'] == 16) | (popg['age'] == 17) | (popg['age'] == 18))]
+agegroup7 = agegroup7.loc[(popg['sex'] == 'Males')]
 agegroup7 = agegroup7['value'].sum()
 agegroup8 = popg.loc[((popg['sex'] == 'Males') & (popg['age'] == 19) | (popg['age'] == 20)| (popg['age'] == 21) | (popg['age'] == 22) | (popg['age'] == 23) | (popg['age'] == 24) | (popg['age'] == 25)| (popg['age'] == 26) | (popg['age'] == 27) | (popg['age'] == 28) | (popg['age'] == 29) | (popg['age'] == 30)| (popg['age'] == 31) | (popg['age'] == 32) | (popg['age'] == 33) | (popg['age'] == 34) | (popg['age'] == 35) | (popg['age'] == 36) | (popg['age'] == 37) | (popg['age'] == 38)| (popg['age'] == 39) | (popg['age'] == 40) | (popg['age'] == 41) | (popg['age'] == 42) | (popg['age'] == 43)| (popg['age'] == 44) | (popg['age'] == 45) | (popg['age'] == 46)| (popg['age'] == 47)| (popg['age'] == 48) | (popg['age'] == 49) | (popg['age'] == 50))]
+agegroup8 = agegroup8.loc[(popg['sex'] == 'Males')]
 agegroup8 = agegroup8['value'].sum()
 agegroup9 = popg.loc[((popg['sex'] == 'Males') & (popg['age'] == 51) | (popg['age'] == 52)| (popg['age'] == 53) | (popg['age'] == 54) | (popg['age'] == 55) | (popg['age'] == 56) | (popg['age'] == 57)| (popg['age'] == 58) | (popg['age'] == 59) | (popg['age'] == 60) | (popg['age'] == 61) | (popg['age'] == 62)| (popg['age'] == 63) | (popg['age'] == 64) | (popg['age'] == 65) | (popg['age'] == 66) | (popg['age'] == 67) | (popg['age'] == 68) | (popg['age'] == 69) | (popg['age'] == 70)| (popg['age'] == 71) | (popg['age'] == 72) | (popg['age'] == 73) | (popg['age'] == 74) | (popg['age'] == 75)| (popg['age'] == 76) | (popg['age'] == 77) | (popg['age'] == 78)| (popg['age'] == 79)| (popg['age'] == 80) | (popg['age'] == 81) | (popg['age'] == 82)| (popg['age'] == 83)| (popg['age'] == 84) | (popg['age'] == 85) | (popg['age'] == 86)| (popg['age'] == 87)| (popg['age'] == 88) | (popg['age'] == 89))]
+agegroup9 = agegroup9.loc[(popg['sex'] == 'Males')]
 agegroup9 = agegroup9['value'].sum()
 allgroups = [agegroup1, agegroup2, agegroup3, agegroup4, agegroup5, agegroup6, agegroup7, agegroup8, agegroup9]
 #NUMBER OF PEOPLE IN EACH AGE GROUP
-    
+
 #DIETARY RECOMMENDATION CLEANING
 rec = pd.read_csv('diet.csv', header = 0)
 rec = rec.pivot(index = 'Age', columns = 'Food Group', values = 'Servings/Year')
@@ -87,20 +93,23 @@ avail.columns = ['commodity', 'kg/person'] #name first column header 'commodity'
 avail.ix[:, 1] = avail.ix[:, 1].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 avail = avail.dropna(axis=0, how='any')  #if value is NA, delete that row
 avail['commodity'] = avail['commodity'].astype(str) #turn all commodities to strings
-ommit_list = [ "Sugar refined", "Maple sugar", "Honey", "Dry", "Tea", "Coffee", "Cocoa", "Ale", "Distilled", "Wines", "Soft", "Bottled", "Cider", "whey", "Sweetened", "Milkshake", "cream", "Sherbert", "Ice milk", "drink", "stewing", "Chicken, boneless weight", "Stewing hen, boneless weight", "Beef and veal", "Other fresh berries", "musk", "Other fresh melons", "Watermelons", "Wintermelons", "Quinces", "Fruits not specified", "Oranges fresh", "Lemons fresh", "Grapefruits fresh", "Limes fresh", "Mandarins fresh", "Other citrus fresh", "Chinese cabbage", "Other edible roots fresh", "leguminous", "Olives fresh", "Potatoes chips", "Potatoes total", "Potatoes white fresh and processed", "Vegetables not specified", 'Guavas']
+ommit_list = [ "Beef, boneless weight", "Veal, boneless weight", "Chicken, boneless weight", "Stewing hen, boneless weight", "Sugar refined", "Maple sugar", "Honey", "Dry", "Tea", "Coffee", "Cocoa", "Ale", "Distilled", "Wines", "Soft", "Bottled", "Cider", "whey", "Sweetened", "Milkshake", "cream", "Sherbert", "Ice milk", "drink", "Other fresh berries", "musk", "Other fresh melons", "Watermelons", "Wintermelons", "Quinces", "Fruits not specified", "Oranges fresh", "Lemons fresh", "Grapefruits fresh", "Limes fresh", "Mandarins fresh", "Other citrus fresh", "Chinese cabbage", "Other edible roots fresh", "leguminous", "Olives fresh", "Potatoes chips", "Potatoes total", "Potatoes white fresh and processed", "Vegetables not specified", 'Guavas']
 avail = avail[~avail['commodity'].str.contains('|'.join(ommit_list))] #remove every row for which column 1 contains strings from caitlyn's list
 insufficient_data = ['Tree nuts', 'Melons total fresh', 'Kiwis', 'Nectarines', 'Artichokes', 'Eggplant', 'Kohlrabi', 'Garlic', 'Leeks', 'Okra', 'Parsley', 'Parsnips', 'Rappini']
 avail = avail[~avail['commodity'].str.contains('|'.join(insufficient_data))] #remove every row for which column 1 contains strings from the commodities without sufficent units data
 #RENAME ROWS THAT WILL BE COMBINED
 avail.loc[avail['commodity']== 'Breakfast food','commodity'] = 'Oatmeal and rolled oats'
-avail.loc[(avail['commodity']== 'Beef, boneless weight') | (avail['commodity']== 'Veal, boneless weight') ,'commodity'] = 'Beef and veal, boneless weight'
+#avail.loc[(avail['commodity']== 'Beef, boneless weight') | (avail['commodity']== 'Veal, boneless weight') ,'commodity'] = 'Beef and veal, boneless weight'
 avail.loc[(avail['commodity']== 'Broccoli frozen (5)') | (avail['commodity']== 'Cauliflower frozen') ,'commodity'] = 'Broccoli & Cauliflower frozen'
 avail.loc[(avail['commodity']== 'Baked and canned beans') | (avail['commodity']== 'Lima beans frozen') ,'commodity'] = 'Baked and canned beans and lima beans'
+
+
+
 #COMBINE ROWS WITH THE SAME 'commodity' NAME
 avail = avail.groupby('commodity', as_index=False).sum() 
 
 #MERGE avail AND units TABLES 
-big_table = pd.merge(left=avail, right=units, left_on='commodity', right_on='Food Name (CANSIM Adjusted for waste)') #took out , how='outer' for inner join showing only matched rows
+big_table = pd.merge(left=avail, right=units, left_on='commodity', right_on='Food Name (CANSIM Adjusted for waste)', how = 'outer') #took out , how='outer' for inner join showing only matched rows
 big_table.columns = ['commodity', 'kg/person', 'name', 'group', 'serving', 'reference', 'waste', 'conversion', 'season' ] #name first column header 'commodity' and name second column header 'value'
 big_table['servings/person'] = (big_table['kg/person']*1000) / (big_table['reference'])
 big_table = big_table[['commodity', 'kg/person', 'servings/person', 'name', 'group', 'serving', 'reference', 'waste', 'conversion', 'season']]
@@ -151,11 +160,59 @@ big_table['diet and seasonality constraint'] = ((big_table['SWBC Food Need (tonn
 big_table.to_csv('foodneedresults.csv')
 
 foodneed_bygroup = pd.DataFrame(big_table.groupby('group')['SWBC Food Need (tonnes)'].sum())
+big_table = big_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
+print(sum(big_table['percent of group']))
 
 
 
 
+
+                    #FOOD NEED WITHOUT BALANCING TO DIETARY RECOMMENDATION
 #
+#tonnesoffood = sum(big_table['SWBC Food Need (tonnes)'])
+#print(sum(big_table['percent of group']))
+#print(sum(big_table['SWBC Food Need (tonnes)']))
+#
+##UNITS TABLE
+#units = pd.read_csv('units.csv', header = 0)
+#
+##AVAILABILITY DATA CLEANING
+#avail = pd.read_csv('cansim0020011.csv', header = 0)
+#avail = avail.drop(['Geography', 'Food categories'], axis = 1) #delete first three columns
+#avail.columns = ['commodity', 'kg/person'] #name first column header 'commodity' and name second column header 'kg/person'
+#avail.ix[:, 1] = avail.ix[:, 1].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+#avail = avail.dropna(axis=0, how='any')  #if value is NA, delete that row
+#avail['commodity'] = avail['commodity'].astype(str) #turn all commodities to strings
+#ommit_list = [ "Sugar refined", "Maple sugar", "Honey", "Dry", "Tea", "Coffee", "Cocoa", "Ale", "Distilled", "Wines", "Soft", "Bottled", "Cider", "whey", "Sweetened", "Milkshake", "cream", "Sherbert", "Ice milk", "drink", "stewing", "Chicken, boneless weight", "Stewing hen, boneless weight", "Beef and veal", "Other fresh berries", "musk", "Other fresh melons", "Watermelons", "Wintermelons", "Quinces", "Fruits not specified", "Oranges fresh", "Lemons fresh", "Grapefruits fresh", "Limes fresh", "Mandarins fresh", "Other citrus fresh", "Chinese cabbage", "Other edible roots fresh", "leguminous", "Olives fresh", "Potatoes chips", "Potatoes total", "Potatoes white fresh and processed", "Vegetables not specified", 'Guavas']
+#avail = avail[~avail['commodity'].str.contains('|'.join(ommit_list))] #remove every row for which column 1 contains strings from caitlyn's list
+#insufficient_data = ['Tree nuts', 'Melons total fresh', 'Kiwis', 'Nectarines', 'Artichokes', 'Eggplant', 'Kohlrabi', 'Garlic', 'Leeks', 'Okra', 'Parsley', 'Parsnips', 'Rappini']
+#avail = avail[~avail['commodity'].str.contains('|'.join(insufficient_data))] #remove every row for which column 1 contains strings from the commodities without sufficent units data
+##RENAME ROWS THAT WILL BE COMBINED
+#avail.loc[avail['commodity']== 'Breakfast food','commodity'] = 'Oatmeal and rolled oats'
+#avail.loc[(avail['commodity']== 'Beef, boneless weight') | (avail['commodity']== 'Veal, boneless weight') ,'commodity'] = 'Beef and veal, boneless weight'
+#avail.loc[(avail['commodity']== 'Broccoli frozen (5)') | (avail['commodity']== 'Cauliflower frozen') ,'commodity'] = 'Broccoli & Cauliflower frozen'
+#avail.loc[(avail['commodity']== 'Baked and canned beans') | (avail['commodity']== 'Lima beans frozen') ,'commodity'] = 'Baked and canned beans and lima beans'
+##COMBINE ROWS WITH THE SAME 'commodity' NAME
+#avail = avail.groupby('commodity', as_index=False).sum() 
+#
+##MERGE avail AND units TABLES 
+#big_table = pd.merge(left=avail, right=units, left_on='commodity', right_on='Food Name (CANSIM Adjusted for waste)') #took out , how='outer' for inner join showing only matched rows
+#big_table.columns = ['commodity', 'kg/person', 'name', 'group', 'serving', 'reference', 'waste', 'conversion', 'season' ] #name first column header 'commodity' and name second column header 'value'
+#big_table['servings/person'] = (big_table['kg/person']*1000) / (big_table['reference'])
+#big_table = big_table[['commodity', 'kg/person', 'servings/person', 'name', 'group', 'serving', 'reference', 'waste', 'conversion', 'season']]
+#
+#big_table['Food Need'] = ((big_table['kg/person']*.001)*big_table['waste']*big_table['conversion']*total_pop)
+#big_table['diet and seasonality constraint'] = ((big_table['Food Need']/12)*big_table['season'])
+#big_table.ix[:, 10:11] = big_table.ix[:, 10:11].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+#big_table = big_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
+#print(sum(big_table['Food Need']))
+#print(sum(big_table['kg/person'])*.001)
+#big_table['incwaste'] = big_table['balanced rec(t)']*big_table['waste']
+#big_table['Food Need (tonnes)/person'] = big_table['incwaste']*big_table['conversion']
+#big_table['SWBC Food Need (tonnes)'] = big_table['Food Need (tonnes)/person']* total_pop
+#big_table['diet and seasonality constraint'] = ((big_table['SWBC Food Need (tonnes)']/12)*big_table['season'])
+#big_table.to_csv('foodneedresults.csv')
+
 ## CREATE DIETARY REC FOR EVERY AGE GIVEN IN THE POPULATION DATA
 #pop['Fruit&Veg'] = np.array(pop['sex'])
 #pop['Grains'] = np.array(pop['sex'])

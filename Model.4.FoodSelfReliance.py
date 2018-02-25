@@ -38,8 +38,15 @@ head_livestock.loc[head_livestock['LIVE']== 'Laying hens, 19 weeks and over, tha
 
 livestock = pd.merge(left=newmethod, right = head_livestock, left_on=['livestock'], right_on =['LIVE'], how = 'inner')
 livestock['SWBC yield'] = livestock['commodity_per_head']*livestock['Value']
+
+#livestock.loc[livestock['LIVE']== 'Pork', 'SWBC yield'] = 14196.9387
+#livestock.loc[livestock['LIVE']== 'Turkey', 'SWBC yield'] = 14557.319
+#livestock.loc[livestock['LIVE']== 'Chicken', 'SWBC yield'] = 119486.655
+#
+
 livestock = livestock.drop(['commodity_per_head', 'LIVE', 'Value'], axis = 1)
 livestock.columns = ['crop', 'SWBC yield']
+#livestock = pd.read_csv('livestock.caitlin.csv', header = 0)
 cy = cy.drop(['Unnamed: 0', 'date', 'hectares', 'tonnes', 'tonnes_per_hec', 'SWBC hectares planted'], axis = 1)
 cy.columns = ['crop','SWBC yield']
 cy = cy.append(livestock)
@@ -145,17 +152,14 @@ mymet = (cropsr['SWBC Food Need (tonnes)']*(cropsr['self reliance']/100))
 totalsr = (sum(mymet)/sum(cropsr['SWBC Food Need (tonnes)']))*100
 print(totalsr)
 
-print(sum(mymet))
-print(sum(cropsr['Food Need (t)']))
+#print(sum(mymet))
+#print(sum(cropsr['Food Need (t)']))
+#differences =pd.DataFrame(mymet).copy()
+#differences = differences.append(cropsr['Food Need (t)'])
+#differences['dif'] = differences
+#cropsr['differences'] = (cropsr['Food Need (t)'] - (cropsr['Food Need (t)']*(cropsr['self reliance']/100)))
 
-differences =pd.DataFrame(mymet).copy()
-differences = differences.append(cropsr['Food Need (t)'])
-differences['dif'] = differences
-
-
-cropsr['differences'] = (cropsr['Food Need (t)'] - (cropsr['Food Need (t)']*(cropsr['self reliance']/100)))
-
-
+                            
 
 
 
