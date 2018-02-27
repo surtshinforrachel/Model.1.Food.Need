@@ -1,0 +1,112 @@
+,commodity,kg/person,servings/person,name,group,serving,reference,waste,conversion,season,t/person,SWBC Food Need,diet and seasonality constraint
+0,"Apple juice (litres per person, per year)",4.53,34.58015267175573,"Apple juice (litres per person, per year)",Fruit & Vegetables,125mL,131.0,1.16,1.38,12.0,0.00453,19386.085510655997,19386.085510655997
+1,Apple pie filling,0.08,0.5738880918220947,Apple pie filling,Fruit & Vegetables,125 mL slices,139.4,1.16,1.5,12.0,8e-05,372.12948480000006,372.12948480000006
+2,Apple sauce,0.34,2.637703646237393,Apple sauce,Fruit & Vegetables,125mL,128.9,1.16,1.29,12.0,0.00034,1360.1332669439998,1360.1332669439998
+3,Apples canned,0.18,1.6697588126159555,Apples canned,Fruit & Vegetables,125mL slices,107.8,1.4,2.17,12.0,0.00017999999999999998,1461.8914329599995,1461.8914329599995
+4,Apples dried,0.03,1.3761467889908257,Apples dried,Fruit & Vegetables,60mL,21.8,1.4,8.0,12.0,3e-05,898.2435839999999,898.2435839999998
+5,Apples fresh,8.16,59.00216919739696,Apples fresh,Fruit & Vegetables,1 medium,138.3,1.4,1.0,9.0,0.00816,30540.281856,22905.211392
+6,Apples frozen,0.04,0.437636761487965,Apples frozen,Fruit & Vegetables,125mL slices,91.4,1.4,1.6,12.0,4e-05,239.53162240000003,239.53162240000003
+7,Apricots canned,0.03,0.2336448598130841,Apricots canned,Fruit & Vegetables,125 mL ,128.4,1.16,0.75,12.0,3e-05,69.7742784,69.7742784
+8,Apricots fresh,0.08,0.7619047619047619,Apricots fresh,Fruit & Vegetables,3 fruits,105.0,1.39,1.0,2.0,8e-05,297.2758528,49.54597546666667
+9,Asparagus canned,0.32,2.962962962962963,Asparagus canned,Fruit & Vegetables,6 spears,108.0,1.16,1.19,12.0,0.00032,1180.890898432,1180.890898432
+10,Asparagus fresh,0.28,2.9166666666666665,Asparagus fresh,Fruit & Vegetables,6 spears,96.0,1.79,1.0,2.0,0.00028000000000000003,1339.8800128,223.31333546666667
+11,Avocados fresh,0.53,5.27363184079602,Avocados fresh,Fruit & Vegetables,1/2 fruit,100.5,1.56,1.0,0.0,0.0005300000000000001,2210.3208192,0.0
+12,Baked and canned beans and lima beans,1.07,26.75,Baked and canned beans and lima beans,Meat & Alts,175mL cooked,40.0,1.16,1.0,12.0,0.00107,3318.1545727999996,3318.1545727999996
+13,Bananas fresh,6.75,57.20338983050848,Bananas fresh,Fruit & Vegetables,medium,118.0,1.67,1.0,0.0,0.00675,30135.270239999998,0.0
+14,Beans green and wax canned,0.81,9.83009708737864,Beans green and wax canned,Fruit & Vegetables,125mL,82.4,1.16,0.68,12.0,0.0008100000000000001,1708.0743352319998,1708.074335232
+15,Beans green and wax fresh,0.58,17.956656346749227,Beans green and wax fresh,Fruit & Vegetables,125mL,32.3,1.46,1.0,3.0,0.00058,2263.7876992,565.9469248
+16,Beans green and wax frozen,0.2,3.2102728731942216,Beans green and wax frozen,Fruit & Vegetables,125mL,62.3,1.26,1.19,12.0,0.0002,801.6823987199999,801.6823987199998
+17,"Beef and veal total, boneless weight",11.95,132.77777777777777,"Beef and veal total, boneless weight",Meat & Alts,75 g cooked,90.0,1.39,1.49,12.0,0.011949999999999999,66164.31496287999,66164.31496287999
+18,Beets canned,0.17,1.893095768374165,Beets canned,Fruit & Vegetables,125mL slices,89.8,1.16,1.14,12.0,0.00017,600.9891179519999,600.9891179519999
+19,Beets fresh,0.38,5.285118219749652,Beets fresh,Fruit & Vegetables,125mL,71.9,1.43,1.0,12.0,0.00038,1452.6951296,1452.6951296
+20,Blueberries canned,0.02,0.14792899408284024,Blueberries canned,Fruit & Vegetables,125mL,135.2,1.16,1.0,12.0,2e-05,62.0215808,62.02158080000001
+21,Blueberries fresh,0.99,12.924281984334204,Blueberries fresh,Fruit & Vegetables,125mL,76.6,1.37,1.0,2.0,0.00099,3625.8564672000007,604.3094112000001
+22,Blueberries frozen,0.67,8.18070818070818,Blueberries frozen,Fruit & Vegetables,125mL,81.9,1.16,1.03,12.0,0.00067,2140.0546455040003,2140.0546455040003
+23,Broccoli & Cauliflower frozen,0.59,7.160194174757281,Broccoli & Cauliflower frozen,Fruit & Vegetables,125mL,82.4,1.22,1.33,12.0,0.00059,2559.283104896,2559.283104896
+24,Broccoli fresh,1.03,22.150537634408604,Broccoli fresh,Fruit & Vegetables,125mL chopped,46.5,1.71,1.0,6.0,0.00103,4708.5607872,2354.2803936
+25,Brussels sprouts fresh,0.12,1.5789473684210527,Brussels sprouts fresh,Fruit & Vegetables,4 sprouts,76.0,1.42,1.0,4.0,0.00012,455.5378176,151.8459392
+26,Brussels sprouts frozen,0.05,0.5714285714285714,Brussels sprouts frozen,Fruit & Vegetables,125mL,87.5,1.22,1.33,12.0,5e-05,216.88839872,216.88839872
+27,Butter,2.29,159.02777777777777,Butter,Fats & Oils,15mL,14.4,1.22,7.4984,12.0,0.00229,56003.963442452485,56003.963442452485
+28,"Buttermilk (litres per person, per year)",0.24,0.9266409266409267,"Buttermilk (litres per person, per year)",Milk & Alts,250mL,259.0,1.32,1.03103,12.0,0.00024,873.195163416576,873.195163416576
+29,Cabbage fresh (6),3.03,81.89189189189189,Cabbage fresh (6),Fruit & Vegetables,125mL,37.0,1.52,1.0,8.0,0.0030299999999999997,12312.3531264,8208.235417599999
+30,Carrots canned,0.14,1.8158236057068744,Carrots canned,Fruit & Vegetables,125mL slices,77.1,1.16,1.24,12.0,0.00014000000000000001,538.3473213440001,538.3473213440001
+31,Carrots fresh,5.33,74.02777777777777,Carrots fresh,Fruit & Vegetables,1 large,72.0,1.43,1.0,9.0,0.0053300000000000005,20375.9606336,15281.9704752
+32,Carrots frozen,1.06,15.680473372781066,Carrots frozen,Fruit & Vegetables,125mL slices,67.6,1.18,1.82,12.0,0.0010600000000000002,6085.749988864,6085.749988864
+33,Cauliflower fresh,0.77,14.583333333333334,Cauliflower fresh,Fruit & Vegetables,4 florets,52.8,1.93,1.0,6.0,0.0007700000000000001,3972.8565184000004,1986.4282592000002
+34,Celery fresh,1.88,47.0,Celery fresh,Fruit & Vegetables,1 medium stalk,40.0,1.43,1.0,5.0,0.00188,7187.0180095999995,2994.590837333333
+35,Cheddar cheese,2.71,54.2,Cheddar cheese,Milk & Alts,50g,50.0,1.19,5.90499,12.0,0.00271,50908.49580969734,50908.49580969734
+36,Cherries fresh,0.6,3.658536585365854,Cherries fresh,Fruit & Vegetables,20 fruits,164.0,1.42,1.0,2.0,0.0006,2277.6890879999996,379.61484799999994
+37,Cherries frozen,0.19,1.3888888888888888,Cherries frozen,Fruit & Vegetables,20 fruits,136.8,1.16,1.0,12.0,0.00019,589.2050176,589.2050176
+38,"Chicken and stewing hen total, boneless weight",11.08,123.11111111111111,"Chicken and stewing hen total, boneless weight",Meat & Alts,75 g cooked,90.0,1.47,1.6611111109999999,12.0,0.01108,72328.69423174862,72328.69423174862
+39,Coconut fresh,0.28,6.619385342789599,Coconut fresh,Fruit & Vegetables,125mL ,42.3,1.16,1.0,0.0,0.00028000000000000003,868.3021312000001,0.0
+40,"Concentrated skim milk (litres per person, per year)",0.4,3.007518796992481,"Concentrated skim milk (litres per person, per year)",Milk & Alts,125mL,133.0,1.32,2.15579,12.0,0.0004,3042.9528422092803,3042.9528422092803
+41,"Concentrated whole milk (litres per person, per year)",0.49,3.6842105263157894,"Concentrated whole milk (litres per person, per year)",Milk & Alts,125mL,133.0,1.32,2.6244400000000003,12.0,0.00049,4537.968803816449,4537.968803816449
+42,Corn canned,0.8,9.237875288683604,Corn canned,Fruit & Vegetables,125mL,86.6,1.16,2.39,12.0,0.0008,5929.2631244799995,5929.2631244799995
+43,Corn flour and meal,0.53,26.5,Corn flour and meal,Grains,,20.0,1.32,1.12,12.0,0.0005300000000000001,2094.7040378880006,2094.7040378880006
+44,Corn fresh,0.8,8.88888888888889,Corn fresh,Fruit & Vegetables,1 medium ear,90.0,2.08,1.0,4.0,0.0008,4448.444416,1482.8148053333334
+45,Corn frozen,0.41,4.734411085450347,Corn frozen,Fruit & Vegetables,125mL,86.6,1.2,3.33,12.0,0.00041,4379.899875839999,4379.899875839999
+46,Cottage cheese,0.53,2.217573221757322,Cottage cheese,Milk & Alts,250mL,239.0,1.32,2.06206,12.0,0.0005300000000000001,3856.6119717565443,3856.6119717565443
+47,Cranberries fresh,1.0,19.9203187250996,Cranberries fresh,Fruit & Vegetables,125mL ,50.2,1.37,1.0,2.0,0.001,3662.4812800000004,610.4135466666668
+48,Cucumbers fresh,3.19,50.7154213036566,Cucumbers fresh,Fruit & Vegetables,125mL,62.9,1.59,1.0,9.0,0.00319,13559.468102400002,10169.601076800001
+49,Dates fresh,0.97,38.95582329317269,Dates fresh,Fruit & Vegetables,3 fruits,24.9,1.26,1.0,0.0,0.0009699999999999999,3267.3610367999995,0.0
+50,Eggs (15),9.07,91.58532480954511,Eggs (15),Meat & Alts,2 (see notes),99.03333333,1.22,1.0,12.0,0.00907,29581.6206976,29581.620697599996
+51,Figs fresh,0.29,2.9,Figs fresh,Fruit & Vegetables,2 medium,100.0,1.16,1.0,0.0,0.00029,899.3129216,0.0
+52,"Grape juice (litres per person, per year)",2.61,19.521316379955124,"Grape juice (litres per person, per year)",Fruit & Vegetables,125mL,133.7,1.16,1.24,12.0,0.00261,10036.332205055998,10036.332205055998
+53,"Grapefruit juice (litres per person, per year)",0.33,2.528735632183908,"Grapefruit juice (litres per person, per year)",Fruit & Vegetables,125mL,130.5,1.16,2.08,0.0,0.00033,2128.580653056,0.0
+54,Grapes fresh,3.19,32.55102040816327,Grapes fresh,Fruit & Vegetables,20 fruits,98.0,1.36,1.0,1.0,0.00319,11598.0356096,966.5029674666666
+55,"Lemon juice (litres per person, per year)",0.6,4.654771140418929,"Lemon juice (litres per person, per year)",Fruit & Vegetables,125mL,128.9,1.16,3.0,0.0,0.0006,5581.942271999999,0.0
+56,Lettuce fresh,5.62,94.93243243243242,Lettuce fresh,Fruit & Vegetables,1 cup,59.2,1.505,1.0,6.0,0.00562,22611.410886399997,11305.705443199999
+57,Manioc fresh,0.05,0.4595588235294118,Manioc fresh,Fruit & Vegetables,125mL,108.8,1.55,1.0,0.0,5e-05,207.18416,0.0
+58,Margarine,2.75,190.97222222222223,Margarine,Fats & Oils,15mL,14.4,1.22,2.27,12.0,0.00275,20359.7869024,20359.7869024
+59,Mushrooms canned,0.37,4.490291262135922,Mushrooms canned,Fruit & Vegetables,125mL pieces,82.4,1.16,0.84,12.0,0.00037,963.815365632,963.8153656320001
+60,Mushrooms fresh,1.03,20.31558185404339,Mushrooms fresh,Fruit & Vegetables,125mL,50.7,1.35,1.0,12.0,0.00103,3717.2848320000007,3717.2848320000003
+61,"Mutton and lamb, boneless weight",0.41,4.555555555555555,"Mutton and lamb, boneless weight",Meat & Alts,75 g cooked,90.0,1.43,1.52,12.0,0.00041,2382.420012544,2382.420012544
+62,Oatmeal and rolled oats,4.58,152.66666666666666,Oatmeal and rolled oats,Grains,175mL (cooked),30.0,1.52,1.73,12.0,0.00458,32196.600251392,32196.600251392003
+63,Onions and shallots fresh,4.64,54.9112426035503,Onions and shallots fresh,Fruit & Vegetables,125mL,84.5,1.57,1.0,12.0,0.00464,19474.7763712,19474.7763712
+64,"Orange juice (litres per person, per year)",9.28,70.83969465648855,"Orange juice (litres per person, per year)",Fruit & Vegetables,125mL,131.0,1.16,1.84,0.0,0.00928,52951.544823808006,0.0
+65,Papayas fresh,0.19,1.2459016393442623,Papayas fresh,Fruit & Vegetables,1/2 fruit,152.5,1.65,1.0,0.0,0.00019,838.0933439999999,0.0
+66,"Partly skimmed milk 1% (litres per person, per year)",12.3,47.674418604651166,"Partly skimmed milk 1% (litres per person, per year)",Milk & Alts,250mL,258.0,1.32,1.03103,12.0,0.0123,44751.25212509951,44751.25212509951
+67,"Partly skimmed milk 2% (litres per person, per year)",25.23,97.79069767441861,"Partly skimmed milk 2% (litres per person, per year)",Milk & Alts,250mL,258.0,1.32,1.03103,12.0,0.025230000000000002,91794.64155416755,91794.64155416755
+68,Peaches canned,0.76,5.896043444530644,Peaches canned,Fruit & Vegetables,125mL,128.9,1.16,1.02,12.0,0.00076,2403.956471808,2403.956471808
+69,Peaches fresh,0.54,5.510204081632653,Peaches fresh,Fruit & Vegetables,1 medium,98.0,1.71,1.0,1.0,0.00054,2468.5658496,205.7138208
+70,Peanuts,2.39,64.5945945945946,Peanuts,Meat & Alts,60mL,37.0,1.16,1.0,0.0,0.00239,7411.578905599999,0.0
+71,Pears canned,0.26,2.029664324746292,Pears canned,Fruit & Vegetables,125mL,128.1,1.16,1.13,12.0,0.00026000000000000003,911.097021952,911.097021952
+72,Pears fresh,1.37,8.25301204819277,Pears fresh,Fruit & Vegetables,1 medium,166.0,1.4,1.0,5.0,0.0013700000000000001,5127.473792,2136.4474133333333
+73,Peas canned,0.29,3.2293986636971046,Peas canned,Fruit & Vegetables,125mL,89.8,1.16,0.74,12.0,0.00029,665.491561984,665.491561984
+74,Peas fresh,0.18,2.349869451697128,Peas fresh,Fruit & Vegetables,125mL,76.6,1.46,1.0,2.0,0.00017999999999999998,702.5548031999999,117.09246719999999
+75,Peas frozen,0.6,7.884362680683312,Peas frozen,Fruit & Vegetables,125mL,76.1,1.23,1.09,12.0,0.0006,2150.49138048,2150.49138048
+76,Peppers fresh,2.15,36.134453781512605,Peppers fresh,Fruit & Vegetables,1/2 med,59.5,1.5,1.0,8.0,0.00215,8621.5344,5747.689600000001
+77,"Pineapple juice (litres per person, per year)",0.5,3.785011355034065,"Pineapple juice (litres per person, per year)",Fruit & Vegetables,125mL,132.1,1.16,1.7,0.0,0.0005,2635.917184,0.0
+78,Pineapples canned,0.58,5.631067961165049,Pineapples canned,Fruit & Vegetables,125mL,103.0,1.16,1.72,0.0,0.00058,3093.636450304,0.0
+79,Pineapples fresh,1.09,13.308913308913308,Pineapples fresh,Fruit & Vegetables,125mL,81.9,1.8,1.0,0.0,0.00109,5245.100928000001,0.0
+80,Plums total fresh,0.55,8.333333333333334,Plums total fresh,Fruit & Vegetables,1 fruit,66.0,1.38,1.0,2.0,0.00055,2029.068096,338.178016
+81,"Pork, boneless weight",8.83,98.11111111111111,"Pork, boneless weight",Meat & Alts,75 g cooked,90.0,1.46,1.37,12.0,0.008830000000000001,47215.976165504006,47215.976165504006
+82,Pot and pearl barley,0.26,13.0,Pot and pearl barley,Grains,125mL (cooked),20.0,1.52,1.6,12.0,0.00026000000000000003,1690.4088780800002,1690.4088780800002
+83,Potatoes frozen,6.07,63.0977130977131,Potatoes frozen,Fruit & Vegetables,125mL,96.2,1.71,1.7,12.0,0.006070000000000001,47172.46481856,47172.46481856
+84,Potatoes sweet fresh,0.67,9.530583214793742,Potatoes sweet fresh,Fruit & Vegetables,125mL,70.3,1.68,1.0,0.0,0.00067,3009.1160064,0.0
+85,"Potatoes white fresh (7,8,9)",11.81,149.1161616161616,"Potatoes white fresh (7,8,9)",Fruit & Vegetables,125mL,79.2,1.71,1.0,12.0,0.011810000000000001,53988.4494144,53988.4494144
+86,Powder buttermilk,0.05,2.0,Powder buttermilk,Milk & Alts,75mL,25.0,1.32,9.373,12.0,5e-05,1653.7787185920001,1653.7787185920001
+87,Powder skim milk,0.66,26.4,Powder skim milk,Milk & Alts,75mL,25.0,1.32,8.99808,12.0,0.00066,20956.683921997825,20956.683921997825
+88,Processed cheese,1.64,32.8,Processed cheese,Milk & Alts,50g,50.0,1.19,5.71753,12.0,0.00164,29830.058693856514,29830.05869385651
+89,Pumpkins and squash fresh,1.7,28.475711892797317,Pumpkins and squash fresh,Fruit & Vegetables,125mL,59.7,1.61,1.0,9.0,0.0017,7316.942528,5487.706896
+90,Radishes fresh,0.4,6.525285481239805,Radishes fresh,Fruit & Vegetables,125mL,61.3,1.42,1.0,7.0,0.0004,1518.4593920000002,885.7679786666669
+91,Raspberries frozen,0.3,2.2710068130204393,Raspberries frozen,Fruit & Vegetables,125mL,132.1,1.16,1.03,12.0,0.0003,958.2334233599998,958.23342336
+92,Rice,4.8,137.14285714285714,Rice,Grains,125mL (cooked),35.0,1.32,1.0,0.0,0.0048,16938.307584,0.0
+93,Rutabagas and turnips fresh,0.66,9.606986899563319,Rutabagas and turnips fresh,Fruit & Vegetables,125mL,68.7,1.65,1.0,11.0,0.00066,2911.2716159999995,2668.6656479999997
+94,Rye flour,0.17,8.5,Rye flour,Grains,,20.0,1.32,1.35,0.0,0.00017,809.8628313600002,0.0
+95,Salad oils (17),8.45,595.0704225352113,Salad oils (17),Fats & Oils,15mL,14.2,1.41,2.27,12.0,0.00845,72303.03458975999,72303.03458975999
+96,Shortening and shortening oils,4.83,371.53846153846155,Shortening and shortening oils,Fats & Oils,15mL,13.0,1.36,2.27,12.0,0.00483,39862.702892544,39862.702892544
+97,"Skim milk (litres per person, per year)",5.78,22.316602316602317,"Skim milk (litres per person, per year)",Milk & Alts,250mL,259.0,1.32,0.9373,12.0,0.00578,19117.681986923522,19117.681986923522
+98,Spinach fresh,0.38,11.987381703470032,Spinach fresh,Fruit & Vegetables,250mL,31.7,1.6,1.0,7.0,0.00038,1625.393152,948.1460053333334
+99,Spinach frozen,0.19,2.3058252427184462,Spinach frozen,Fruit & Vegetables,125mL,82.4,1.29,1.46,12.0,0.00019,956.6454570239999,956.6454570239999
+100,"Standard milk 3.25% (litres per person, per year)",7.37,28.565891472868216,"Standard milk 3.25% (litres per person, per year)",Milk & Alts,250mL,258.0,1.32,1.12476,12.0,0.007370000000000001,29252.0379744553,29252.0379744553
+101,Strawberries canned,0.07,0.5216095380029807,Strawberries canned,Fruit & Vegetables,125mL,134.2,1.16,0.75,12.0,7.000000000000001e-05,162.80664960000001,162.80664960000001
+102,Strawberries fresh,2.53,28.848346636259976,Strawberries fresh,Fruit & Vegetables,125mL,87.7,1.38,1.0,4.0,0.0025299999999999997,9333.713241599997,3111.237747199999
+103,Strawberries frozen,0.61,5.222602739726027,Strawberries frozen,Fruit & Vegetables,125mL ,116.8,1.16,0.89,12.0,0.00061,1683.575810816,1683.575810816
+104,"Tomato juice (litres per person, per year)",0.81,6.308411214953271,"Tomato juice (litres per person, per year)",Fruit & Vegetables,125mL,128.4,1.16,1.0,0.0,0.0008100000000000001,2511.8740224,0.0
+105,Tomatoes canned,3.08,24.290220820189276,Tomatoes canned,Fruit & Vegetables,125mL,126.8,1.16,1.7,0.0,0.0030800000000000003,16237.24985344,0.0
+106,Tomatoes fresh,5.63,59.185282522996054,Tomatoes fresh,Fruit & Vegetables,125mL,95.125,1.41,1.0,9.0,0.00563,21221.806675199998,15916.3550064
+107,"Tomatoes, pulp, paste and puree",2.4,18.168054504163514,"Tomatoes, pulp, paste and puree",Fruit & Vegetables,125mL,132.1,1.16,5.39,0.0,0.0024,40115.55846143999,0.0
+108,"Turkey, boneless weight",2.04,22.666666666666668,"Turkey, boneless weight",Meat & Alts,75 g cooked,90.0,1.39,1.27,12.0,0.00204,9627.278492928,9627.278492928
+109,Variety cheese,5.63,112.6,Variety cheese,Milk & Alts,50g,50.0,1.19,4.6865,12.0,0.00563,83938.04000720318,83938.04000720318
+110,Wheat flour,41.8,2090.0,Wheat flour,Grains,,20.0,1.32,1.35,12.0,0.0418,199130.9785344,199130.9785344

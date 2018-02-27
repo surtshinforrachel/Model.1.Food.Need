@@ -93,7 +93,7 @@ avail.columns = ['commodity', 'kg/person'] #name first column header 'commodity'
 avail.ix[:, 1] = avail.ix[:, 1].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 avail = avail.dropna(axis=0, how='any')  #if value is NA, delete that row
 avail['commodity'] = avail['commodity'].astype(str) #turn all commodities to strings
-ommit_list = [ "Beef, boneless weight", "Veal, boneless weight", "Chicken, boneless weight", "Stewing hen, boneless weight", "Sugar refined", "Maple sugar", "Honey", "Dry", "Tea", "Coffee", "Cocoa", "Ale", "Distilled", "Wines", "Soft", "Bottled", "Cider", "whey", "Sweetened", "Milkshake", "cream", "Sherbert", "Ice milk", "drink", "Other fresh berries", "musk", "Other fresh melons", "Watermelons", "Wintermelons", "Quinces", "Fruits not specified", "Oranges fresh", "Lemons fresh", "Grapefruits fresh", "Limes fresh", "Mandarins fresh", "Other citrus fresh", "Chinese cabbage", "Other edible roots fresh", "leguminous", "Olives fresh", "Potatoes chips", "Potatoes total", "Potatoes white fresh and processed", "Vegetables not specified", 'Guavas']
+ommit_list = [ "fish", "Sugar", "sugar", "Honey", "Shellfish", "Beef, boneless weight", "Veal, boneless weight", "Chicken, boneless weight", "Stewing hen, boneless weight", "Dry", "Tea", "Coffee", "Cocoa", "Ale", "Distilled", "Wines", "Soft", "Bottled", "Cider", "whey", "Sweetened", "Milkshake", "cream", "Sherbert", "Ice milk", "drink", "Other fresh berries", "musk", "Other fresh melons", "Watermelons", "Wintermelons", "Quinces", "Fruits not specified", "Oranges fresh", "Lemons fresh", "Grapefruits fresh", "Limes fresh", "Mandarins fresh", "Other citrus fresh", "Chinese cabbage", "Other edible roots fresh", "leguminous", "Olives fresh", "Potatoes chips", "Potatoes total", "Potatoes white fresh and processed", "Vegetables not specified", 'Guavas']
 avail = avail[~avail['commodity'].str.contains('|'.join(ommit_list))] #remove every row for which column 1 contains strings from caitlyn's list
 insufficient_data = ['Tree nuts', 'Melons total fresh', 'Kiwis', 'Nectarines', 'Artichokes', 'Eggplant', 'Kohlrabi', 'Garlic', 'Leeks', 'Okra', 'Parsley', 'Parsnips', 'Rappini']
 avail = avail[~avail['commodity'].str.contains('|'.join(insufficient_data))] #remove every row for which column 1 contains strings from the commodities without sufficent units data
@@ -102,17 +102,17 @@ avail.loc[avail['commodity']== 'Breakfast food','commodity'] = 'Oatmeal and roll
 #avail.loc[(avail['commodity']== 'Beef, boneless weight') | (avail['commodity']== 'Veal, boneless weight') ,'commodity'] = 'Beef and veal, boneless weight'
 avail.loc[(avail['commodity']== 'Broccoli frozen (5)') | (avail['commodity']== 'Cauliflower frozen') ,'commodity'] = 'Broccoli & Cauliflower frozen'
 avail.loc[(avail['commodity']== 'Baked and canned beans') | (avail['commodity']== 'Lima beans frozen') ,'commodity'] = 'Baked and canned beans and lima beans'
-
-
-
 #COMBINE ROWS WITH THE SAME 'commodity' NAME
 avail = avail.groupby('commodity', as_index=False).sum() 
 
 #MERGE avail AND units TABLES 
-big_table = pd.merge(left=avail, right=units, left_on='commodity', right_on='Food Name (CANSIM Adjusted for waste)', how = 'outer') #took out , how='outer' for inner join showing only matched rows
+big_table = pd.merge(left=avail, right=units, left_on='commodity', right_on='Food Name (CANSIM Adjusted for waste)', how = 'inner') #took out , how='outer' for inner join showing only matched rows
 big_table.columns = ['commodity', 'kg/person', 'name', 'group', 'serving', 'reference', 'waste', 'conversion', 'season' ] #name first column header 'commodity' and name second column header 'value'
 big_table['servings/person'] = (big_table['kg/person']*1000) / (big_table['reference'])
 big_table = big_table[['commodity', 'kg/person', 'servings/person', 'name', 'group', 'serving', 'reference', 'waste', 'conversion', 'season']]
+big_table = big_table.dropna(axis=0, how='any', subset = ['waste', 'conversion']).reset_index(drop=True)  #if value is NA, delete that row
+big_table2 = pd.DataFrame.copy(big_table)
+
 
 
 average_foodgp_avail = pd.DataFrame(big_table.groupby('group')['servings/person'].sum())
@@ -122,18 +122,20 @@ balancing_rec_servperyear['avail met'] = balancing_rec_servperyear['recommended'
 #FINAL DATA FOR BALANCING NEED TO RECOMMENDATION
 
 
-
-#RESULTS TABLE
-quantity_foods = (np.array(avail['kg/person'])) * (total_pop)
-
 #PERCENT OF GROUP THAT EACH COMMODITY IS
-groups = np.array(big_table['group'])
+groups = np.copy(big_table['group'])
+group_sum = np.copy(big_table['kg/person'])
+print(groups)
+print(len(groups))
 for i in range(len(groups)):
     grp = (groups[i])
-    group_sum = sum(big_table[big_table['group']== grp ]['kg/person'])
-    percent_of_group = np.array(big_table['kg/person'])/ (group_sum)
-big_table['percent of group'] = percent_of_group
-
+    group_sum[i] = sum(big_table[big_table['group']== grp ]['kg/person'])
+    #percent_of_group = ((big_table['kg/person'][i])/group_sum) 
+#big_table['percent of group'] = percent_of_group
+big_table['group_sum'] = group_sum
+big_table['percent of group'] = big_table['kg/person']/big_table['group_sum']
+big_table = big_table.drop(['group_sum'], axis =1)
+print(sum(big_table['percent of group']))
 
 
 #TO BALANCE AVAILABILITY WITH FOOD NEED WE MUST ONLY USE THE PERCENT_FOOD_GROUP_REC_MET >1. DOING IT MANUALLY HERE... WOULD BE BEST TO AUTOMATE
@@ -160,58 +162,28 @@ big_table['diet and seasonality constraint'] = ((big_table['SWBC Food Need (tonn
 big_table.to_csv('foodneedresults.csv')
 
 foodneed_bygroup = pd.DataFrame(big_table.groupby('group')['SWBC Food Need (tonnes)'].sum())
-big_table = big_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
+
 print(sum(big_table['percent of group']))
-
-
-
+tonnesoffood = sum(big_table['SWBC Food Need (tonnes)'])
+print(sum(big_table['SWBC Food Need (tonnes)'])/total_pop)
 
 
                     #FOOD NEED WITHOUT BALANCING TO DIETARY RECOMMENDATION
-#
-#tonnesoffood = sum(big_table['SWBC Food Need (tonnes)'])
-#print(sum(big_table['percent of group']))
-#print(sum(big_table['SWBC Food Need (tonnes)']))
-#
-##UNITS TABLE
-#units = pd.read_csv('units.csv', header = 0)
-#
-##AVAILABILITY DATA CLEANING
-#avail = pd.read_csv('cansim0020011.csv', header = 0)
-#avail = avail.drop(['Geography', 'Food categories'], axis = 1) #delete first three columns
-#avail.columns = ['commodity', 'kg/person'] #name first column header 'commodity' and name second column header 'kg/person'
-#avail.ix[:, 1] = avail.ix[:, 1].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-#avail = avail.dropna(axis=0, how='any')  #if value is NA, delete that row
-#avail['commodity'] = avail['commodity'].astype(str) #turn all commodities to strings
-#ommit_list = [ "Sugar refined", "Maple sugar", "Honey", "Dry", "Tea", "Coffee", "Cocoa", "Ale", "Distilled", "Wines", "Soft", "Bottled", "Cider", "whey", "Sweetened", "Milkshake", "cream", "Sherbert", "Ice milk", "drink", "stewing", "Chicken, boneless weight", "Stewing hen, boneless weight", "Beef and veal", "Other fresh berries", "musk", "Other fresh melons", "Watermelons", "Wintermelons", "Quinces", "Fruits not specified", "Oranges fresh", "Lemons fresh", "Grapefruits fresh", "Limes fresh", "Mandarins fresh", "Other citrus fresh", "Chinese cabbage", "Other edible roots fresh", "leguminous", "Olives fresh", "Potatoes chips", "Potatoes total", "Potatoes white fresh and processed", "Vegetables not specified", 'Guavas']
-#avail = avail[~avail['commodity'].str.contains('|'.join(ommit_list))] #remove every row for which column 1 contains strings from caitlyn's list
-#insufficient_data = ['Tree nuts', 'Melons total fresh', 'Kiwis', 'Nectarines', 'Artichokes', 'Eggplant', 'Kohlrabi', 'Garlic', 'Leeks', 'Okra', 'Parsley', 'Parsnips', 'Rappini']
-#avail = avail[~avail['commodity'].str.contains('|'.join(insufficient_data))] #remove every row for which column 1 contains strings from the commodities without sufficent units data
-##RENAME ROWS THAT WILL BE COMBINED
-#avail.loc[avail['commodity']== 'Breakfast food','commodity'] = 'Oatmeal and rolled oats'
-#avail.loc[(avail['commodity']== 'Beef, boneless weight') | (avail['commodity']== 'Veal, boneless weight') ,'commodity'] = 'Beef and veal, boneless weight'
-#avail.loc[(avail['commodity']== 'Broccoli frozen (5)') | (avail['commodity']== 'Cauliflower frozen') ,'commodity'] = 'Broccoli & Cauliflower frozen'
-#avail.loc[(avail['commodity']== 'Baked and canned beans') | (avail['commodity']== 'Lima beans frozen') ,'commodity'] = 'Baked and canned beans and lima beans'
-##COMBINE ROWS WITH THE SAME 'commodity' NAME
-#avail = avail.groupby('commodity', as_index=False).sum() 
-#
-##MERGE avail AND units TABLES 
-#big_table = pd.merge(left=avail, right=units, left_on='commodity', right_on='Food Name (CANSIM Adjusted for waste)') #took out , how='outer' for inner join showing only matched rows
-#big_table.columns = ['commodity', 'kg/person', 'name', 'group', 'serving', 'reference', 'waste', 'conversion', 'season' ] #name first column header 'commodity' and name second column header 'value'
-#big_table['servings/person'] = (big_table['kg/person']*1000) / (big_table['reference'])
-#big_table = big_table[['commodity', 'kg/person', 'servings/person', 'name', 'group', 'serving', 'reference', 'waste', 'conversion', 'season']]
-#
-#big_table['Food Need'] = ((big_table['kg/person']*.001)*big_table['waste']*big_table['conversion']*total_pop)
-#big_table['diet and seasonality constraint'] = ((big_table['Food Need']/12)*big_table['season'])
-#big_table.ix[:, 10:11] = big_table.ix[:, 10:11].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-#big_table = big_table.dropna(axis=0, how='any').reset_index(drop=True)  #if value is NA, delete that row
-#print(sum(big_table['Food Need']))
-#print(sum(big_table['kg/person'])*.001)
-#big_table['incwaste'] = big_table['balanced rec(t)']*big_table['waste']
-#big_table['Food Need (tonnes)/person'] = big_table['incwaste']*big_table['conversion']
-#big_table['SWBC Food Need (tonnes)'] = big_table['Food Need (tonnes)/person']* total_pop
-#big_table['diet and seasonality constraint'] = ((big_table['SWBC Food Need (tonnes)']/12)*big_table['season'])
-#big_table.to_csv('foodneedresults.csv')
+
+big_table2['t/person'] = (big_table2['kg/person']*.001)
+big_table2['SWBC Food Need'] = (big_table2['t/person']*big_table2['waste']*big_table2['conversion']*total_pop)
+big_table2['diet and seasonality constraint'] = ((big_table2['SWBC Food Need']/12)*big_table2['season'])
+#big_table2.ix[:, 10:11] = big_table2.ix[:, 10:11].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+#big_table2 = big_table2.dropna(axis=0, how='any', ).reset_index(drop=True)  #if value is NA, delete that row
+print(sum(big_table2['SWBC Food Need']))
+print(sum(big_table2['t/person']))
+
+big_table2.to_csv('foodneedresults.2.csv')
+
+
+
+
+
 
 ## CREATE DIETARY REC FOR EVERY AGE GIVEN IN THE POPULATION DATA
 #pop['Fruit&Veg'] = np.array(pop['sex'])

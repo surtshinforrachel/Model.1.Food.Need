@@ -52,8 +52,8 @@ cy.columns = ['crop','SWBC yield']
 cy = cy.append(livestock)
 
 cy.loc[cy['crop']== 'Cherries, sweet', 'crop'] = 'Cherries'
+cy.loc[cy['crop']== 'Cherries, sour', 'crop'] = 'Cherries'
 cy.loc[cy['crop']== 'Corn, sweet', 'crop'] = 'Corn'
-cy.loc[cy['crop']== 'Shallots and green onions', 'crop'] = 'Shallots and onions'
 cy.loc[cy['crop']== 'Peaches (fresh and clingstone)', 'crop'] = 'Peaches'
 cy.loc[cy['crop']== 'Peas, green', 'crop'] = 'Peas'
 cy.loc[cy['crop']== 'Plums and prunes', 'crop'] = 'Plums'
@@ -87,12 +87,13 @@ fn.loc[fn['commodity']== 'Skim milk (litres per person, per year)', 'commodity']
 fn.loc[fn['commodity']== 'Standard milk 3.25% (litres per person, per year)', 'commodity'] = 'Standard milk'
 fn.loc[fn['commodity']== 'Tomato juice (litres per person, per year)', 'commodity'] = 'Tomatoes juice'
 fn.loc[fn['commodity']== 'Variety cheese', 'commodity'] = 'Variety cheese milk'
-fn.loc[fn['commodity']== 'Beef and veal, boneless weight', 'commodity'] = 'Beef'
+fn.loc[fn['commodity']== 'Beef and veal total, boneless weight', 'commodity'] = 'Beef'
 fn.loc[fn['commodity']== 'Eggs (15)', 'commodity'] = 'Eggs'
 fn.loc[fn['commodity']== 'Mutton and lamb, boneless weight', 'commodity'] = 'Lamb'
 fn.loc[fn['commodity']== 'Pork, boneless weight', 'commodity'] = 'Pork'
 fn.loc[fn['commodity']== 'Turkey, boneless weight', 'commodity'] = 'Turkey'
-fn.loc[fn['commodity']== 'Turkey, boneless weight', 'commodity'] = 'Turkey'
+fn.loc[fn['commodity']== 'Salad oils (17)', 'commodity'] = 'Salad oils Canola'
+fn.loc[fn['commodity']== 'Onions and shallots fresh', 'commodity'] = 'Dry onions'
 
 #DO GREENHOUSE CROPS
 #                            #Livestock Redo
@@ -151,6 +152,71 @@ for i in range(len(cropsr['SWBC Food Need (tonnes)'])):
 mymet = (cropsr['SWBC Food Need (tonnes)']*(cropsr['self reliance']/100))
 totalsr = (sum(mymet)/sum(cropsr['SWBC Food Need (tonnes)']))*100
 print(totalsr)
+
+
+
+                    #TRY to measure SR WITHOUT BALANCING FOOD NEED TO DIETARY RECOMMENDATION
+fn2 = pd.read_csv('foodneedresults.2.csv', header = 0)
+fn2.loc[fn2['commodity']== 'Apple juice (litres per person, per year)', 'commodity'] = 'Apples juice'
+fn2.loc[fn2['commodity']== 'Apple pie filling', 'commodity'] = 'Apples pie filling'
+fn2.loc[fn2['commodity']== 'Apple sauce', 'commodity'] = 'Apples sauce'
+fn2.loc[fn2['commodity']== 'Pineapples canned', 'commodity'] = 'Pineapple canned'
+fn2.loc[fn2['commodity']== 'Pineapples fresh', 'commodity'] = 'Pineapple fresh'
+fn2.loc[fn2['commodity']== 'Butter', 'commodity'] = 'Butter milk'
+fn2.loc[fn2['commodity']== 'Buttermilk (litres per person, per year)', 'commodity'] = 'Butter milk'
+fn2.loc[fn2['commodity']== 'Cottage cheese', 'commodity'] = 'Cottage cheese milk'
+fn2.loc[fn2['commodity']== 'Grape juice (litres per person, per year)', 'commodity'] = 'Grapes juice'
+fn2.loc[fn2['commodity']== 'Powder buttermilk', 'commodity'] = 'Powder butter milk '
+fn2.loc[fn2['commodity']== 'Processed cheese', 'commodity'] = 'Processed cheese milk'
+fn2.loc[fn2['commodity']== 'Cheddar cheese', 'commodity'] = 'Cheddar cheese milk'
+fn2.loc[fn2['commodity']== 'Concentrated skim milk (litres per person, per year)', 'commodity'] = 'Concentrated skim milk'
+fn2.loc[fn2['commodity']== 'Concentrated whole milk (litres per person, per year)', 'commodity'] = 'Concentrated whole milk'
+fn2.loc[fn2['commodity']== 'Partly skimmed milk 1% (litres per person, per year)', 'commodity'] = '1% milk'
+fn2.loc[fn2['commodity']== 'Partly skimmed milk 2% (litres per person, per year)', 'commodity'] = '2% milk'
+fn2.loc[fn2['commodity']== 'Skim milk (litres per person, per year)', 'commodity'] = 'Skim milk'
+fn2.loc[fn2['commodity']== 'Standard milk 3.25% (litres per person, per year)', 'commodity'] = 'Standard milk'
+fn2.loc[fn2['commodity']== 'Tomato juice (litres per person, per year)', 'commodity'] = 'Tomatoes juice'
+fn2.loc[fn2['commodity']== 'Variety cheese', 'commodity'] = 'Variety cheese milk'
+fn2.loc[fn2['commodity']== 'Beef and veal total, boneless weight', 'commodity'] = 'Beef'
+fn2.loc[fn2['commodity']== 'Eggs (15)', 'commodity'] = 'Eggs'
+fn2.loc[fn2['commodity']== 'Mutton and lamb, boneless weight', 'commodity'] = 'Lamb'
+fn2.loc[fn2['commodity']== 'Pork, boneless weight', 'commodity'] = 'Pork'
+fn2.loc[fn2['commodity']== 'Turkey, boneless weight', 'commodity'] = 'Turkey'
+fn2.loc[fn2['commodity']== 'Salad oils (17)', 'commodity'] = 'Salad oils Canola'
+fn2.loc[fn2['commodity']== 'Onions and shallots fresh', 'commodity'] = 'Dry onions'
+
+#FUZZY STRING MATCHING
+fn2_copy = np.copy(fn2['commodity'])
+cy_copy = np.copy(cy['crop'])
+fuzzmatch = np.copy(fn2_copy)
+for i in range(len(fn2_copy)):
+    match = process.extractOne(fn2_copy[i], cy_copy, score_cutoff = 90)
+    if match is None:
+        fuzzmatch[i] = match
+    else:
+        fuzzmatch[i] = match[0]
+#fuzzmatch = pd.DataFrame(fuzzmatch)
+fn2['crop match'] = fuzzmatch
+#fn2 = fn2.drop(['Unnamed: 0', 'kg/person', 'name', 'serving', 'servings/person', 'reference', 'waste', 'conversion', 'season', 'percent of group', 'balanced rec(kg)', 'balanced rec(t)', 'incwaste', 'Food Need (tonnes)/person'], axis =1)
+fn2 = fn2.groupby('crop match', as_index=False)['SWBC Food Need', 'diet and seasonality constraint'] .sum() 
+
+
+cropsr2 = pd.merge(left=fn2, right = cy, left_on=['crop match'], right_on =['crop'], how = 'inner')
+cropsr2 = cropsr2.drop(['crop'], axis = 1) #delete reference date column
+#cropsr2.columns = ['commodity', 'season', 'percent of group', 'balanced rec(kg)', 'balanced rec (t)', 'incwaste', 'Food Need (t/per)', 'Food Need (t)', 'diet and seasonality constraint', 'SWBC yield (t)']
+cropsr2['self reliance'] = cropsr2['SWBC Food Need']
+for i in range(len(cropsr2['SWBC Food Need'])):
+    mymin = min(cropsr2['diet and seasonality constraint'][i], cropsr2['SWBC yield'][i])
+    cropsr2['self reliance'][i] = (mymin /cropsr2['SWBC Food Need'][i])*100
+    #print(mymin)
+
+mymet2 = (cropsr2['SWBC Food Need']*(cropsr2['self reliance']/100))
+totalsr2 = (sum(mymet)/sum(cropsr2['SWBC Food Need']))*100
+print(totalsr2)
+
+
+
+
 
 #print(sum(mymet))
 #print(sum(cropsr['Food Need (t)']))
