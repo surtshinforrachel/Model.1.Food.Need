@@ -180,8 +180,9 @@ print(sum(big_table2['t/person']))
 
 big_table2.to_csv('foodneedresults.2.csv')
 
+grains = big_table2.loc[(big_table2['group'] == 'Grains')]
 
-
+grainsneed = sum(grains['SWBC Food Need'])
 
 
 

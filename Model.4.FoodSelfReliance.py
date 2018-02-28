@@ -13,6 +13,7 @@ from fuzzywuzzy import process
 
 #MATCH CROPS TO COMMODITIES
 fn = pd.read_csv('foodneedresults.csv', header = 0)
+fn = fn.drop(['serving'], axis =1)
 cy = pd.read_csv('cropyieldresults.csv', header = 0)
 
                             #Livestock Redo
@@ -135,12 +136,15 @@ for i in range(len(fn_copy)):
     else:
         fuzzmatch[i] = match[0]
 #fuzzmatch = pd.DataFrame(fuzzmatch)
-fn['crop match'] = fuzzmatch
-#fn = fn.drop(['Unnamed: 0', 'kg/person', 'name', 'serving', 'servings/person', 'reference', 'waste', 'conversion', 'season', 'percent of group', 'balanced rec(kg)', 'balanced rec(t)', 'incwaste', 'Food Need (tonnes)/person'], axis =1)
-fn = fn.groupby('crop match', as_index=False)['SWBC Food Need (tonnes)', 'diet and seasonality constraint'] .sum() 
+fn['cropmatch'] = fuzzmatch
+ommited_crops = fn[fn.isnull().any(axis =1)]
+ommited_crops = ommited_crops.drop(['Unnamed: 0', 'kg/person','servings/person', 'name', 'reference', 'waste', 'conversion', 'season', 'percent of group', 'balanced rec(t)', 'balanced rec(kg)', 'incwaste', 'Food Need (tonnes)/person', 'cropmatch'], axis = 1)
+ommited_crops.columns = ['cropmatch', 'group', 'SWBC Food Need', 'diet and seasonality constraint']
+
+fn = fn.groupby('cropmatch', as_index=False)['SWBC Food Need (tonnes)', 'diet and seasonality constraint'] .sum() 
 
 
-cropsr = pd.merge(left=fn, right = cy, left_on=['crop match'], right_on =['crop'], how = 'inner')
+cropsr = pd.merge(left=fn, right = cy, left_on=['cropmatch'], right_on =['crop'], how = 'outer')
 cropsr = cropsr.drop(['crop'], axis = 1) #delete reference date column
 #cropsr.columns = ['commodity', 'season', 'percent of group', 'balanced rec(kg)', 'balanced rec (t)', 'incwaste', 'Food Need (t/per)', 'Food Need (t)', 'diet and seasonality constraint', 'SWBC yield (t)']
 cropsr['self reliance'] = cropsr['SWBC Food Need (tonnes)']
@@ -196,28 +200,49 @@ for i in range(len(fn2_copy)):
     else:
         fuzzmatch[i] = match[0]
 #fuzzmatch = pd.DataFrame(fuzzmatch)
-fn2['crop match'] = fuzzmatch
+fn2['cropmatch'] = fuzzmatch
 #fn2 = fn2.drop(['Unnamed: 0', 'kg/person', 'name', 'serving', 'servings/person', 'reference', 'waste', 'conversion', 'season', 'percent of group', 'balanced rec(kg)', 'balanced rec(t)', 'incwaste', 'Food Need (tonnes)/person'], axis =1)
-fn2 = fn2.groupby('crop match', as_index=False)['SWBC Food Need', 'diet and seasonality constraint'] .sum() 
+fn2 = fn2.groupby(['cropmatch', 'group'], as_index=False).sum() 
+fn2 = fn2.drop(['Unnamed: 0', 'kg/person', 'servings/person', 'reference', 'waste', 'conversion', 'season', 't/person'], axis =1)
+#fn2 = pd.merge(left= fn2g, right=fn2, left_on=['crop match'], right_on=['crop match'], how = 'inner')
 
 
-cropsr2 = pd.merge(left=fn2, right = cy, left_on=['crop match'], right_on =['crop'], how = 'inner')
+cropsr2 = pd.merge(left=fn2, right = cy, left_on=['cropmatch'], right_on =['crop'], how = 'inner')
 cropsr2 = cropsr2.drop(['crop'], axis = 1) #delete reference date column
+cropsr2 = cropsr2.append(ommited_crops)
+#cropsr2 = cropsr2.fillna(value =0)
+
+
 #cropsr2.columns = ['commodity', 'season', 'percent of group', 'balanced rec(kg)', 'balanced rec (t)', 'incwaste', 'Food Need (t/per)', 'Food Need (t)', 'diet and seasonality constraint', 'SWBC yield (t)']
 cropsr2['self reliance'] = cropsr2['SWBC Food Need']
+
+
+mymin = np.minimum(cropsr2['diet and seasonality constraint'][65], cropsr2['SWBC yield'][65])
+
+#mymin = min(cropsr2['diet and seasonality constraint'][3], cropsr2['SWBC yield'][3])
 for i in range(len(cropsr2['SWBC Food Need'])):
-    mymin = min(cropsr2['diet and seasonality constraint'][i], cropsr2['SWBC yield'][i])
+    mymin = np.minimum(cropsr2['diet and seasonality constraint'][i], cropsr2['SWBC yield'][i])
     cropsr2['self reliance'][i] = (mymin /cropsr2['SWBC Food Need'][i])*100
     #print(mymin)
+#cropsr2.loc[is.numeric(cropsr2['SWBC yield']) == False, 'self reliance']
+#Problems here!!!!    
+
+#WONT WORK BECAUSE DIVIDING BY 0!!!!!!!
+
 
 mymet2 = (cropsr2['SWBC Food Need']*(cropsr2['self reliance']/100))
+totalfoodneed = sum(cropsr2['SWBC Food Need'])
 totalsr2 = (sum(mymet)/sum(cropsr2['SWBC Food Need']))*100
 print(totalsr2)
+            #group by food group
+sr_by_group = cropsr2.groupby('group')['SWBC Food Need', 'diet and seasonality constraint', 'SWBC yield'].sum()
+sr_by_group['self reliance'] = sr_by_group['SWBC yield']
+for i in range(len(sr_by_group['self reliance'])):
+    mymin = np.minimum(sr_by_group['diet and seasonality constraint'][i], sr_by_group['SWBC yield'][i])
+    sr_by_group['self reliance'][i] = (mymin /sr_by_group['SWBC Food Need'][i])*100
 
 
-
-
-
+        #add in dropped crops
 #print(sum(mymet))
 #print(sum(cropsr['Food Need (t)']))
 #differences =pd.DataFrame(mymet).copy()
