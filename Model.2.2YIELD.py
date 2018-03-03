@@ -132,8 +132,11 @@ veg_land = pd.read_csv('cansim0040215.2011.csv', header = 0)
 veg_land.columns = ['date', 'geo', 'crop', 'unit', 'SWBC hectares planted']
 greenmush_land = pd.read_csv('cansim0040217.2011.csv', header = 0)
 greenmush_land.ix[:, 4] = greenmush_land.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-greenmush_land.loc['Value'] = (greenmush_land['Value']*sq_m_to_hectare)
+greenmush_land['SWBC hectares planted'] = (greenmush_land['Value']*sq_m_to_hectare)
+greenmush_land = greenmush_land.drop(['Value'], axis =1)
 greenmush_land.columns = ['date', 'geo', 'crop', 'unit', 'SWBC hectares planted']
+
+
 
 
 frames = [field_land, fruit_land, veg_land, greenmush_land]
