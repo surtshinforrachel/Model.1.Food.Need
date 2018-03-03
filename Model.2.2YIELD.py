@@ -192,3 +192,6 @@ allcrops['SWBC tonnes'] = allcrops['tonnes_per_hec']*allcrops['SWBC hectares pla
 
 allcrops.to_csv('cropyieldresults.csv')
  
+
+
+

@@ -185,6 +185,25 @@ grains = big_table2.loc[(big_table2['group'] == 'Grains')]
 grainsneed = sum(grains['SWBC Food Need'])
 
 
+#Create food need file for both balanced and unbalanced recs
+big_table = big_table.drop(['kg/person', 'servings/person', 'name', 'serving', 'reference', 'waste', 'conversion', 'season', 'percent of group', 'balanced rec(kg)', 'balanced rec(t)', 'incwaste', 'Food Need (tonnes)/person'], axis = 1)
+big_table2 = big_table2.drop(['kg/person', 'servings/person', 'name', 'group', 'serving', 'reference', 'waste', 'conversion', 'season', 't/person'], axis = 1)
+
+
+print(big_table.columns)
+big_table3 = pd.merge(left= big_table, right = big_table2, left_on= 'commodity', right_on = 'commodity', how = 'outer')
+big_table3.columns = ['commodity', 'group', 'SWBC Food Need Balanced (t)', 'diet and seasonality constraint (balanced)', 'SWBC Food Need Unbalanced (t)','diet and seasonality constraint (unbalanced)']
+big_table3.to_csv('foodneedresults.3.csv')
+
+
+
+
+
+
+
+
+
+
 
 ## CREATE DIETARY REC FOR EVERY AGE GIVEN IN THE POPULATION DATA
 #pop['Fruit&Veg'] = np.array(pop['sex'])
