@@ -21,7 +21,7 @@ from fuzzywuzzy import process
 tons_to_tonnes = 0.907185
 acres_to_hectares = 0.404686
 thousand_sq_ft_to_hectare = 0.0092903
-hundred_weight_x1k_to_tonne = 50.8
+hundred_weight_to_tonne = 0.0508023
 kg_to_tonne = .001
 sq_m_to_hectare = .0001
 
@@ -58,7 +58,7 @@ for i in range(len(potcrops['value'])):
         potcrops.ix[i, 3] = (potcrops.ix[i, 3].astype(float))*acres_to_hectares
         potcrops.ix[i, 2] = 'Hectares'
     if potcrops['unit'][i] == 'Production, potatoes (hundredweight x 1,000)':
-        potcrops.ix[i, 3] = ((potcrops.ix[i, 3].astype(float))*hundred_weight_x1k_to_tonne)
+        potcrops.ix[i, 3] = (((potcrops.ix[i, 3].astype(float))/1000)*hundred_weight_x1k_to_tonne)
         potcrops.ix[i, 2] = 'Tonnes'
 potcrops['crop'] = 'Potatoes'
 

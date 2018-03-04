@@ -186,3 +186,10 @@ for i in range(len(sr_by_group['self reliance (unbalanced)'])):
     mymin = np.minimum(sr_by_group['diet and seasonality constraint (unbalanced)'][i], sr_by_group['SWBC yield'][i])
     sr_by_group['self reliance (unbalanced)'][i] = (mymin /sr_by_group['SWBC Food Need Unbalanced (t)'][i])*100
 
+
+plot2= sr_by_group.plot(x='group', y = 'self reliance (balanced)', kind = 'bar', title = 'Percent Self Reliance')
+
+#sr_by_group = sr_by_group.drop(['diet and seasonality constraint (balanced)','diet and seasonality constraint (unbalanced)', 'self reliance (unbalanced)'], axis =1)
+plot2 = sr_by_group.plot.bar( x= 'group',stacked = True, title = 'Food Need (T) vs Food Production (T)')
+
+plot3 = cropsr3.plot(x='cropmatch', y='self reliance (balanced)', title = 'Percent Self Reliance by Crop', kind = 'bar')
