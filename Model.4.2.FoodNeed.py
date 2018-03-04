@@ -37,7 +37,7 @@ head_livestock.loc[head_livestock['LIVE']== 'Dairy cows', 'LIVE'] = 'Dairy'
 head_livestock.loc[head_livestock['LIVE']== 'Laying hens, 19 weeks and over, that produce table eggs', 'LIVE'] = 'Eggs'
 
 breeding_stock_chicken_and_eggs = (int(head_livestock.loc[head_livestock['LIVE']== 'Other poultry', 'Value']))+(int(head_livestock.loc[head_livestock['LIVE']== 'Layer and broiler breeders (pullets and hens)', 'Value']))
-(head_livestock.loc[head_livestock['LIVE']== 'Chicken', 'Value']) = (int(head_livestock.loc[head_livestock['LIVE']== 'Chicken', 'Value']))+ (breeding_stock_chicken_and_eggs*.10)
+(head_livestock.loc[head_livestock['LIVE']== 'Chicken', 'Value']) = (int(head_livestock.loc[head_livestock['LIVE']== 'Chicken', 'Value']))+ (breeding_stock_chicken_and_eggs*.1)
 (head_livestock.loc[head_livestock['LIVE']== 'Eggs', 'Value']) = (int(head_livestock.loc[head_livestock['LIVE']== 'Eggs', 'Value'])+int(head_livestock.loc[head_livestock['LIVE']== 'Pullets under 19 weeks, intended for laying table eggs', 'Value']))+ (breeding_stock_chicken_and_eggs*.90)
 
 breeding_stock_beef_and_dairy = (int(head_livestock.loc[head_livestock['LIVE']== 'Bulls, 1 year and over', 'Value']))+(int(head_livestock.loc[head_livestock['LIVE']== 'Calves, under 1 year', 'Value']) + (int(head_livestock.loc[head_livestock['LIVE']== 'Total heifers, 1 year and over', 'Value'])))
@@ -169,7 +169,7 @@ lower =pd.merge(left =cy, right= cy2, left_on = 'crop', right_on= 'crop')
 lower = lower.drop(['SWBC yield_x', 'SWBC yield_y', 'ave upper'], axis =1)
 lower.columns = ['crop', 'SWBC yield']
 
-cy = ave.copy()
+#cy = ave.copy()
 
 cropsr3 = pd.merge(left=fn3, right = cy, left_on=['cropmatch'], right_on =['crop'], how = 'inner')
 cropsr3 = cropsr3.drop(['crop'], axis = 1) #delete reference date column
