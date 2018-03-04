@@ -58,7 +58,7 @@ for i in range(len(potcrops['value'])):
         potcrops.ix[i, 3] = (potcrops.ix[i, 3].astype(float))*acres_to_hectares
         potcrops.ix[i, 2] = 'Hectares'
     if potcrops['unit'][i] == 'Production, potatoes (hundredweight x 1,000)':
-        potcrops.ix[i, 3] = (((potcrops.ix[i, 3].astype(float))/1000)*hundred_weight_x1k_to_tonne)
+        potcrops.ix[i, 3] = (((potcrops.ix[i, 3].astype(float))/1000)*hundred_weight_to_tonne)
         potcrops.ix[i, 2] = 'Tonnes'
 potcrops['crop'] = 'Potatoes'
 
@@ -92,9 +92,28 @@ tonnes = allcrops.loc[allcrops['unit']== 'Tonnes']
 allcrops = pd.merge(hectares, tonnes, left_on=['date','crop'], right_on=['date','crop']).drop(['geo_x', 'unit_x', 'geo_y', 'unit_y'], axis = 1, )
 allcrops.columns = ['crop', 'date', 'hectares', 'tonnes']
 allcrops['tonnes_per_hec'] = allcrops['tonnes']/allcrops['hectares']
+
+
+allcrops.loc[allcrops['crop']== 'Wheat, all', 'crop'] = 'Total wheat'
+#allcrops.loc[allcrops['crop']== 'Cherries (sour) total area', 'crop'] = 'Repeat'
+allcrops.loc[allcrops['crop']== 'Beans, green or wax', 'crop'] = 'Beans, green and wax'
+allcrops.loc[(allcrops['crop']== 'Cabbage, Chinese (bok-choy, napa, etcetera)', 'crop')] = 'Repeated crop'
+allcrops.loc[(allcrops['crop']== 'Cabbage, regular', 'crop')] = 'Repeated crop'
+
+
+
+
 ten_yr_ave = allcrops.groupby('crop')['hectares', 'tonnes', 'tonnes_per_hec'].mean().reset_index()
+
+sem = allcrops.groupby('crop')['tonnes_per_hec'].sem().reset_index()
+sem.columns = ['crop', 'serror']
+ten_yr_ave = pd.merge(left = ten_yr_ave, right =sem, left_on='crop', right_on = 'crop', how = 'inner')
+ten_yr_ave['lower'] = (ten_yr_ave['tonnes_per_hec']-ten_yr_ave['serror'])
+ten_yr_ave['upper'] = (ten_yr_ave['tonnes_per_hec']+ten_yr_ave['serror'])
+
 baseline_yr = 2011
 baseline_yield = allcrops.loc[allcrops['date']== baseline_yr]
+
 
 mushroom_exception = pd.DataFrame(ten_yr_ave.loc[ten_yr_ave['crop']== 'Mushrooms'])
 drypeas_exception = pd.DataFrame(ten_yr_ave.loc[ten_yr_ave['crop']== 'Peas, dry'])
@@ -123,6 +142,12 @@ yieldadditions.columns = ['crop', 'date', 'tonnes', 'hectares', 'tonnes_per_hec'
 baseline_yield = baseline_yield.append(yieldadditions).reset_index(drop = True)
 
 
+yieldadditions2 = pd.DataFrame({'date': [0, 0, 0, 0], 'tonnes': [0, 0, 0, 0], 'hectares': [0, 0, 0, 0], 'tonnes_per_hec': [canolamealyield, canolaoilyield, soybeanmealyield, pastureyield], 'upper': [canolamealyield, canolaoilyield, soybeanmealyield, pastureyield], 'lower': [canolamealyield, canolaoilyield, soybeanmealyield, pastureyield]}, index=['Canola Meal', 'Canola Oil', 'Soybean Meal', 'Pasture']).reset_index()
+yieldadditions2.columns = ['crop', 'date', 'hectares', 'lower', 'tonnes', 'tonnes_per_hec', 'upper']
+
+ten_yr_ave = ten_yr_ave.append(yieldadditions2)
+
+
                                 #SWBC LAND USE DATA
 field_land = pd.read_csv('cansim0040213.2011.3.csv', header = 0)
 field_land.columns = ['date', 'geo', 'crop', 'unit', 'SWBC hectares planted']
@@ -136,22 +161,17 @@ greenmush_land['SWBC hectares planted'] = (greenmush_land['Value']*sq_m_to_hecta
 greenmush_land = greenmush_land.drop(['Value'], axis =1)
 greenmush_land.columns = ['date', 'geo', 'crop', 'unit', 'SWBC hectares planted']
 
-
-
-
 frames = [field_land, fruit_land, veg_land, greenmush_land]
 allcropland = pd.concat(frames, ignore_index =True) 
 allcropland.ix[:, 4] = allcropland.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 allcropland = allcropland.groupby('crop')['SWBC hectares planted'].sum().reset_index()
 
-
                                 #MANUAL MATCHING
-baseline_yield.loc[baseline_yield['crop']== 'Tame hay','crop'] = 'Tame hay'
-baseline_yield.loc[baseline_yield['crop']== 'Wheat, all', 'crop'] = 'Total wheat'
-#baseline_yield.loc[baseline_yield['crop']== 'Cherries (sour) total area', 'crop'] = 'Repeat'
-baseline_yield.loc[baseline_yield['crop']== 'Beans, green or wax', 'crop'] = 'Beans, green and wax'
-baseline_yield.loc[(baseline_yield['crop']== 'Cabbage, Chinese (bok-choy, napa, etcetera)', 'crop')] = 'Repeated crop'
-baseline_yield.loc[(allcrops['crop']== 'Cabbage, regular', 'crop')] = 'Repeated crop'
+#baseline_yield.loc[baseline_yield['crop']== 'Tame hay','crop'] = 'Tame hay'
+#baseline_yield.loc[baseline_yield['crop']== 'Wheat, all', 'crop'] = 'Total wheat'
+#baseline_yield.loc[baseline_yield['crop']== 'Beans, green or wax', 'crop'] = 'Beans, green and wax'
+#baseline_yield.loc[(baseline_yield['crop']== 'Cabbage, Chinese (bok-choy, napa, etcetera)', 'crop')] = 'Repeated crop'
+#baseline_yield.loc[(allcrops['crop']== 'Cabbage, regular', 'crop')] = 'Repeated crop'
 
 allcropland.loc[(allcropland['crop']== 'Asparagus, producing', 'crop')] = 'Asparagus'
 allcropland.loc[(allcropland['crop']== 'Asparagus, non-producing', 'crop')] = 'Asparagus'
@@ -177,7 +197,7 @@ frame3['crop'] = 'Fresh peppers, greenhouse'
 frames = [frame1, frame2, frame3]
 allcropland = allcropland.append(frames)
 allcropland = allcropland.groupby('crop')['SWBC hectares planted'].sum().reset_index()
-                           
+
 #FUZZY STRING MATCHING                         
 allland2 = allcropland['crop'].copy()
 allyields2 = baseline_yield['crop'].copy()
@@ -197,4 +217,24 @@ allcrops.to_csv('cropyieldresults.csv')
  
 
 
+                        #Results with 10 yr ave yield
+#FUZZY STRING MATCHING                         
+allland2 = allcropland['crop'].copy()
+allyields3 = ten_yr_ave['crop'].copy()
+fuzzmatch = allland2.copy()
+for i in range(len(allland2)):
+    match = process.extractOne(allland2[i], allyields3, score_cutoff = 90)
+    if match is None:
+        fuzzmatch[i] = match
+    else:
+        fuzzmatch[i] = match[0]
+fuzzmatch = pd.DataFrame(fuzzmatch)
+allcropland['crop'] = fuzzmatch
+allcrops2 = pd.merge(left=10_yr_ave, right = allcropland, left_on = 'crop', right_on = 'crop', how = 'inner')
+
+#NOT WORKING
+allcrops['SWBC tonnes'] = allcrops['tonnes_per_hec']*allcrops['SWBC hectares planted']
+
+allcrops.to_csv('cropyieldresults.csv')
+ 
 

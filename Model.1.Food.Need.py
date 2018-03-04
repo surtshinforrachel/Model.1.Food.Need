@@ -99,10 +99,8 @@ insufficient_data = ['Tree nuts', 'Melons total fresh', 'Kiwis', 'Nectarines', '
 avail = avail[~avail['commodity'].str.contains('|'.join(insufficient_data))] #remove every row for which column 1 contains strings from the commodities without sufficent units data
 #RENAME ROWS THAT WILL BE COMBINED
 avail.loc[avail['commodity']== 'Breakfast food','commodity'] = 'Oatmeal and rolled oats'
-#avail.loc[(avail['commodity']== 'Beef, boneless weight') | (avail['commodity']== 'Veal, boneless weight') ,'commodity'] = 'Beef and veal, boneless weight'
 avail.loc[(avail['commodity']== 'Broccoli frozen (5)') | (avail['commodity']== 'Cauliflower frozen') ,'commodity'] = 'Broccoli & Cauliflower frozen'
 avail.loc[(avail['commodity']== 'Baked and canned beans') | (avail['commodity']== 'Lima beans frozen') ,'commodity'] = 'Baked and canned beans and lima beans'
-#COMBINE ROWS WITH THE SAME 'commodity' NAME
 avail = avail.groupby('commodity', as_index=False).sum() 
 
 #MERGE avail AND units TABLES 
