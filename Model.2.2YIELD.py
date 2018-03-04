@@ -95,21 +95,16 @@ allcrops['tonnes_per_hec'] = allcrops['tonnes']/allcrops['hectares']
 
 
 allcrops.loc[allcrops['crop']== 'Wheat, all', 'crop'] = 'Total wheat'
-#allcrops.loc[allcrops['crop']== 'Cherries (sour) total area', 'crop'] = 'Repeat'
 allcrops.loc[allcrops['crop']== 'Beans, green or wax', 'crop'] = 'Beans, green and wax'
 allcrops.loc[(allcrops['crop']== 'Cabbage, Chinese (bok-choy, napa, etcetera)', 'crop')] = 'Repeated crop'
 allcrops.loc[(allcrops['crop']== 'Cabbage, regular', 'crop')] = 'Repeated crop'
 
-
-
-
 ten_yr_ave = allcrops.groupby('crop')['hectares', 'tonnes', 'tonnes_per_hec'].mean().reset_index()
-
-sem = allcrops.groupby('crop')['tonnes_per_hec'].sem().reset_index()
-sem.columns = ['crop', 'serror']
-ten_yr_ave = pd.merge(left = ten_yr_ave, right =sem, left_on='crop', right_on = 'crop', how = 'inner')
-ten_yr_ave['lower'] = (ten_yr_ave['tonnes_per_hec']-ten_yr_ave['serror'])
-ten_yr_ave['upper'] = (ten_yr_ave['tonnes_per_hec']+ten_yr_ave['serror'])
+#sem = allcrops.groupby('crop')['tonnes_per_hec'].sem().reset_index()
+#sem.columns = ['crop', 'serror']
+#ten_yr_ave = pd.merge(left = ten_yr_ave, right =sem, left_on='crop', right_on = 'crop', how = 'inner')
+#ten_yr_ave['lower'] = (ten_yr_ave['tonnes_per_hec']-ten_yr_ave['serror'])
+#ten_yr_ave['upper'] = (ten_yr_ave['tonnes_per_hec']+ten_yr_ave['serror'])
 
 baseline_yr = 2011
 baseline_yield = allcrops.loc[allcrops['date']== baseline_yr]
@@ -142,11 +137,13 @@ yieldadditions.columns = ['crop', 'date', 'tonnes', 'hectares', 'tonnes_per_hec'
 baseline_yield = baseline_yield.append(yieldadditions).reset_index(drop = True)
 
 
-yieldadditions2 = pd.DataFrame({'date': [0, 0, 0, 0], 'tonnes': [0, 0, 0, 0], 'hectares': [0, 0, 0, 0], 'tonnes_per_hec': [canolamealyield, canolaoilyield, soybeanmealyield, pastureyield], 'upper': [canolamealyield, canolaoilyield, soybeanmealyield, pastureyield], 'lower': [canolamealyield, canolaoilyield, soybeanmealyield, pastureyield]}, index=['Canola Meal', 'Canola Oil', 'Soybean Meal', 'Pasture']).reset_index()
-yieldadditions2.columns = ['crop', 'date', 'hectares', 'lower', 'tonnes', 'tonnes_per_hec', 'upper']
+#yieldadditions2 = pd.DataFrame({'date': [0, 0, 0, 0], 'tonnes': [0, 0, 0, 0], 'hectares': [0, 0, 0, 0], 'tonnes_per_hec': [canolamealyield, canolaoilyield, soybeanmealyield, pastureyield], 'upper': [canolamealyield, canolaoilyield, soybeanmealyield, pastureyield], 'lower': [canolamealyield, canolaoilyield, soybeanmealyield, pastureyield]}, index=['Canola Meal', 'Canola Oil', 'Soybean Meal', 'Pasture']).reset_index()
+#yieldadditions2.columns = ['crop', 'date', 'hectares', 'lower', 'tonnes', 'tonnes_per_hec', 'upper']
+#ten_yr_ave = ten_yr_ave.append(yieldadditions2)
 
-ten_yr_ave = ten_yr_ave.append(yieldadditions2)
-
+ten_yr_ave = allcrops.groupby('crop')['hectares', 'tonnes', 'tonnes_per_hec'].mean().reset_index()
+sem = allcrops.groupby('crop')['tonnes_per_hec'].sem().reset_index()
+sem.columns = ['crop', 'serror']
 
                                 #SWBC LAND USE DATA
 field_land = pd.read_csv('cansim0040213.2011.3.csv', header = 0)
@@ -197,6 +194,7 @@ frame3['crop'] = 'Fresh peppers, greenhouse'
 frames = [frame1, frame2, frame3]
 allcropland = allcropland.append(frames)
 allcropland = allcropland.groupby('crop')['SWBC hectares planted'].sum().reset_index()
+allcropland2 = pd.DataFrame.copy(allcropland)                        
 
 #FUZZY STRING MATCHING                         
 allland2 = allcropland['crop'].copy()
@@ -217,9 +215,28 @@ allcrops.to_csv('cropyieldresults.csv')
  
 
 
+
+
+
+
+
+
                         #Results with 10 yr ave yield
-#FUZZY STRING MATCHING                         
-allland2 = allcropland['crop'].copy()
+                        
+#ten_yr_ave = allcrops.groupby('crop')['hectares', 'tonnes', 'tonnes_per_hec'].mean().reset_index()
+#sem = allcrops.groupby('crop')['tonnes_per_hec'].sem().reset_index()
+#sem.columns = ['crop', 'serror']
+
+ten_yr_ave = pd.merge(left = ten_yr_ave, right =sem, left_on='crop', right_on = 'crop', how = 'inner')
+ten_yr_ave['lower'] = (ten_yr_ave['tonnes_per_hec']-ten_yr_ave['serror'])
+ten_yr_ave['upper'] = (ten_yr_ave['tonnes_per_hec']+ten_yr_ave['serror'])
+
+yieldadditions2 = pd.DataFrame({'date': [0, 0, 0, 0], 'tonnes': [0, 0, 0, 0], 'hectares': [0, 0, 0, 0], 'tonnes_per_hec': [canolamealyield, canolaoilyield, soybeanmealyield, pastureyield], 'upper': [canolamealyield, canolaoilyield, soybeanmealyield, pastureyield], 'lower': [canolamealyield, canolaoilyield, soybeanmealyield, pastureyield]}, index=['Canola Meal', 'Canola Oil', 'Soybean Meal', 'Pasture']).reset_index()
+yieldadditions2.columns = ['crop', 'date', 'hectares', 'lower', 'tonnes', 'tonnes_per_hec', 'upper']
+ten_yr_ave = ten_yr_ave.append(yieldadditions2)
+
+#FUZZY STRING MATCHING       
+allland2 = allcropland2['crop'].copy()
 allyields3 = ten_yr_ave['crop'].copy()
 fuzzmatch = allland2.copy()
 for i in range(len(allland2)):
@@ -229,12 +246,14 @@ for i in range(len(allland2)):
     else:
         fuzzmatch[i] = match[0]
 fuzzmatch = pd.DataFrame(fuzzmatch)
-allcropland['crop'] = fuzzmatch
-allcrops2 = pd.merge(left=10_yr_ave, right = allcropland, left_on = 'crop', right_on = 'crop', how = 'inner')
-
+allcropland2['crop'] = fuzzmatch
+allcrops2 = pd.merge(left=ten_yr_ave, right = allcropland2, left_on = 'crop', right_on = 'crop', how = 'inner')
 #NOT WORKING
-allcrops['SWBC tonnes'] = allcrops['tonnes_per_hec']*allcrops['SWBC hectares planted']
+allcrops2['SWBC tonnes'] = allcrops2['tonnes_per_hec']*allcrops2['SWBC hectares planted']
+allcrops2['SWBC tonnes upper'] = allcrops2['upper']*allcrops2['SWBC hectares planted']
+allcrops2['SWBC tonnes lower'] = allcrops2['lower']*allcrops2['SWBC hectares planted']
 
-allcrops.to_csv('cropyieldresults.csv')
- 
+allcrops2 =allcrops2.drop(['date', 'hectares', 'tonnes', 'serror', 'tonnes_per_hec', 'upper', 'lower', 'SWBC hectares planted'], axis =1)
+allcrops2.to_csv('cropyieldresults.ave.csv')
+
 

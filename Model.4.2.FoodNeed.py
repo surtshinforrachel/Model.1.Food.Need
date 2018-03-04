@@ -46,17 +46,10 @@ breeding_stock_beef_and_dairy = (int(head_livestock.loc[head_livestock['LIVE']==
 
 livestock = pd.merge(left=newmethod, right = head_livestock, left_on=['livestock'], right_on =['LIVE'], how = 'inner')
 livestock['SWBC yield'] = livestock['commodity_per_head']*livestock['Value']
-
-
-
-#livestock.loc[livestock['LIVE']== 'Pork', 'SWBC yield'] = 14196.9387
-#livestock.loc[livestock['LIVE']== 'Turkey', 'SWBC yield'] = 14557.319
-#livestock.loc[livestock['LIVE']== 'Chicken', 'SWBC yield'] = 119486.655
-#
-
 livestock = livestock.drop(['commodity_per_head', 'LIVE', 'Value'], axis = 1)
 livestock.columns = ['crop', 'SWBC yield']
-#livestock = pd.read_csv('livestock.caitlin.csv', header = 0)
+
+
 cy = cy.drop(['Unnamed: 0', 'date', 'hectares', 'tonnes', 'tonnes_per_hec', 'SWBC hectares planted'], axis = 1)
 cy.columns = ['crop','SWBC yield']
 cy = cy.append(livestock)
@@ -113,11 +106,10 @@ fn3.loc[fn3['commodity']== 'Salad oils (17)', 'commodity'] = 'Salad oils Canola 
 fn3.loc[fn3['commodity']== 'Shortening and shortening oils', 'commodity'] = 'Shortening Canola Oil'
 fn3.loc[fn3['commodity']== 'Margarine', 'commodity'] = 'Margarine Canola Oil'
 
-
-
 ommited_crops = fn3.loc[fn3['diet and seasonality constraint (balanced)']==0].reset_index(drop =True)
 ommited_crops = ommited_crops.drop(['Unnamed: 0'], axis =1)
 
+fn4 = fn3.copy()
 #FUZZY STRING MATCHING
 fn3_copy = np.copy(fn3['commodity'])
 cy_copy = np.copy(cy['crop'])
@@ -134,6 +126,50 @@ fn3['cropmatch'] = fuzzmatch
 fn3 = fn3.groupby(['cropmatch', 'group'], as_index=False).sum() 
 fn3 = fn3.drop(['Unnamed: 0'], axis =1)
 
+
+
+
+
+
+
+#ERROR CALC
+                #SR for 10yr ave crop yield
+cy2 = pd.read_csv('cropyieldresults.ave.csv', header = 0)
+cy2 = cy2.drop(['Unnamed: 0'], axis = 1)
+cy2.columns = ['crop','SWBC yield', 'ave upper', 'ave lower']
+livestock['ave lower'] = livestock['SWBC yield']
+livestock['ave upper'] = livestock['SWBC yield']
+cy2 = cy2.append(livestock).fillna(0)
+cy2.loc[cy2['crop']== 'Cherries, sweet', 'crop'] = 'Cherries'
+cy2.loc[cy2['crop']== 'Cherries, sour', 'crop'] = 'Cherries'
+cy2.loc[cy2['crop']== 'Corn, sweet', 'crop'] = 'Corn'
+cy2.loc[cy2['crop']== 'Corn for grain', 'crop'] = 'Corn for flour and meal'
+cy2.loc[cy2['crop']== 'Peaches (fresh and clingstone)', 'crop'] = 'Peaches'
+cy2.loc[cy2['crop']== 'Peas, green', 'crop'] = 'Peas'
+cy2.loc[cy2['crop']== 'Plums and prunes', 'crop'] = 'Plums'
+cy2.loc[cy2['crop']== 'Total wheat', 'crop'] = 'Wheat'
+cy2.loc[cy2['crop']== 'Rye, all', 'crop'] = 'Rye'
+cy2.loc[cy2['crop']== 'Dairy', 'crop'] = 'milk'
+cy2.loc[cy2['crop']== 'Fresh tomatoes, greenhouse', 'crop'] = 'Tomatoes'
+cy2.loc[cy2['crop']== 'Fresh cucumbers, greenhouse', 'crop'] = 'Cucumbers'
+cy2.loc[cy2['crop']== 'Cucumbers and gherkins (all varieties)', 'crop'] = 'Cucumbers'
+cy2.loc[cy2['crop']== 'Fresh peppers, greenhouse', 'crop'] = 'Peppers'
+cy2 = cy2.groupby('crop')['SWBC yield', 'ave upper', 'ave lower'].sum().reset_index()
+
+#AVE
+ave =pd.merge(left =cy, right= cy2, left_on = 'crop', right_on= 'crop')
+ave = ave.drop(['SWBC yield_x','ave upper', 'ave lower'], axis =1)
+ave.columns = ['crop', 'SWBC yield']
+#UPPER
+upper =pd.merge(left =cy, right= cy2, left_on = 'crop', right_on= 'crop')
+upper = upper.drop(['SWBC yield_x', 'SWBC yield_y', 'ave lower'], axis =1)
+upper.columns = ['crop', 'SWBC yield']
+#LOWER
+lower =pd.merge(left =cy, right= cy2, left_on = 'crop', right_on= 'crop')
+lower = lower.drop(['SWBC yield_x', 'SWBC yield_y', 'ave upper'], axis =1)
+lower.columns = ['crop', 'SWBC yield']
+
+cy = ave.copy()
 
 cropsr3 = pd.merge(left=fn3, right = cy, left_on=['cropmatch'], right_on =['crop'], how = 'inner')
 cropsr3 = cropsr3.drop(['crop'], axis = 1) #delete reference date column
@@ -186,10 +222,22 @@ for i in range(len(sr_by_group['self reliance (unbalanced)'])):
     mymin = np.minimum(sr_by_group['diet and seasonality constraint (unbalanced)'][i], sr_by_group['SWBC yield'][i])
     sr_by_group['self reliance (unbalanced)'][i] = (mymin /sr_by_group['SWBC Food Need Unbalanced (t)'][i])*100
 
-
 plot2= sr_by_group.plot(x='group', y = 'self reliance (balanced)', kind = 'bar', title = 'Percent Self Reliance')
-
-#sr_by_group = sr_by_group.drop(['diet and seasonality constraint (balanced)','diet and seasonality constraint (unbalanced)', 'self reliance (unbalanced)'], axis =1)
 plot2 = sr_by_group.plot.bar( x= 'group',stacked = True, title = 'Food Need (T) vs Food Production (T)')
-
 plot3 = cropsr3.plot(x='cropmatch', y='self reliance (balanced)', title = 'Percent Self Reliance by Crop', kind = 'bar')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
