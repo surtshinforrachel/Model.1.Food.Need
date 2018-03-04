@@ -37,8 +37,8 @@ head_livestock.loc[head_livestock['LIVE']== 'Dairy cows', 'LIVE'] = 'Dairy'
 head_livestock.loc[head_livestock['LIVE']== 'Laying hens, 19 weeks and over, that produce table eggs', 'LIVE'] = 'Eggs'
 
 breeding_stock_chicken_and_eggs = (int(head_livestock.loc[head_livestock['LIVE']== 'Other poultry', 'Value']))+(int(head_livestock.loc[head_livestock['LIVE']== 'Layer and broiler breeders (pullets and hens)', 'Value']))
-(head_livestock.loc[head_livestock['LIVE']== 'Chicken', 'Value']) = (int(head_livestock.loc[head_livestock['LIVE']== 'Chicken', 'Value']))+ (breeding_stock_chicken_and_eggs/2)
-(head_livestock.loc[head_livestock['LIVE']== 'Eggs', 'Value']) = (int(head_livestock.loc[head_livestock['LIVE']== 'Eggs', 'Value'])+int(head_livestock.loc[head_livestock['LIVE']== 'Pullets under 19 weeks, intended for laying table eggs', 'Value']))+ (breeding_stock_chicken_and_eggs/2)
+(head_livestock.loc[head_livestock['LIVE']== 'Chicken', 'Value']) = (int(head_livestock.loc[head_livestock['LIVE']== 'Chicken', 'Value']))+ (breeding_stock_chicken_and_eggs*.10)
+(head_livestock.loc[head_livestock['LIVE']== 'Eggs', 'Value']) = (int(head_livestock.loc[head_livestock['LIVE']== 'Eggs', 'Value'])+int(head_livestock.loc[head_livestock['LIVE']== 'Pullets under 19 weeks, intended for laying table eggs', 'Value']))+ (breeding_stock_chicken_and_eggs*.90)
 
 breeding_stock_beef_and_dairy = (int(head_livestock.loc[head_livestock['LIVE']== 'Bulls, 1 year and over', 'Value']))+(int(head_livestock.loc[head_livestock['LIVE']== 'Calves, under 1 year', 'Value']) + (int(head_livestock.loc[head_livestock['LIVE']== 'Total heifers, 1 year and over', 'Value'])))
 (head_livestock.loc[head_livestock['LIVE']== 'Beef', 'Value']) = int(head_livestock.loc[head_livestock['LIVE']== 'Beef', 'Value'])+ int(head_livestock.loc[head_livestock['LIVE']== 'Steers, 1 year and over', 'Value']) + int(head_livestock.loc[head_livestock['LIVE']== 'Beef cows', 'Value'])+ (breeding_stock_beef_and_dairy*(.65))
@@ -87,7 +87,7 @@ fn3.loc[fn3['commodity']== 'Apple pie filling', 'commodity'] = 'Apples pie filli
 fn3.loc[fn3['commodity']== 'Apple sauce', 'commodity'] = 'Apples sauce'
 fn3.loc[fn3['commodity']== 'Pineapples canned', 'commodity'] = 'Pineapple canned'
 fn3.loc[fn3['commodity']== 'Pineapples fresh', 'commodity'] = 'Pineapple fresh'
-fn3.loc[fn3['commodity']== 'Butter', 'commodity'] = 'Butter milk'
+#fn3.loc[fn3['commodity']== 'Butter', 'commodity'] = 'Butter milk'
 fn3.loc[fn3['commodity']== 'Buttermilk (litres per person, per year)', 'commodity'] = 'Butter milk'
 fn3.loc[fn3['commodity']== 'Cottage cheese', 'commodity'] = 'Cottage cheese milk'
 fn3.loc[fn3['commodity']== 'Grape juice (litres per person, per year)', 'commodity'] = 'Grapes juice'
@@ -107,8 +107,13 @@ fn3.loc[fn3['commodity']== 'Eggs (15)', 'commodity'] = 'Eggs'
 fn3.loc[fn3['commodity']== 'Mutton and lamb, boneless weight', 'commodity'] = 'Lamb'
 fn3.loc[fn3['commodity']== 'Pork, boneless weight', 'commodity'] = 'Pork'
 fn3.loc[fn3['commodity']== 'Turkey, boneless weight', 'commodity'] = 'Turkey'
-fn3.loc[fn3['commodity']== 'Salad oils (17)', 'commodity'] = 'Salad oils Canola'
 fn3.loc[fn3['commodity']== 'Onions and shallots fresh', 'commodity'] = 'Dry onions'
+
+fn3.loc[fn3['commodity']== 'Salad oils (17)', 'commodity'] = 'Salad oils Canola Oil'
+fn3.loc[fn3['commodity']== 'Shortening and shortening oils', 'commodity'] = 'Shortening Canola Oil'
+fn3.loc[fn3['commodity']== 'Margarine', 'commodity'] = 'Margarine Canola Oil'
+
+
 
 ommited_crops = fn3.loc[fn3['diet and seasonality constraint (balanced)']==0].reset_index(drop =True)
 ommited_crops = ommited_crops.drop(['Unnamed: 0'], axis =1)

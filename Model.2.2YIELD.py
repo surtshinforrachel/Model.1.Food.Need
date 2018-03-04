@@ -157,7 +157,7 @@ allcropland.loc[(allcropland['crop']== 'Asparagus, producing', 'crop')] = 'Aspar
 allcropland.loc[(allcropland['crop']== 'Asparagus, non-producing', 'crop')] = 'Asparagus'
 allcropland.loc[(allcropland['crop']== 'Chinese cabbage', 'crop')] = 'Cabbage'
 allcropland.loc[(allcropland['crop']== 'All other tame hay and fodder crops', 'crop')] = 'Tame hay and fodder'
-allcropland.loc[(allcropland['crop']== 'Canola (rapeseed)', 'crop')] = 'Canola'
+allcropland.loc[(allcropland['crop']== 'Canola (rapeseed)', 'crop')] = 'Canola Oil'
 allcropland.loc[(allcropland['crop']== 'Total growing area for mushrooms', 'crop')] = 'Mushrooms'
 allcropland.loc[(allcropland['crop']== 'Dry white beans', 'crop')] = 'Beans, all dry'
 allcropland.loc[(allcropland['crop']== 'Other dry beans', 'crop')] = 'Beans, all dry'
