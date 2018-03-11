@@ -103,10 +103,10 @@
 101,Strawberries canned,0.07,0.5216095380029807,Strawberries canned,Fruit & Vegetables,125mL,134.2,1.16,0.75,12.0,7.000000000000001e-05,162.80664960000001,162.80664960000001
 102,Strawberries fresh,2.53,28.848346636259976,Strawberries fresh,Fruit & Vegetables,125mL,87.7,1.38,1.0,4.0,0.0025299999999999997,9333.713241599997,3111.237747199999
 103,Strawberries frozen,0.61,5.222602739726027,Strawberries frozen,Fruit & Vegetables,125mL ,116.8,1.16,0.89,12.0,0.00061,1683.575810816,1683.575810816
-104,"Tomato juice (litres per person, per year)",0.81,6.308411214953271,"Tomato juice (litres per person, per year)",Fruit & Vegetables,125mL,128.4,1.16,1.0,0.0,0.0008100000000000001,2511.8740224,0.0
-105,Tomatoes canned,3.08,24.290220820189276,Tomatoes canned,Fruit & Vegetables,125mL,126.8,1.16,1.7,0.0,0.0030800000000000003,16237.24985344,0.0
+104,"Tomato juice (litres per person, per year)",0.81,6.308411214953271,"Tomato juice (litres per person, per year)",Fruit & Vegetables,125mL,128.4,1.16,1.0,12.0,0.0008100000000000001,2511.8740224,2511.8740224
+105,Tomatoes canned,3.08,24.290220820189276,Tomatoes canned,Fruit & Vegetables,125mL,126.8,1.16,1.7,12.0,0.0030800000000000003,16237.24985344,16237.24985344
 106,Tomatoes fresh,5.63,59.185282522996054,Tomatoes fresh,Fruit & Vegetables,125mL,95.125,1.41,1.0,9.0,0.00563,21221.806675199998,15916.3550064
-107,"Tomatoes, pulp, paste and puree",2.4,18.168054504163514,"Tomatoes, pulp, paste and puree",Fruit & Vegetables,125mL,132.1,1.16,5.39,0.0,0.0024,40115.55846143999,0.0
+107,"Tomatoes, pulp, paste and puree",2.4,18.168054504163514,"Tomatoes, pulp, paste and puree",Fruit & Vegetables,125mL,132.1,1.16,5.39,12.0,0.0024,40115.55846143999,40115.55846143999
 108,"Turkey, boneless weight",2.04,22.666666666666668,"Turkey, boneless weight",Meat & Alts,75 g cooked,90.0,1.39,1.27,12.0,0.00204,9627.278492928,9627.278492928
 109,Variety cheese,5.63,112.6,Variety cheese,Milk & Alts,50g,50.0,1.19,4.6865,12.0,0.00563,83938.04000720318,83938.04000720318
 110,Wheat flour,41.8,2090.0,Wheat flour,Grains,,20.0,1.32,1.35,12.0,0.0418,199130.9785344,199130.9785344

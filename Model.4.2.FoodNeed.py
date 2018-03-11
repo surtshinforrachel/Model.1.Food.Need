@@ -28,7 +28,7 @@ head_livestock = pd.concat(frames, ignore_index = True)
 head_livestock.ix[:, 4] = head_livestock.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
 head_livestock = head_livestock.drop(['Ref_Date', 'UOM'], axis = 1).fillna(value=0) #delete reference date column
 head_livestock = head_livestock.groupby('LIVE', as_index=False).sum() 
-head_livestock.loc[head_livestock['LIVE']== 'Beef cows', 'LIVE'] = 'Beef'
+head_livestock.loc[head_livestock['LIVE']== 'Total cattle and calves', 'LIVE'] = 'Beef'
 head_livestock.loc[head_livestock['LIVE']== 'Total sheep and lambs', 'LIVE'] = 'Lamb'
 head_livestock.loc[head_livestock['LIVE']== 'Total pigs', 'LIVE'] = 'Pork'
 head_livestock.loc[head_livestock['LIVE']== 'Turkeys', 'LIVE'] = 'Turkey'
@@ -37,12 +37,14 @@ head_livestock.loc[head_livestock['LIVE']== 'Dairy cows', 'LIVE'] = 'Dairy'
 head_livestock.loc[head_livestock['LIVE']== 'Laying hens, 19 weeks and over, that produce table eggs', 'LIVE'] = 'Eggs'
 
 breeding_stock_chicken_and_eggs = (int(head_livestock.loc[head_livestock['LIVE']== 'Layer and broiler breeders (pullets and hens)', 'Value']))
-(head_livestock.loc[head_livestock['LIVE']== 'Chicken', 'Value']) = (int(head_livestock.loc[head_livestock['LIVE']== 'Chicken', 'Value']))+ (int(head_livestock.loc[head_livestock['LIVE']== 'Other poultry', 'Value']))+ (breeding_stock_chicken_and_eggs*1)
-(head_livestock.loc[head_livestock['LIVE']== 'Eggs', 'Value']) = (int(head_livestock.loc[head_livestock['LIVE']== 'Eggs', 'Value'])+int(head_livestock.loc[head_livestock['LIVE']== 'Pullets under 19 weeks, intended for laying table eggs', 'Value']))+ (breeding_stock_chicken_and_eggs*0)
+(head_livestock.loc[head_livestock['LIVE']== 'Chicken', 'Value']) = (int(head_livestock.loc[head_livestock['LIVE']== 'Chicken', 'Value']))+ (breeding_stock_chicken_and_eggs*.78)
+(head_livestock.loc[head_livestock['LIVE']== 'Eggs', 'Value']) = (int(head_livestock.loc[head_livestock['LIVE']== 'Eggs', 'Value'])+int(head_livestock.loc[head_livestock['LIVE']== 'Pullets under 19 weeks, intended for laying table eggs', 'Value']))+ (breeding_stock_chicken_and_eggs*.22)
+
+(head_livestock.loc[head_livestock['LIVE']== 'Turkey', 'Value']) = (int(head_livestock.loc[head_livestock['LIVE']== 'Turkey', 'Value'])+int(head_livestock.loc[head_livestock['LIVE']== 'Other poultry', 'Value']))
 
 breeding_stock_beef_and_dairy = (int(head_livestock.loc[head_livestock['LIVE']== 'Bulls, 1 year and over', 'Value']))+(int(head_livestock.loc[head_livestock['LIVE']== 'Calves, under 1 year', 'Value'])+ int(head_livestock.loc[head_livestock['LIVE']== 'Heifers for slaughter or feeding', 'Value']))
-(head_livestock.loc[head_livestock['LIVE']== 'Beef', 'Value']) = int(head_livestock.loc[head_livestock['LIVE']== 'Beef', 'Value'])+ int(head_livestock.loc[head_livestock['LIVE']== 'Steers, 1 year and over', 'Value']) + int(head_livestock.loc[head_livestock['LIVE']== 'Heifers for beef herd replacement', 'Value']) + (breeding_stock_beef_and_dairy*(.5)) #
-(head_livestock.loc[head_livestock['LIVE']== 'Dairy', 'Value']) = int(head_livestock.loc[head_livestock['LIVE']== 'Dairy', 'Value'])+ int(head_livestock.loc[head_livestock['LIVE']== 'Heifers for dairy herd replacement', 'Value']) + (breeding_stock_beef_and_dairy*(.5))
+(head_livestock.loc[head_livestock['LIVE']== 'Beef', 'Value']) = int(head_livestock.loc[head_livestock['LIVE']== 'Beef', 'Value'])+int(head_livestock.loc[head_livestock['LIVE']== 'Beef cows', 'Value'])+ int(head_livestock.loc[head_livestock['LIVE']== 'Steers, 1 year and over', 'Value']) + int(head_livestock.loc[head_livestock['LIVE']== 'Heifers for beef herd replacement', 'Value']) + (breeding_stock_beef_and_dairy*(.57)) #
+(head_livestock.loc[head_livestock['LIVE']== 'Dairy', 'Value']) = int(head_livestock.loc[head_livestock['LIVE']== 'Dairy', 'Value'])+ int(head_livestock.loc[head_livestock['LIVE']== 'Heifers for dairy herd replacement', 'Value']) + (breeding_stock_beef_and_dairy*(.43))
 
 livestock = pd.merge(left=newmethod, right = head_livestock, left_on=['livestock'], right_on =['LIVE'], how = 'inner')
 livestock['SWBC yield'] = livestock['commodity_per_head']*livestock['Value']
@@ -108,6 +110,10 @@ fn3.loc[fn3['commodity']== 'Margarine', 'commodity'] = 'Margarine Canola Oil'
 
 ommited_crops = fn3.loc[fn3['diet and seasonality constraint (balanced)']==0].reset_index(drop =True)
 ommited_crops = ommited_crops.drop(['Unnamed: 0'], axis =1)
+#change processed tomatoes
+#ommited_crops = pd.read_csv('ommitedcrops.csv', header = 0)
+
+
 
 fn4 = fn3.copy()
 #FUZZY STRING MATCHING
@@ -184,8 +190,8 @@ for i in range(len(cropsr3['SWBC Food Need Unbalanced (t)'])):
     mymin = np.minimum(cropsr3['diet and seasonality constraint (unbalanced)'][i], cropsr3['SWBC yield'][i])
     cropsr3['self reliance (unbalanced)'][i] = (mymin /cropsr3['SWBC Food Need Unbalanced (t)'][i])*100
 
-plot3 = cropsr3.plot(x='cropmatch', y='self reliance (balanced)', title = 'Percent Self Reliance by Crop', kind = 'bar')
-plot4 = cropsr3.plot(x='cropmatch', y='self reliance (unbalanced)', title = 'Percent Self Reliance by Crop', kind = 'bar')
+#plot3 = cropsr3.plot(x='cropmatch', y='self reliance (balanced)', title = 'Percent Self Reliance by Crop', kind = 'bar')
+#plot4 = cropsr3.plot(x='cropmatch', y='self reliance (unbalanced)', title = 'Percent Self Reliance by Crop', kind = 'bar')
 
 #ommited_crops = ommited_crops.drop(['Unnamed: 0', 'kg/person','servings/person', 'name', 'reference', 'waste', 'conversion', 'season', 'percent of group', 'balanced rec(t)', 'balanced rec(kg)', 'incwaste', 'Food Need (tonnes)/person', 'cropmatch'], axis = 1)
 #ommited_crops.columns = ['cropmatch', 'group', 'SWBC Food Need', 'diet and seasonality constraint']
@@ -208,7 +214,7 @@ totalfoodneed = sum(cropsr3['SWBC Food Need Unbalanced (t)'])
 totalsr3_unbalanced = (sum(mymet3)/totalfoodneed)
 print(totalsr3_unbalanced)
 
-
+print(cropsr3.groupby('group')['SWBC Food Need Balanced (t)'].sum())
           #group by food group
 sr_by_group = cropsr3.groupby('group')['SWBC Food Need Balanced (t)', 'diet and seasonality constraint (balanced)','SWBC Food Need Unbalanced (t)', 'diet and seasonality constraint (unbalanced)', 'SWBC yield'].sum().reset_index()
 sr_by_group['self reliance (balanced)'] = sr_by_group['SWBC yield'].copy()
@@ -222,31 +228,30 @@ for i in range(len(sr_by_group['self reliance (unbalanced)'])):
     mymin = np.minimum(sr_by_group['diet and seasonality constraint (unbalanced)'][i], sr_by_group['SWBC yield'][i])
     sr_by_group['self reliance (unbalanced)'][i] = (mymin /sr_by_group['SWBC Food Need Unbalanced (t)'][i])*100
 
-plot2= sr_by_group.plot(x='group', y = 'self reliance (balanced)', kind = 'bar', title = 'Percent Self Reliance')
-
-
-plot2 = sr_by_group.plot.bar( x= 'group',stacked = True, title = 'Food Need (T) vs Food Production (T)')
-plot3 = cropsr3.plot(x='cropmatch', y='self reliance (balanced)', title = 'Percent Self Reliance by Crop', kind = 'bar')
-
+#plot2= sr_by_group.plot(x='group', y = 'self reliance (balanced)', kind = 'bar', title = 'Percent Self Reliance')
+#plot2 = sr_by_group.plot.bar( x= 'group',stacked = True, title = 'Food Need (T) vs Food Production (T)')
+#plot3 = cropsr3.plot(x='cropmatch', y='self reliance (balanced)', title = 'Percent Self Reliance by Crop', kind = 'bar')
+#
 
 
 
 
 
 #GRAPHIC FOR BALANCED FOOD NEED
-sr_by_group2 =  sr_by_group.drop(['diet and seasonality constraint (balanced)', 'diet and seasonality constraint (unbalanced)', 'self reliance (balanced)', 'self reliance (unbalanced)'], axis = 1)
+sr_by_group2 =  sr_by_group.drop(['diet and seasonality constraint (unbalanced)', 'SWBC Food Need Unbalanced (t)', 'self reliance (balanced)', 'self reliance (unbalanced)'], axis = 1)
 sr_by_group2['SWBC Food Need Balanced (t)'] = sr_by_group2['SWBC Food Need Balanced (t)']/1000
-sr_by_group2['SWBC Food Need Unbalanced (t)'] = sr_by_group2['SWBC Food Need Unbalanced (t)']/1000
+sr_by_group2['diet and seasonality constraint (balanced)'] = sr_by_group2['diet and seasonality constraint (balanced)']/1000
 sr_by_group2['SWBC yield'] = sr_by_group2['SWBC yield']/1000
-sr_by_group2.columns = ['group', 'Balanced Food Need', 'Unbalanced Food Need', 'Food Yield']
+sr_by_group2.columns = ['group', 'Food Need', 'Diet and Seasonality Constraint', 'Food Yield']
 plot4 = sr_by_group2.plot(kind = 'bar', x = 'group', title = 'Food Need vs Food Yield')
-plot4.set_xlabel('Food Group')
-plot4.set_ylabel('Thousand Tonnes of Food')
+plot4.set_ylabel('Thousand Tonnes')
+#plot4.set_xlabel('Food Group')
+#plot4.set_ylabel('Thousand Tonnes of Food')
 
 
 
 #GRAPHIC FOR BALANCED FOOD NEED
-sr_by_group3 =  sr_by_group.drop(['diet and seasonality constraint (balanced)', 'diet and seasonality constraint (unbalanced)', 'SWBC Food Need Balanced (t)','diet and seasonality constraint (unbalanced)', 'self reliance (balanced)', 'self reliance (unbalanced)'], axis = 1)
+sr_by_group3 =  sr_by_group.drop(['diet and seasonality constraint (unbalanced)','diet and seasonality constraint (balanced)' 'diet and seasonality constraint (unbalanced)', 'SWBC Food Need Unbalanced (t)','diet and seasonality constraint (unbalanced)', 'self reliance (balanced)', 'self reliance (unbalanced)'], axis = 1)
 sr_by_group3['SWBC Food Need Unbalanced (t)'] = sr_by_group3['SWBC Food Need Unbalanced (t)']/1000
 sr_by_group3['SWBC yield'] = sr_by_group3['SWBC yield']/1000
 sr_by_group3.columns = ['group', 'Current Food Need (unbalanced)', 'Food Yield']
@@ -257,6 +262,18 @@ plot5.set_ylabel('Thousand Tonnes of Food')
 plot6 = sr_by_group.plot(kind='pie', y = 'self reliance (balanced)')
 plot6 = sr_by_group.plot(kind='pie', y = 'self reliance (unbalanced)', labels = sr_by_group['group'], legend = False, autopct = '%1.1f')
 plot6.set_ylabel('Contributions to Food Self Reliance by Food Group')
+
+
+
+compare = pd.read_csv('resultscompare.csv', header = 0)
+compare.ix[:, 4] = compare.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
+compare['Food Need'] =  compare['Food Need']/1000
+compare['ISFS - Food Need'] =  compare['ISFS - Food Need']/1000
+compare['Food Yield'] =  compare['Food Yield']/1000
+compare['ISFS -Food Yield'] =  compare['ISFS -Food Yield']/1000
+plotz = compare.plot(kind = 'bar', x = 'group')
+plotz.set_ylabel('Thousand Tonnes')
+plotz.set_xlabel('')
 
 
 
