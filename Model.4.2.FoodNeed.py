@@ -228,6 +228,25 @@ for i in range(len(sr_by_group['self reliance (unbalanced)'])):
     mymin = np.minimum(sr_by_group['diet and seasonality constraint (unbalanced)'][i], sr_by_group['SWBC yield'][i])
     sr_by_group['self reliance (unbalanced)'][i] = (mymin /sr_by_group['SWBC Food Need Unbalanced (t)'][i])*100
 
+
+#THEORETICAL MAX
+sr_by_group = cropsr3.groupby('group')['SWBC Food Need Balanced (t)', 'diet and seasonality constraint (balanced)','SWBC Food Need Unbalanced (t)', 'diet and seasonality constraint (unbalanced)', 'SWBC yield'].sum().reset_index()
+sr_by_group['Hypothetical Maximum'] = sr_by_group['SWBC yield'].copy()
+for i in range(len(sr_by_group['Hypothetical Maximum'])):
+    sr_by_group['Hypothetical Maximum'][i] = (sr_by_group['diet and seasonality constraint (balanced)'][i]/sr_by_group['SWBC Food Need Balanced (t)'][i])*100
+
+
+mymet3 = cropsr3['diet and seasonality constraint (balanced)']
+totalfoodneed = sum(cropsr3['SWBC Food Need Balanced (t)'])
+totalsr3_max = (sum(mymet3)/totalfoodneed)
+print(totalsr3_max)
+
+#          #group by food group
+#sr_by_group['self reliance (unbalanced)'] = sr_by_group['SWBC yield'].copy()
+#for i in range(len(sr_by_group['self reliance (unbalanced)'])):
+#    mymin = np.minimum(sr_by_group['diet and seasonality constraint (unbalanced)'][i], sr_by_group['SWBC yield'][i])
+#    sr_by_group['self reliance (unbalanced)'][i] = (mymin /sr_by_group['SWBC Food Need Unbalanced (t)'][i])*100
+
 #plot2= sr_by_group.plot(x='group', y = 'self reliance (balanced)', kind = 'bar', title = 'Percent Self Reliance')
 #plot2 = sr_by_group.plot.bar( x= 'group',stacked = True, title = 'Food Need (T) vs Food Production (T)')
 #plot3 = cropsr3.plot(x='cropmatch', y='self reliance (balanced)', title = 'Percent Self Reliance by Crop', kind = 'bar')
@@ -239,12 +258,12 @@ for i in range(len(sr_by_group['self reliance (unbalanced)'])):
 
 #GRAPHIC FOR BALANCED FOOD NEED
 sr_by_group2 =  sr_by_group.drop(['diet and seasonality constraint (unbalanced)', 'SWBC Food Need Unbalanced (t)', 'self reliance (balanced)', 'self reliance (unbalanced)'], axis = 1)
-sr_by_group2['SWBC Food Need Balanced (t)'] = sr_by_group2['SWBC Food Need Balanced (t)']/1000
-sr_by_group2['diet and seasonality constraint (balanced)'] = sr_by_group2['diet and seasonality constraint (balanced)']/1000
-sr_by_group2['SWBC yield'] = sr_by_group2['SWBC yield']/1000
+#sr_by_group2['SWBC Food Need Balanced (t)'] = sr_by_group2['SWBC Food Need Balanced (t)']/1000
+#sr_by_group2['diet and seasonality constraint (balanced)'] = sr_by_group2['diet and seasonality constraint (balanced)']/1000
+#sr_by_group2['SWBC yield'] = sr_by_group2['SWBC yield']/1000
 sr_by_group2.columns = ['group', 'Food Need', 'Diet and Seasonality Constraint', 'Food Yield']
 plot4 = sr_by_group2.plot(kind = 'bar', x = 'group', title = 'Food Need vs Food Yield')
-plot4.set_ylabel('Thousand Tonnes')
+plot4.set_ylabel('Tonnes')
 #plot4.set_xlabel('Food Group')
 #plot4.set_ylabel('Thousand Tonnes of Food')
 
@@ -266,14 +285,16 @@ plot6.set_ylabel('Contributions to Food Self Reliance by Food Group')
 
 
 compare = pd.read_csv('resultscompare.csv', header = 0)
-compare.ix[:, 4] = compare.ix[:, 4].apply(pd.to_numeric, errors = 'coerce') #turn everything in values column into a numeric. if it won't do it coerce it into an NaN
-compare['Food Need'] =  compare['Food Need']/1000
-compare['ISFS - Food Need'] =  compare['ISFS - Food Need']/1000
-compare['Food Yield'] =  compare['Food Yield']/1000
-compare['ISFS -Food Yield'] =  compare['ISFS -Food Yield']/1000
-plotz = compare.plot(kind = 'bar', x = 'group')
-plotz.set_ylabel('Thousand Tonnes')
+plotz = compare.plot(kind = 'bar', x = 'group', legend = False)
+plotz.set_ylabel('Tonnes')
 plotz.set_xlabel('')
+
+
+compare2 = pd.read_csv('resultscompare2.csv', header = 0)
+plotx = compare2.plot(kind = 'bar', x = ['group','program'], title = 'Comparison of Results')
+plotx.set_ylabel('Tonnes')
+plotx.set_xlabel('')
+
 
 
 
